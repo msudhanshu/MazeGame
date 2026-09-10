@@ -1,0 +1,31 @@
+{
+    "name": "Game.Unity.EditModeTests",
+    "rootNamespace": "Game.Unity.Tests",
+    "references": [
+        "Game.Core",
+        "Game.Unity",
+        "Nixin.Game.Core",
+        "Nixin.Grid.Core",
+        "Nixin.Locomotion",
+        "Nixin.Locomotion.Core",
+        "Nixin.Maze.Core",
+        "Nixin.Maze",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

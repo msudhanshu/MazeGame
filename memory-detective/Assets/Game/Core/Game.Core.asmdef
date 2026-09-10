@@ -1,0 +1,17 @@
+{
+  "name": "Game.Core",
+  "rootNamespace": "Game.Core",
+  "references": [
+    "Nixin.Game.Core",
+    "Nixin.Memory.Core"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}

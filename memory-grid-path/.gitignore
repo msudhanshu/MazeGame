@@ -1,0 +1,19 @@
+# Unity generated
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+[Mm]emoryCaptures/
+# Unity regenerates these at the project root; the ones under DotNet/ are real sources.
+/*.csproj
+/*.sln
+
+# Independent Game.Core test builds (keep outside Assets/)
+DotNet/**/bin/
+DotNet/**/obj/
+
+# OS
+.DS_Store

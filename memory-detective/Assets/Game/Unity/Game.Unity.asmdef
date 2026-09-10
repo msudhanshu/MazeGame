@@ -1,0 +1,15 @@
+{
+  "name": "Game.Unity",
+  "rootNamespace": "Game.Unity",
+  "references": [
+    "Game.Core",
+    "Nixin.Game.Core",
+    "Nixin.Memory.Core",
+    "Nixin.Boot.Core",
+    "Nixin.Boot",
+    "UnityEngine.UI",
+    "Unity.InputSystem"
+  ],
+  "autoReferenced": true,
+  "noEngineReferences": false
+}

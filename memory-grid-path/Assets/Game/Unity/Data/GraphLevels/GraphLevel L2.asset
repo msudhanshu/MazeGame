@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 487aab13424064c68be68ea064f10115, type: 3}
+  m_Name: GraphLevel L2
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Data.GraphLevelDefinition
+  _displayName: Graph Level L2
+  _background: {fileID: 2800000, guid: 3798320e1113a465a80d9cfb0c2cf4aa, type: 3}
+  _worldWidth: 12
+  _nodes:
+  - Id: n0
+    NormalizedPosition: {x: 0.40145501, y: 0.050000012}
+  - Id: n1
+    NormalizedPosition: {x: 0.4292328, y: 0.14722222}
+  - Id: n2
+    NormalizedPosition: {x: 0.4021164, y: 0.4527778}
+  - Id: n3
+    NormalizedPosition: {x: 0.4537037, y: 0.46388888}
+  - Id: n4
+    NormalizedPosition: {x: 0.46626985, y: 0.5611111}
+  - Id: n5
+    NormalizedPosition: {x: 0.5251323, y: 0.6472222}
+  - Id: n6
+    NormalizedPosition: {x: 0.4781746, y: 0.66388893}
+  - Id: n7
+    NormalizedPosition: {x: 0.49669313, y: 0.61388886}
+  - Id: n8
+    NormalizedPosition: {x: 0.505291, y: 0.71111107}
+  - Id: n9
+    NormalizedPosition: {x: 0.53637564, y: 0.75555557}
+  - Id: n10
+    NormalizedPosition: {x: 0.51455027, y: 0.10833335}
+  - Id: n11
+    NormalizedPosition: {x: 0.5648148, y: 0.16111112}
+  - Id: n12
+    NormalizedPosition: {x: 0.52843916, y: 0.33888888}
+  - Id: n13
+    NormalizedPosition: {x: 0.5714286, y: 0.38611114}
+  - Id: n14
+    NormalizedPosition: {x: 0.53373015, y: 0.47500002}
+  - Id: n15
+    NormalizedPosition: {x: 0.51785713, y: 0.53888893}
+  - Id: n16
+    NormalizedPosition: {x: 0.5456349, y: 0.60555553}
+  - Id: n17
+    NormalizedPosition: {x: 0.47420636, y: 0.3888889}
+  - Id: n18
+    NormalizedPosition: {x: 0.43849206, y: 0.625}
+  - Id: n19
+    NormalizedPosition: {x: 0.5780423, y: 0.8833333}
+  - Id: n20
+    NormalizedPosition: {x: 0.46957672, y: 0.105555534}
+  _edges:
+  - NodeA: n0
+    NodeB: n1
+  - NodeA: n1
+    NodeB: n17
+  - NodeA: n17
+    NodeB: n3
+  - NodeA: n3
+    NodeB: n2
+  - NodeA: n2
+    NodeB: n1
+  - NodeA: n2
+    NodeB: n18
+  - NodeA: n3
+    NodeB: n4
+  - NodeA: n4
+    NodeB: n18
+  - NodeA: n4
+    NodeB: n7
+  - NodeA: n18
+    NodeB: n6
+  - NodeA: n6
+    NodeB: n7
+  - NodeA: n7
+    NodeB: n5
+  - NodeA: n5
+    NodeB: n8
+  - NodeA: n8
+    NodeB: n6
+  - NodeA: n8
+    NodeB: n9
+  - NodeA: n9
+    NodeB: n19
+  - NodeA: n5
+    NodeB: n16
+  - NodeA: n16
+    NodeB: n15
+  - NodeA: n15
+    NodeB: n14
+  - NodeA: n14
+    NodeB: n13
+  - NodeA: n13
+    NodeB: n12
+  - NodeA: n12
+    NodeB: n17
+  - NodeA: n17
+    NodeB: n14
+  - NodeA: n12
+    NodeB: n11
+  - NodeA: n11
+    NodeB: n10
+  - NodeA: n10
+    NodeB: n1
+  - NodeA: n17
+    NodeB: n15
+  - NodeA: n0
+    NodeB: n20
+  - NodeA: n20
+    NodeB: n10
+  _startNodeId: n0
+  _goalNodeId: n19
+  _minPathLength: 4
+  _maxPathLength: 12
+  _minTurns: 0
+  _maxTurns: 8
+  _livesPerRun: 3
+  _runsPerSession: 5

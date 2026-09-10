@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.3488273">
+  <test-suite type="TestSuite" id="1000" name="memorizewayhome" fullname="memorizewayhome" runstate="Runnable" testcasecount="125" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.348827" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1148" name="Game.Unity.EditModeTests.dll" fullname="/Users/sid/Tech/unity-game-y-agent/memory-grid-path/Library/ScriptAssemblies/Game.Unity.EditModeTests.dll" runstate="Runnable" testcasecount="125" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.339726" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3807" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1149" name="Game" fullname="Game" runstate="Runnable" testcasecount="125" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.334983" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1150" name="Unity" fullname="Game.Unity" runstate="Runnable" testcasecount="125" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.332262" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1151" name="Tests" fullname="Game.Unity.Tests" runstate="Runnable" testcasecount="125" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.329545" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1113" name="PatchworkArenaTests" fullname="Game.Unity.Tests.PatchworkArenaTests" classname="Game.Unity.Tests.PatchworkArenaTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.323108" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1114" name="ApplyEnvironmentPlacesOceanUnderAndAroundTheTiles" fullname="Game.Unity.Tests.PatchworkArenaTests.ApplyEnvironmentPlacesOceanUnderAndAroundTheTiles" methodname="ApplyEnvironmentPlacesOceanUnderAndAroundTheTiles" classname="Game.Unity.Tests.PatchworkArenaTests" runstate="Runnable" seed="438970549" result="Failed" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.234441" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Error] Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.Object:Destroy (UnityEngine.Object)
+Game.Unity.Themes.Experimental.PatchworkOceanBackdrop:Build (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkOceanBackdrop.cs:28)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:BuildOceanRoom (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:85)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:ApplyEnvironment (UnityEngine.Camera,Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:66)
+Game.Unity.Tests.PatchworkArenaTests:ApplyEnvironmentPlacesOceanUnderAndAroundTheTiles () (at Assets/Tests/EditMode/PatchworkArenaTests.cs:22)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently
+]]></output>
+              </test-case>
+              <test-case id="1115" name="CameraBackgroundMatchesTheOcean" fullname="Game.Unity.Tests.PatchworkArenaTests.CameraBackgroundMatchesTheOcean" methodname="CameraBackgroundMatchesTheOcean" classname="Game.Unity.Tests.PatchworkArenaTests" runstate="Runnable" seed="398015133" result="Failed" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.012131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Error] Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.Object:Destroy (UnityEngine.Object)
+Game.Unity.Themes.Experimental.PatchworkOceanBackdrop:Build (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkOceanBackdrop.cs:28)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:BuildOceanRoom (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:85)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:ApplyEnvironment (UnityEngine.Camera,Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:66)
+Game.Unity.Tests.PatchworkArenaTests:CameraBackgroundMatchesTheOcean () (at Assets/Tests/EditMode/PatchworkArenaTests.cs:60)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently
+]]></output>
+              </test-case>
+              <test-case id="1116" name="SwitchingToClassicClearsTheOcean" fullname="Game.Unity.Tests.PatchworkArenaTests.SwitchingToClassicClearsTheOcean" methodname="SwitchingToClassicClearsTheOcean" classname="Game.Unity.Tests.PatchworkArenaTests" runstate="Runnable" seed="1631096064" result="Failed" start-time="2026-09-02 12:48:54Z" end-time="2026-09-02 12:48:54Z" duration="0.022740" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Error] Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.Object:Destroy (UnityEngine.Object)
+Game.Unity.Themes.Experimental.PatchworkOceanBackdrop:Build (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkOceanBackdrop.cs:28)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:BuildOceanRoom (Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:85)
+Game.Unity.Themes.Experimental.PatchworkArenaTileViewFactory:ApplyEnvironment (UnityEngine.Camera,Game.Unity.View.BoardLayout,UnityEngine.Transform) (at Assets/Game/Unity/Themes/Experimental/PatchworkArenaTileViewFactory.cs:66)
+Game.Unity.Tests.PatchworkArenaTests:SwitchingToClassicClearsTheOcean () (at Assets/Tests/EditMode/PatchworkArenaTests.cs:79)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Patchwork Ocean: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently
+Room Floor: Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently
+Saving results to: /Users/sid/Library/Application Support/Nixin Studio/memorizewayhome/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

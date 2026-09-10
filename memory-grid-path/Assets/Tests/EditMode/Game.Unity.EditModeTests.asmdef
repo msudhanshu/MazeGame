@@ -1,0 +1,37 @@
+{
+    "name": "Game.Unity.EditModeTests",
+    "rootNamespace": "Game.Unity.Tests",
+    "references": [
+        "Game.Core",
+        "Game.Unity",
+        "Game.Unity.Editor",
+        "Nixin.Game.Core",
+        "Nixin.Grid.Core",
+        "Nixin.Graph.Core",
+        "Nixin.Memory.Core",
+        "Nixin.Fue.Core",
+        "Nixin.Fue",
+        "Nixin.Ui",
+        "Nixin.Ui.Core",
+        "Nixin.Ui.Editor",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dae8d20170cd4e71827e77b308ed920, type: 3}
+  m_Name: ArenaVisualSettings
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Themes.Experimental.ArenaVisualSettings
+  _visualType: 2
+  _cameraMode: 1
+  _followOrthographicSize: 1.8
+  _followSmoothing: 10
+  _classicTileSize: 1
+  _classicGap: 0
+  _seamlessTileSize: 1
+  _mosaicTexture: {fileID: 0}
+  _flipMosaicVertical: 0
+  _mosaicGroutInset: 0
+  _mosaicGap: 0
+  _mosaicBackgroundParticles: 0
+  _mosaicVfxPrefab: {fileID: 0}
+  _patchworkTextureSet: {fileID: 11400000, guid: d154d62c9a3b4b32929267475c1e1e8b, type: 2}
+  _extraPatchworkSets: []
+  _patchworkTextures: []
+  _patchworkSeed: 1337

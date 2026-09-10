@@ -1,0 +1,3 @@
+# Independent Game.Core test builds (keep outside Assets/)
+DotNet/**/bin/
+DotNet/**/obj/

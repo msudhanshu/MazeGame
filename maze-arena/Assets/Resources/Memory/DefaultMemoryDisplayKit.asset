@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9408f5ec89b4c4d7bb8b86353b910a91, type: 3}
+  m_Name: DefaultMemoryDisplayKit
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Memory.MemoryWallDisplayKit
+  defaultPhotoPrefab: {fileID: 5653353145158519953, guid: 6d09dd9239124413c9788bb1b76caf75, type: 3}
+  frameVariants:
+  - Id: plain
+    Prefab: {fileID: 5653353145158519953, guid: 6d09dd9239124413c9788bb1b76caf75, type: 3}
+  - Id: frame
+    Prefab: {fileID: 1304446687036285127, guid: 4686bf15cf0634628976d68139de21bd, type: 3}
+  - Id: glow
+    Prefab: {fileID: 8245867134104416317, guid: 7e125955cba6741dd853901df3848fc5, type: 3}
+  - Id: polaroid
+    Prefab: {fileID: 2984893846716508300, guid: c388840a9ff614a9bb8947b47c89c49c, type: 3}
+  - Id: metal
+    Prefab: {fileID: 3314600626227717873, guid: eecc47b07667a45469f8b1df4a999629, type: 3}
+  reliefMaterial: {fileID: 2100000, guid: 309fd8aa0d5144e8e875b2fc5af339dc, type: 2}
+  reliefPictureScale: 0.82
+  objectScale: 0.42

@@ -1,0 +1,861 @@
+Unity Editor version:    6000.5.9f1 (b57deb96f08d)
+Branch:                  6000.5/staging
+Build type:              Release
+Batch mode:              NO
+macOS version:           Version 26.6.2 (Build 25G83)
+Darwin version:          25.6.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Date:                    2026-08-28T12:16:32Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-sid" at "2026-08-28T12:16:32.196303Z"
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              de97b53c6f5d45cbb4d87138476a31bf
+  Correlation Id:          72ceeac6752fd25f8cef6cbe283503ef
+  External correlation Id: 3920226084936444031
+  Machine Id:              VO29nZBVxjvJTwPIqWFJp4OFV7Q=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-sid" (connect: 0.00s, validation: 0.00s, handshake: 1.00s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-sid-notifications" at "2026-08-28T12:16:33.201671Z"
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated the access token 7NKrBANfPG...
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:18Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:18Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Module] Licensing Background thread has ended after 1.08s
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/MacOS/Unity
+-projectpath
+/Users/sid/Tech/unity-game-y-agent/memory-detective
+-acceptSoftwareTermsForThisRunOnly
+-useHub
+-hubIPC
+-cloudEnvironment
+production
+-licensingIpc
+LicenseClient-sid
+-hubSessionId
+c72066f3-6f15-4629-ad7a-9679fa89f8fa
+-accessToken
+7NKrBANfPGnere0utg1GmySZtt1VbkGJwb9w3BszYjU00cf
+Successfully changed project path to: /Users/sid/Tech/unity-game-y-agent/memory-detective
+/Users/sid/Tech/unity-game-y-agent/memory-detective
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=0"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Player connection [8533287296]  Target information:
+
+Player connection [8533287296]  * "[IP] 127.0.2.2 [Port] 55505 [Flags] 2 [Guid] 4135304122 [EditorId] 4135304122 [Version] 1048832 [Id] OSXEditor(0,MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8533287296]  * "[IP] 127.0.2.3 [Port] 55505 [Flags] 2 [Guid] 4135304122 [EditorId] 4135304122 [Version] 1048832 [Id] OSXEditor(0,MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8533287296]  * "[IP] 192.168.1.6 [Port] 55505 [Flags] 2 [Guid] 4135304122 [EditorId] 4135304122 [Version] 1048832 [Id] OSXEditor(0,MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8533287296]  * "[IP] 172.16.0.2 [Port] 55505 [Flags] 2 [Guid] 4135304122 [EditorId] 4135304122 [Version] 1048832 [Id] OSXEditor(0,MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8533287296] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [8533287296] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-65472" after 7.9 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 8 unused hashed content files
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Users/sid/Tech/unity-game-y-agent/memory-detective/Assets
+GfxDevice: creating device client; kGfxThreadingModeThreaded
+ preferred device: Apple M3 (high power)
+Metal devices available: 1
+0: Apple M3 (high power)
+Using device Apple M3 (high power)
+Initializing Metal device caps: Apple M3
+Mac GPU Family: 2
+Apple GPU Family: 9
+MSL Version: 3.0
+Has Float MSAA: 1
+Has Float Filtering: 1
+ReadWrite Texture Tier: 2
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56472
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Registered in 0.011513 seconds.
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.807 seconds
+Domain Reload Profiling: 1202ms
+	BeginReloadAssembly (106ms)
+		CreateAndSetChildDomain (13ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (17ms)
+	initialDomainReloadingComplete (50ms)
+	LoadAllAssembliesAndSetupDomain (217ms)
+		LoadAssemblies (95ms)
+		AnalyzeDomain (168ms)
+			TypeCache.Refresh (167ms)
+				TypeCache.ScanAssembly (153ms)
+	FinalizeReload (809ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (72ms)
+			BeforeProcessingInitializeOnLoad (71ms)
+			ProcessInitializeOnLoadAttributes (65ms)
+			ProcessInitializeOnLoadMethodAttributes (551ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 57 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.collab-proxy@2.13.6 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.collab-proxy@4628d2ba6ea4)
+    com.unity.pipeline@0.5.0-exp.1 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.pipeline@24975d51528a)
+    com.unity.inputsystem@1.20.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.inputsystem@7a4e1a2a8194)
+    com.unity.timeline@1.8.12 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.timeline@8cd8509afae5)
+    com.unity.visualscripting@1.9.12 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.visualscripting@4edfcc09512f)
+    com.unity.ide.visualstudio@2.0.26 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.ide.visualstudio@a99d56dec63f)
+    com.unity.ide.rider@3.0.38 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.ide.rider@1f60b3138684)
+    com.unity.editorcoroutines@1.1.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.editorcoroutines@87a15ed012c2)
+    com.unity.performance.profile-analyzer@1.4.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.performance.profile-analyzer@2bb26871883c)
+    com.unity.testtools.codecoverage@1.3.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.testtools.codecoverage@19a841221620)
+    com.unity.nuget.mono-cecil@1.11.6 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.settings-manager@2.1.1 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.settings-manager@0b8638c5ce86)
+  Built-in packages:
+    com.unity.test-framework@1.7.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.test-framework@1405238725ab)
+    com.unity.feature.development@1.0.2 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.feature.development@767aadbc6eb7)
+    com.unity.multiplayer.center@1.0.1 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.multiplayer.center@b860850997d0)
+    com.unity.ugui@2.5.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.ugui@1c4864518158)
+    com.unity.modules.accessibility@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.terrainphysics)
+    com.unity.modules.tilemap@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.1.0 (location: /Users/sid/Tech/unity-game-y-agent/memory-detective/Library/PackageCache/com.unity.ext.nunit@44f7d31723bd)
+  Local packages:
+    com.studio.game.core@file:/Users/sid/Tech/unity-game-y-agent/packages/com.studio.game.core (location: /Users/sid/Tech/unity-game-y-agent/packages/com.studio.game.core)
+    com.studio.memory.core@file:/Users/sid/Tech/unity-game-y-agent/packages/com.studio.memory.core (location: /Users/sid/Tech/unity-game-y-agent/packages/com.studio.memory.core)
+    com.studio.boot@file:/Users/sid/Tech/unity-game-y-agent/packages/com.studio.boot (location: /Users/sid/Tech/unity-game-y-agent/packages/com.studio.boot)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.03 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Assembly for Assembly Definition File 'Assets/Tests/EditMode/Core/Game.Core.Tests.asmdef' will not be compiled, because it has no scripts associated with it.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:LogFormat (UnityEngine.LogType,string,object[])
+UnityEngine.Debug:LogWarningFormat (string,object[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilation:WarnIfThereAreAssembliesWithoutAnyScripts (UnityEditor.Scripting.ScriptCompilation.ScriptAssemblySettings,UnityEditor.Scripting.ScriptCompilation.ScriptAssembly[]) (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilation.cs:814)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilation:CompileScriptsWithSettings (UnityEditor.Scripting.ScriptCompilation.ScriptAssemblySettings) (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilation.cs:871)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilation:CompileScripts (UnityEditor.Scripting.ScriptCompilation.EditorScriptCompilationOptions,UnityEditor.BuildTarget,int,string[]) (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilation.cs:748)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface/<>c__DisplayClass21_0:<CompileScripts>b__0 () (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilationInterface.cs:187)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionAsError<UnityEditor.Scripting.ScriptCompilation.EditorCompilation/CompileStatus> (System.Func`1<UnityEditor.Scripting.ScriptCompilation.EditorCompilation/CompileStatus>,UnityEditor.Scripting.ScriptCompilation.EditorCompilation/CompileStatus) (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilationInterface.cs:52)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:CompileScripts (UnityEditor.Scripting.ScriptCompilation.EditorScriptCompilationOptions,UnityEditor.BuildTarget,int,string[]) (at /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilationInterface.cs:187)
+
+(Filename: /Users/bokken/build/output/unity/unity/Editor/Mono/Scripting/ScriptCompilation/EditorCompilation.cs Line: 814)
+
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://unix:/tmp/ilpp.sock-d77dab108869e8c1b0ed6ac39c728460
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/sid/Tech/unity-game-y-agent/memory-detective
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - 200 - application/grpc 793.5000ms
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/200b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: /Users/sid/Tech/unity-game-y-agent/memory-detective
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/netcorerun/netcorerun "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/ScriptCompilationBuildProgram.exe" "Library/Bee/200b0aE.dag.json" "Library/Bee/200b0aE-inputdata.json" "Library/Bee/buildprogram0.traceevents"
+WorkingDir: /Users/sid/Tech/unity-game-y-agent/memory-detective
+ExitCode: 4 Duration: 1s950ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/200b0aE-inputdata.json
+*** Tundra requires additional run (1.29 seconds), 0 items updated, 64 evaluated
+ExitCode: 0 Duration: 20s
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/200b0aE.dag" --continue-on-failure --dagfilejson="Library/Bee/200b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: /Users/sid/Tech/unity-game-y-agent/memory-detective
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/ConfigurePostProcessors - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/ConfigurePostProcessors'
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved Mono.Cecil, Version=0.11.5.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e with Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff/Mono.Cecil.dll
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/ConfigurePostProcessors'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/ConfigurePostProcessors - 200 - application/grpc 1516.4885ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll, with 136 defines and 152 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 1023.4577ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll, with 136 defines and 152 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 732.5147ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/200b0aE.dag/Game.Core.dll, with 136 defines and 154 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 113.1063ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/200b0aE.dag/Game.Unity.dll, with 136 defines and 309 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 275.3175ms
+ExitCode: 0 Duration: 1m:13s
+Finished compiling graph: 606 nodes, 9665 flattened edges (8641 ToBuild, 94 ToUse), maximum node priority 517
+[262/603    0s] WriteText Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.rsp
+[263/603    0s] WriteText Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.rsp
+[           0s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others) [CacheMiss 922d9b627e49be0c5defe4a1c24ed8da00000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others) [CacheMiss 4d4fb090b4142d37538fde2aaed2aac300000000000000000000000000000006]
+[BUSY       6s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others)
+[378/603    7s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[BUSY      13s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others)
+[BUSY      18s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others)
+[BUSY      24s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others)
+[BUSY      29s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others)
+[BUSY      35s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others)
+[BUSY      40s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others)
+[587/603   40s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll (+2 others) [CacheWrite 4d4fb090b4142d37538fde2aaed2aac300000000000000000000000000000006]
+[588/603   41s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll (+2 others) [CacheWrite 922d9b627e49be0c5defe4a1c24ed8da00000000000000000000000000000006]
+[BUSY       6s] ILPostProcess Library/Bee/artifacts/200b0aE.dag/post-processed/Studio.Memory.Core.dll (+pdb)
+[589/603    7s] ILPostProcess Library/Bee/artifacts/200b0aE.dag/post-processed/Studio.Memory.Core.dll (+pdb)
+Processing assembly Library/Bee/artifacts/200b0aE.dag/Studio.Memory.Core.dll, with 136 defines and 152 references
+processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+[590/603    0s] CopyFiles Library/ScriptAssemblies/Studio.Memory.Core.dll
+[591/603    0s] CopyFiles Library/ScriptAssemblies/Studio.Memory.Core.pdb
+[592/603   12s] ILPostProcess Library/Bee/artifacts/200b0aE.dag/post-processed/Studio.Game.Core.dll (+pdb)
+Processing assembly Library/Bee/artifacts/200b0aE.dag/Studio.Game.Core.dll, with 136 defines and 152 references
+processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+[593/603   12s] Csc Library/Bee/artifacts/200b0aE.dag/Game.Core.dll (+2 others)
+[594/603    0s] CopyFiles Library/ScriptAssemblies/Studio.Game.Core.dll
+[595/603    0s] CopyFiles Library/ScriptAssemblies/Studio.Game.Core.pdb
+[BUSY       6s] Csc Library/Bee/artifacts/200b0aE.dag/Game.Unity.dll (+2 others)
+[596/603    6s] ILPostProcess Library/Bee/artifacts/200b0aE.dag/post-processed/Game.Core.dll (+pdb)
+Processing assembly Library/Bee/artifacts/200b0aE.dag/Game.Core.dll, with 136 defines and 154 references
+processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+[597/603    0s] CopyFiles Library/ScriptAssemblies/Game.Core.dll
+[598/603    0s] CopyFiles Library/ScriptAssemblies/Game.Core.pdb
+[599/603   11s] Csc Library/Bee/artifacts/200b0aE.dag/Game.Unity.dll (+2 others)
+[600/603    3s] ILPostProcess Library/Bee/artifacts/200b0aE.dag/post-processed/Game.Unity.dll (+pdb)
+Processing assembly Library/Bee/artifacts/200b0aE.dag/Game.Unity.dll, with 136 defines and 309 references
+processors: Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+[601/603    0s] CopyFiles Library/ScriptAssemblies/Game.Unity.pdb
+[602/603    0s] CopyFiles Library/ScriptAssemblies/Game.Unity.dll
+*** Tundra build success (73.14 seconds - 0:01:13), 19 items updated, 603 evaluated
+AssetDatabase: script compilation time: 111.063073s
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Importing 'GUID: 656bc347d09354288990d3481523fb8d - Path: Packages/com.studio.game.core/Runtime/Random' with importer (DefaultImporter)
+Imported 'GUID: 656bc347d09354288990d3481523fb8d' -> (Import Result ID: 'c4aa0037f4f24cd362248e06fc5c8dfd') in 0.009 seconds [static dependencies only]. Details - ImportResultOutputID=51af7548b4e2f3dea29892eaf821422c DependenciesID=41a44e9ad7bd767403d915fc4e9ccb7c StaticDependenciesID=31771d8398fae877eaa6a3243f152013 
+Refreshing native plugins compatible for Editor in 2.94 ms, found 2 plugins.
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Start HTTP server: port:7800
+Editor is not in automated mode. Modal Pop up might break continuous command workflow. Start the editor with -automated
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Unity.Pipeline.Editor.EditorPipelineServer:ServerStarted () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineServer.cs:88)
+Unity.Pipeline.BasePipelineServer:Start (int) (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Runtime/Common/BasePipelineServer.cs:237)
+Unity.Pipeline.Editor.PipelineServerStartup:StartServer () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineStartup.cs:164)
+Unity.Pipeline.Editor.PipelineServerStartup:.cctor () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineStartup.cs:44)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.ReadOnlySpan`1<intptr>) (at /Users/bokken/build/output/unity/unity/Editor/Mono/EditorAssemblies.cs:155)
+
+(Filename: ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineServer.cs Line: 88)
+
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.675 seconds
+Domain Reload Profiling: 1966ms
+	BeginReloadAssembly (850ms)
+		DisableScriptedObjects (9ms)
+		CreateAndSetChildDomain (734ms)
+	RebuildCommonClasses (5ms)
+	RebuildNativeTypeToScriptingClass (11ms)
+	initialDomainReloadingComplete (24ms)
+	LoadAllAssembliesAndSetupDomain (401ms)
+		LoadAssemblies (227ms)
+		AnalyzeDomain (190ms)
+			TypeCache.Refresh (163ms)
+				TypeCache.ScanAssembly (149ms)
+			BuildScriptInfoCaches (24ms)
+	FinalizeReload (676ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (9ms)
+			BeforeProcessingInitializeOnLoad (57ms)
+			ProcessInitializeOnLoadAttributes (354ms)
+			ProcessInitializeOnLoadMethodAttributes (50ms)
+		AwakeInstancesAfterBackupRestoration (61ms)
+Starting new worker id: 0 with log in /Users/sid/Tech/unity-game-y-agent/memory-detective/Logs/AssetImportWorkerHW0.log
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-memory-detective
+
+Asset Pipeline Refresh (id=bee341334424f45798b956e20085cf71): Total: 114.106 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=1 ms, native=1385 ms
+		Asset DB Callback time: managed=41 ms, native=259 ms
+		Scripting: domain reloads=1, domain reload time=1333 ms, compile time=111064 ms, other=20 ms
+		Project Asset Count: scripts=943, non-scripts=998
+		Asset File Changes: new=4, changed=7, moved=0, deleted=0
+		Scan Filter Count: 1
+	InvokePackagesCallback: 37.284ms
+	ApplyChangesToAssetFolders: 0.270ms
+	Scan: 485.389ms
+	Collect global state as custom dependencies: 7.740ms
+	OnSourceAssetsModified: 0.376ms
+	CategorizeScriptCompilationAssets: 46.759ms
+	ProcessAssetsWithTransientArtifactChanges: 31.775ms
+	CategorizeAssets: 13.802ms
+	CompileScripts: 111064.006ms
+	ImportOutOfDateAssets: 717.039ms (692.636ms without children)
+		ImportManagerImport: 10.434ms (1.701ms without children)
+		UnloadImportedAssets: 0.161ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.344ms
+		ImportSchedulerStart: 13.461ms
+	PostProcessAllAssets: 261.240ms
+		VCAutoAddAssetPostprocess 220.154ms
+		XRBuildSystem.XRAssetImported 0.105ms
+		MonoPostProcessAllAssets: 40.629ms
+			AssetPostprocessor.OnPostprocessAllAssets 12.673ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 10.967ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 3.600ms
+			AssetChangedListener.OnPostprocessAllAssets 2.986ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.977ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 0.672ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.479ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 0.424ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.298ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.295ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.269ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.189ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.154ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.145ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.143ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.133ms
+			AssetEvents.OnPostprocessAllAssets 0.132ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.112ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.091ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.082ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.074ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.057ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.054ms
+	PostAssetChangesProfiler: 4.238ms
+	UnloadStreamsBegin: 0.895ms
+	PersistCurrentRevisions: 0.090ms
+	GenerateScriptTypeHashes: 0.757ms
+	GenerateScriptTypeSerializationHashes: 1.496ms
+	Untracked: 1431.928ms
+
+Launching external process: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Helpers/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 3.00 seconds
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 0.020ms
+Initializing Unity extensions:
+2026-08-28 17:48:43.806 Unity[65472:3332546] NSEventModifierFlagFunction specified to -setKeyEquivalentModifierMask: for item <NSMenuItem: 0x86edc35c0 SDF, ke='Command-F12'>, but is only supported for system-provided menu items; will not be used
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Scenes/Boot.unity'
+	Deserialize:            0.575 ms
+	Integration:            6.117 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.011 ms
+	Total Operation Time:   6.705 ms
+Unloading 4665 unused Assets / (0.6 MB). Loaded Objects now: 5976.
+Memory consumption went from 257.8 MB to 257.2 MB.
+Total: 8.243916 ms (FindLiveObjects: 0.275250 ms CreateObjectMapping: 0.810250 ms MarkObjects: 5.710209 ms  DeleteObjects: 1.447666 ms)
+
+[LAYOUT] About to load UserSettings/Layouts/default-6000.dwlt, keepMainWindow=False
+[LAYOUT] About to save layout /Users/sid/Tech/unity-game-y-agent/memory-detective/UserSettings/Layouts/default-6000.dwlt
+[LAYOUT] About to save layout /Users/sid/Library/Preferences/Unity/Editor-5.x/Layouts/current/default-6000.dwlt
+[MODES] ModeService[default].InitializeCurrentMode
+[MODES] ModeService[default].RaiseModeChanged(default, default)
+2026-08-28 17:48:44.333 Unity[65472:3332546] NSEventModifierFlagFunction specified to -setKeyEquivalentModifierMask: for item <NSMenuItem: 0x86edc1360 SDF, ke='Command-F12'>, but is only supported for system-provided menu items; will not be used
+[Project] Loading completed in 132.160 seconds
+	Project init time: 				130.109 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		7.936 seconds
+		Asset Database init time: 		2.315 seconds
+		Global illumination init time: 	0.000 seconds
+		Assemblies load time: 			1.265 seconds
+		Unity extensions init time: 	0.009 seconds
+		Asset Database refresh time: 	118.038 seconds
+	Scene opening time: 			0.549 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787919524352,"processId":65472,"projectLoad":132.160174167,"projectInit":130.108757125,"templateInit":0.0,"packageManagerInit":7.93554875,"assetDatabaseInit":2.315427666,"globalIlluminationInit":0.000459209,"assembliesLoad":1.265000666,"unityExtensionsInit":0.009095375,"assetDatabaseRefresh":118.038258875,"sceneOpening":0.54859225}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787919524352,"processId":65472,"editorVersion":"6000.5.9f1 (b57deb96f08d)","branch":"6000.5/staging","buildType":"Release","platform":"OSX"}
+Subscribe to USB device events
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated access token: "7NKrBANf"... (expires: 2026-08-28T13:09:35Z)
+Created GICache directory at /Users/sid/Library/Caches/com.unity3d.UnityEditor/GiCache. Took: 1.394s, timestamps: [132.170 - 133.564]
+Worker ready: AssetImportWorkerHW0 0
+Android Extension - Scanning For ADB Devices 14967 ms
+[Licensing::Client] Successfully resolved entitlement details
+Android Extension - Scanning For ADB Devices 8033 ms
+Android Extension - Scanning For ADB Devices 7148 ms
+Attempted to call .Dispose on an already disposed CancellationTokenSource
+Thread 0x30bcc7000 may have been prematurely finalized
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Attempted to call .Dispose on an already disposed CancellationTokenSource
+Begin MonoManager ReloadAssembly
+<CFData 0x85fcab390 [0x1fe08d308]>{length = 6, capacity = 6, bytes = 0x109f41c3c218}
+Symbol file LoadedFromMemory is not a mono symbol file
+Refreshing native plugins compatible for Editor in 2.11 ms, found 2 plugins.
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Start HTTP server: port:7800
+Editor is not in automated mode. Modal Pop up might break continuous command workflow. Start the editor with -automated
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Unity.Pipeline.Editor.EditorPipelineServer:ServerStarted () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineServer.cs:88)
+Unity.Pipeline.BasePipelineServer:Start (int) (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Runtime/Common/BasePipelineServer.cs:237)
+Unity.Pipeline.Editor.PipelineServerStartup:StartServer () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineStartup.cs:164)
+Unity.Pipeline.Editor.PipelineServerStartup:.cctor () (at ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineStartup.cs:44)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.ReadOnlySpan`1<intptr>) (at /Users/bokken/build/output/unity/unity/Editor/Mono/EditorAssemblies.cs:155)
+
+(Filename: ./Library/PackageCache/com.unity.pipeline@24975d51528a/Editor/EditorPipelineServer.cs Line: 88)
+
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  1.408 seconds
+Domain Reload Profiling: 9632ms
+	BeginReloadAssembly (8040ms)
+		DisableScriptedObjects (44ms)
+		CreateAndSetChildDomain (5073ms)
+	RebuildCommonClasses (6ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (41ms)
+	LoadAllAssembliesAndSetupDomain (123ms)
+		LoadAssemblies (107ms)
+		AnalyzeDomain (13ms)
+			TypeCache.Refresh (8ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (1409ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (9ms)
+			BeforeProcessingInitializeOnLoad (149ms)
+			ProcessInitializeOnLoadAttributes (374ms)
+			ProcessInitializeOnLoadMethodAttributes (48ms)
+		AwakeInstancesAfterBackupRestoration (436ms)
+No restricted APIs configured; Validation skipped.
+Checking 21 assemblies for restricted APIs found 0 usage(s) in 2 ms
+
+Asset Pipeline Refresh (id=a986c13c3b01042feba2121b11696855): Total: 10.156 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=1593 ms
+		Asset DB Callback time: managed=122 ms, native=119 ms
+		Scripting: domain reloads=1, domain reload time=8319 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=943, non-scripts=998
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 1.933ms
+	ApplyChangesToAssetFolders: 0.424ms
+	Collect global state as custom dependencies: 0.776ms
+	ProcessAssetsWithTransientArtifactChanges: 100.108ms
+	CategorizeAssets: 13.421ms
+	CompileScripts: 1.336ms
+	ImportOutOfDateAssets: 1429.408ms (1419.862ms without children)
+		UnloadImportedAssets: 0.731ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.287ms
+		ImportSchedulerStart: 8.522ms
+	PostProcessAllAssets: 229.044ms
+		AssemblyValidation.PostprocessAllAssets 16.507ms
+		PostprocessAssetsUpdateCachedIcon 13.279ms
+		PostProcessCallbackCreateDeferredMaterials 10.425ms
+		RaytracingShaderImportPostprocess 8.017ms
+		ComputeShaderImportPostprocess 6.151ms
+		ShaderAssetModifiedCallback 5.801ms
+		SpeedTreeImporter.PostprocessAllAssets 5.747ms
+		BlockShaderImporter.PostprocessAllAssets 2.049ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 2.028ms
+		XRBuildSystem.XRAssetImported 0.078ms
+		MonoPostProcessAllAssets: 120.490ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 25.844ms
+			AssetPostprocessor.OnPostprocessAllAssets 19.794ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 19.786ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 14.967ms
+			AssetChangedListener.OnPostprocessAllAssets 13.782ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 6.274ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.496ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.436ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 0.926ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.683ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.580ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.336ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.335ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.295ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.263ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.193ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.167ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.157ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.155ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.153ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.145ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.144ms
+			AssetEvents.OnPostprocessAllAssets 0.133ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.085ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.078ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.056ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.056ms
+			SyncVS.PostprocessSyncProject 0.052ms
+	PostAssetChangesProfiler: 11.745ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.118ms
+	UnloadStreamsBegin: 1.297ms
+	PersistCurrentRevisions: 0.081ms
+	GenerateScriptTypeHashes: 0.596ms
+	GenerateScriptTypeSerializationHashes: 1.181ms
+	Untracked: 8364.371ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.353 ms
+	Integration:            346.237 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.034 ms
+	Total Operation Time:   346.624 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.433834 ms
+Loaded scene 'Assets/Scenes/Play.unity'
+	Deserialize:            4.681 ms
+	Integration:            203.132 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       17.055 ms
+	Total Operation Time:   224.871 ms
+Unloading 4289 unused Assets / (17.4 MB). Loaded Objects now: 6434.
+Memory consumption went from 318.4 MB to 301.0 MB.
+Total: 29.187542 ms (FindLiveObjects: 0.317792 ms CreateObjectMapping: 0.852333 ms MarkObjects: 21.248750 ms  DeleteObjects: 6.767833 ms)
+
+TrimDiskCacheJob: Current cache size 275mb
+Curl error 35: Handshake failed. UnityTls error code: 7
+Curl error 35: Recv failure: Connection reset by peer
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=0195a0defea5a4924a7d66e1c2b64e25): Total: 0.102 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.708166 ms
+Loaded scene 'Assets/Scenes/Play.unity'
+	Deserialize:            1.512 ms
+	Integration:            117.627 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       1.347 ms
+	Total Operation Time:   120.487 ms
+Unloading 2 unused Assets / (2.1 KB). Loaded Objects now: 6434.
+Memory consumption went from 302.3 MB to 302.3 MB.
+Total: 19.807083 ms (FindLiveObjects: 0.504958 ms CreateObjectMapping: 0.783750 ms MarkObjects: 18.493917 ms  DeleteObjects: 0.024042 ms)
+
+Thread 0x172e7f000 may have been prematurely finalized
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.259 ms
+	Integration:            123.900 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   124.176 ms
+Unloading 0 unused Assets / (0 B). Loaded Objects now: 6380.
+Memory consumption went from 302.6 MB to 302.6 MB.
+Total: 19.185084 ms (FindLiveObjects: 0.211375 ms CreateObjectMapping: 0.309333 ms MarkObjects: 18.651417 ms  DeleteObjects: 0.012292 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-GKXD-32V5-ZYQD-X934-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: 2026-10-05T13:16:34Z
+[Licensing::Module] License group:
+  Id: 1227107-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+MonoPathRemapper: Attempts to remap: 24991; Successful remaps: 11924
+Thread 0x30e7cf000 may have been prematurely finalized
+Serialized file version minimum: 23, current 23
+[LAYOUT] About to save layout /Users/sid/Tech/unity-game-y-agent/memory-detective/UserSettings/Layouts/default-6000.dwlt
+[LAYOUT] About to save layout /Users/sid/Library/Preferences/Unity/Editor-5.x/Layouts/current/default-6000.dwlt
+Pipeline Server stopped
+Killing ADB server in 0.169444 seconds.
+Thread 0x1783c7000 may have been prematurely finalized
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+[Licensing::IpcConnector] LicenseClient-sid-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-sid channel disconnected successfully.
+Thread 0x16e5cf000 may have been prematurely finalized
+Thread 0x16e65b000 may have been prematurely finalized
+Thread 0x16e773000 may have been prematurely finalized
+Thread 0x16e6e7000 may have been prematurely finalized
+Thread 0x16e7ff000 may have been prematurely finalized
+Thread 0x16e88b000 may have been prematurely finalized
+Thread 0x16e917000 may have been prematurely finalized
+Lingering sessions upon destruction of worker manager
+AcceleratorClientConnectionCallback - disconnected - :0
+Thread 0x17054b000 may have been prematurely finalized
+Cleanup mono
+CodeReloadManager destroyed
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      ALC ILPP context 1 is unloading
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+debugger-agent: Unable to listen on 76
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1787919621825,"processId":65472,"allocatedMemory":44390615,"memoryLabels":[{"Default":217311},{"Permanent":15672},{"Thread":1055928},{"Manager":29982},{"VertexData":8},{"Geometry":408},{"Texture":24},{"Shader":855065},{"Material":24},{"GfxDevice":43536},{"GfxThread":2560},{"Animation":968},{"Audio":1240},{"FreeType":8},{"FontEngine":736},{"Physics":2178},{"Physics2D":16},{"Serialization":624},{"Input":43216},{"JobScheduler":448},{"TextLib":14763},{"Mono":56},{"ScriptingNativeRuntime":155024},{"BaseObject":1622536},{"Resource":984},{"Renderer":3600},{"Transform":4693},{"File":6750},{"WebCam":32},{"Culling":32},{"Terrain":11346},{"Wind":24},{"String":11495},{"StaticString":4140},{"Utility":2689152},{"PoolAlloc":1960},{"AI":80},{"TypeTree":21125},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7240},{"Director":8288},{"CloudService":7416},{"WebRequest":4774},{"VR":46890},{"SceneManager":616},{"Video":2112},{"LazyScriptCache":32},{"NativeArray":33047584},{"Camera":6273},{"Secure":9865},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57504},{"StaticSafetyDebugInfo":278528},{"Baselib":16},{"Analytics":528},{"Hierarchy":1608},{"UIElements":1015664},{"CoreStats":13768},{"Identifiers":6768},{"Gui":280364},{"EditorUtility":215699},{"VersionControl":8},{"Undo":939},{"AssetDatabase":2488333},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":34801},{"Upm":1788},{"UpmDiagnostics":8},{"AssetCompliance":64},{"DrivenProperties":72},{"HubClient":848},{"LocalIPC":250},{"ProfilerEditor":9738},{"CoreBusinessMetrics":3085},{"Windowing":416},{"Licensing":960},{"AssetReference":32},{"IPCStream":6762}]}
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.

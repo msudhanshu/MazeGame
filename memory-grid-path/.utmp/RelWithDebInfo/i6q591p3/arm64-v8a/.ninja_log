@@ -1,0 +1,19 @@
+# ninja log v5
+3	1176	1788374918958267513	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	9659c237e203c3ca
+4	972	1788374918752333367	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	c41cbdc7dcd80e1f
+4	987	1788374918768542683	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	17c66b93d9911ddb
+5	1026	1788374918807396935	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	940380e88caeded8
+4	1100	1788374918881896442	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	404d53a899c21469
+1176	1326	1788374919109738598	/Users/sid/Tech/unity-game-y-agent/memory-grid-path/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/i6q591p3/obj/arm64-v8a/libgame.so	12179b97a31c4a31
+4	969	1788374918745684496	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	571550bdbc653e9d
+4	963	1788374918737457857	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	f92c0d5db4a5453c
+4	967	1788374918735549209	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	dd816aabe3929f05
+15	1778	1788441694750530029	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	c41cbdc7dcd80e1f
+14	1779	1788441694744625693	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	571550bdbc653e9d
+14	1779	1788441694743991563	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	f92c0d5db4a5453c
+15	1780	1788441694743546976	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	dd816aabe3929f05
+16	1782	1788441694748436930	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	940380e88caeded8
+13	1783	1788441694754078181	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	9659c237e203c3ca
+14	1784	1788441694750695864	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	17c66b93d9911ddb
+14	1784	1788441694753520261	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	404d53a899c21469
+1784	1932	1788441694908522687	/Users/sid/Tech/unity-game-y-agent/memory-grid-path/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/i6q591p3/obj/arm64-v8a/libgame.so	12179b97a31c4a31

@@ -1,0 +1,32 @@
+{
+    "name": "Game.Unity",
+    "rootNamespace": "Game.Unity",
+    "references": [
+        "Game.Core",
+        "Nixin.Game.Core",
+        "Nixin.Grid.Core",
+        "Nixin.Graph.Core",
+        "Nixin.Memory.Core",
+        "Nixin.Boot.Core",
+        "Nixin.Boot",
+        "Nixin.Ui",
+        "Nixin.Icons",
+        "Nixin.Fue.Core",
+        "Nixin.Fue",
+        "Nixin.Ui.Core",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

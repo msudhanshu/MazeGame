@@ -1,0 +1,234 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff01c79eff04840229c3f28b9ffc14e4, type: 3}
+  m_Name: DefaultMemoryCatalog
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Memory.MemoryWallCatalog
+  genres:
+  - Id: nature
+    DisplayName: Nature
+  - Id: landmarks
+    DisplayName: Landmarks
+  - Id: objects
+    DisplayName: Objects
+  - Id: painting
+    DisplayName: Paintings
+  - Id: art
+    DisplayName: Art
+  entries:
+  - Id: desert
+    GenreId: nature
+    Kind: 0
+    FrameVariantId: polaroid
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 8fbfe683e870f4360b88a9320b333766, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: waterfall
+    GenreId: nature
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 2df0aac979af942a8a7ee9b5df2bf3c0, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: monalisa
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: ad38c6fb673524e2896ae3ef29630554, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: starrynight
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: glow
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: b2326ddbe09bf4861be27a2247c4f530, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: scream
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 8423de0e49a1247b3ba7c41fddecd933, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: persistence
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: polaroid
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 77175237fa01d46898b0a59f394d8b35, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: waterlilies
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: metal
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 7146985934e344650b079483ae40df2e, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: girlpearl
+    GenreId: painting
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 0d764ac25597e4746a61d00fe1db1881, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: studio
+    GenreId: art
+    Kind: 0
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 55bfe2dce5e2f4463b310b2ddbb3065a, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: illustration
+    GenreId: art
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: ea07ba2a7c9b04b62892e78abef37bc6, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: watercolor
+    GenreId: art
+    Kind: 0
+    FrameVariantId: glow
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: bdb3fbf259871405fb29d1dba6a8f35a, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: sculpture
+    GenreId: art
+    Kind: 0
+    FrameVariantId: polaroid
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: f3ad2170a37ca46fb878e4d78775ce1c, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: gallery
+    GenreId: art
+    Kind: 0
+    FrameVariantId: metal
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 3d2b541adf8564d3095a9a1ecd2d6a0d, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: museum
+    GenreId: art
+    Kind: 0
+    FrameVariantId: frame
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 9ea2fb5f1a14342b88aa9839d5ec372a, type: 3}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 0}
+  - Id: clock
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: d6f3149f2ccc940dcb95d8224e38ed7a, type: 3}
+    NormalMap: {fileID: 2800000, guid: c119ba3c5260f492ca9cdbc4ee16370f, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: switchboard
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 1e71c66fbe7d743b6bb7b87e1b93d6e5, type: 3}
+    NormalMap: {fileID: 2800000, guid: c31c88df504414ee6ab44b911edae704, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: medallion
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 80a8f467d71824340949af9531c8772a, type: 3}
+    NormalMap: {fileID: 2800000, guid: 4c30ce1b4a91b466599da1ae57f90164, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: plaque
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 70f2ec272fe8740379ac1674202f65fa, type: 3}
+    NormalMap: {fileID: 2800000, guid: 9911558427dcd4a88a3c76d236f5b613, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: watch
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: bb3f6988fb3e3473abc9447e066ee876, type: 3}
+    NormalMap: {fileID: 2800000, guid: 7c895b8a4eeee4124917fc8362745b0d, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: plant_relief
+    GenreId: landmarks
+    Kind: 1
+    FrameVariantId: plain
+    SelectionWeight: 1
+    Image: {fileID: 2800000, guid: 2d860c2c60b2649a98eb1662b3666d10, type: 3}
+    NormalMap: {fileID: 2800000, guid: bc2efedb1b804492b9820d49d7bc40f5, type: 3}
+    ObjectPrefab: {fileID: 0}
+  - Id: pot
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 5299226726603378315, guid: ff4cee198fb514cffb0e8c096dd8cdfd, type: 3}
+  - Id: lamp
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 1445937803081942383, guid: cf8542fba1a6d4562b38942bff95150c, type: 3}
+  - Id: vase
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 1090832683486401175, guid: ef87d40cbc7b14335b546270240d535d, type: 3}
+  - Id: statue
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 7672542709231709494, guid: c4a16a855075e410f8ec6cd59b97b245, type: 3}
+  - Id: plant
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 8374230083189956304, guid: a0ed58d4147c2450181ce3ebc889702b, type: 3}
+  - Id: shrine
+    GenreId: objects
+    Kind: 2
+    FrameVariantId: 
+    SelectionWeight: 1
+    Image: {fileID: 0}
+    NormalMap: {fileID: 0}
+    ObjectPrefab: {fileID: 5520778688328456061, guid: 51f63dee49ca74e299875847f812460a, type: 3}

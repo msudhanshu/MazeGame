@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3b3c56d0eef6454fb4c3acb0d33f0c2, type: 3}
+  m_Name: MixedArenaTiles
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Themes.Experimental.PatchworkTextureSet
+  _themeId: mixed
+  _textures:
+  - {fileID: 2800000, guid: 2223e67d2824d4b24ba2d66400bff77e, type: 3}
+  - {fileID: 2800000, guid: bc62b69ce101c4118a7c2397870e13a9, type: 3}
+  - {fileID: 2800000, guid: b191d3b1b411e40d69d893d75ff3a00d, type: 3}
+  - {fileID: 2800000, guid: 4c2746d9ddb1049559c57dd5d19746ba, type: 3}
+  - {fileID: 2800000, guid: fbc13559d20b24645ac038a91fa27843, type: 3}
+  - {fileID: 2800000, guid: f066b141641e943278670b36e127d5f1, type: 3}
+  - {fileID: 2800000, guid: 292e85289c27d4cae908fdd2be83bacc, type: 3}

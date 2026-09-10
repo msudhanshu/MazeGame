@@ -1,0 +1,19 @@
+{
+    "name": "Game.Core",
+    "rootNamespace": "Game.Core",
+    "references": [
+        "Nixin.Game.Core",
+        "Nixin.Grid.Core",
+        "Nixin.Locomotion.Core",
+        "Nixin.Maze.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

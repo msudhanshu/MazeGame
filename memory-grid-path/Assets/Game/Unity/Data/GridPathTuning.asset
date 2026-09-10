@@ -1,0 +1,526 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cc3c725f1cd44691817942b739f0542, type: 3}
+  m_Name: GridPathTuning
+  m_EditorClassIdentifier: Game.Unity.Data.GridPathTuning
+  _scoutPoints: 25
+  _memoryPoints: 100
+  _mistakePenalty: 50
+  _completionBonus: 400
+  _unusedRunBonus: 120
+  _skipEnabled: 1
+  _skipEligibleAfterLevel: 8
+  _skipStreakLength: 3
+  _skipWindow: 3
+  _skipGradeThreshold: 80
+  _skipRewardPoints: 250
+  _levels:
+  - Side: 3
+    Width: 3
+    Height: 3
+    MinTurns: 1
+    Lives: 2
+    Runs: 2
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 2
+  - Side: 3
+    Width: 3
+    Height: 4
+    MinTurns: 2
+    Lives: 2
+    Runs: 2
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 2
+  - Side: 4
+    Width: 3
+    Height: 5
+    MinTurns: 2
+    Lives: 2
+    Runs: 3
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 3
+  - Side: 4
+    Width: 4
+    Height: 4
+    MinTurns: 3
+    Lives: 2
+    Runs: 3
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 3
+  - Side: 4
+    Width: 4
+    Height: 5
+    MinTurns: 3
+    Lives: 2
+    Runs: 3
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 3
+  - Side: 4
+    Width: 4
+    Height: 5
+    MinTurns: 4
+    Lives: 2
+    Runs: 3
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 3
+  - Side: 5
+    Width: 5
+    Height: 5
+    MinTurns: 3
+    Lives: 3
+    Runs: 4
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 5
+    Width: 5
+    Height: 6
+    MinTurns: 7
+    Lives: 3
+    Runs: 4
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 5
+    Width: 5
+    Height: 6
+    MinTurns: 5
+    Lives: 3
+    Runs: 4
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 5
+    Width: 5
+    Height: 6
+    MinTurns: 6
+    Lives: 3
+    Runs: 4
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 5
+    Width: 5
+    Height: 6
+    MinTurns: 6
+    Lives: 3
+    Runs: 4
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 5
+    Width: 5
+    Height: 6
+    MinTurns: 7
+    Lives: 3
+    Runs: 4
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 4
+  - Side: 6
+    Width: 6
+    Height: 7
+    MinTurns: 5
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 7
+    MinTurns: 6
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 8
+    MinTurns: 9
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 1
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 8
+    MinTurns: 8
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 8
+    MinTurns: 9
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 9
+    MinTurns: 13
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 9
+    MinTurns: 10
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 5
+  - Side: 6
+    Width: 6
+    Height: 10
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 10
+    Lives: 3
+    Runs: 5
+    Lighthouses: 0
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 16
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 1
+    LengthSlack: 6
+  - Side: 7
+    Width: 7
+    Height: 9
+    MinTurns: 14
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 6
+  - Side: 8
+    Width: 8
+    Height: 10
+    MinTurns: 12
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 8
+    Width: 8
+    Height: 10
+    MinTurns: 13
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 8
+    Width: 8
+    Height: 10
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 8
+    Width: 8
+    Height: 11
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 8
+    Width: 8
+    Height: 11
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 8
+    Width: 8
+    Height: 12
+    MinTurns: 20
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 1
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 9
+    Width: 9
+    Height: 11
+    MinTurns: 13
+    Lives: 3
+    Runs: 5
+    Lighthouses: 1
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 9
+    Width: 9
+    Height: 12
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 9
+    Width: 9
+    Height: 12
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 9
+    Width: 9
+    Height: 12
+    MinTurns: 19
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 1
+    LengthSlack: 7
+  - Side: 9
+    Width: 9
+    Height: 12
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 7
+  - Side: 10
+    Width: 10
+    Height: 12
+    MinTurns: 16
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 12
+    MinTurns: 17
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 12
+    MinTurns: 20
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 1
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 13
+    MinTurns: 18
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 13
+    MinTurns: 20
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 1
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 13
+    MinTurns: 19
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 14
+    MinTurns: 22
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 1
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 14
+    MinTurns: 21
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 14
+    MinTurns: 22
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 15
+    MinTurns: 22
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 15
+    MinTurns: 22
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 0
+    LengthSlack: 8
+  - Side: 10
+    Width: 10
+    Height: 15
+    MinTurns: 24
+    Lives: 3
+    Runs: 5
+    Lighthouses: 2
+    Glimpse: 0
+    Beacon: 1
+    LengthSlack: 8

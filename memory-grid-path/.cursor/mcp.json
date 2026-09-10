@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "unity": {
+      "command": "/Users/sid/.unity/bin/unity",
+      "args": ["mcp", "--project-path", "/Users/sid/Tech/unity-game-y-agent/memory-grid-path"]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+    "name": "Game.Unity.Editor",
+    "rootNamespace": "Game.Unity.Editor",
+    "references": [
+        "Game.Unity",
+        "Game.Core",
+        "Nixin.Game.Core",
+        "Nixin.Grid.Core",
+        "Nixin.Graph.Core",
+        "Nixin.Ui",
+        "Nixin.Ui.Editor",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

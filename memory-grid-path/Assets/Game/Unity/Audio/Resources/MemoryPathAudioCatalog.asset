@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a4e8b27f6d4a3e9b0c5d8e1f2a3b4c, type: 3}
+  m_Name: MemoryPathAudioCatalog
+  m_EditorClassIdentifier: Game.Unity.Audio.MemoryPathAudioCatalog
+  _uiClick:
+    Clip: {fileID: 8300000, guid: 15b4482644f045518e20850ab251ec0a, type: 3}
+    Volume: 0.55
+  _gameStart:
+    Clip: {fileID: 8300000, guid: 7584b38e580846989b97d843361fadc5, type: 3}
+    Volume: 0.7
+  _success:
+    Clip: {fileID: 8300000, guid: dca410614377498ab963ff5c4e11fc49, type: 3}
+    Volume: 0.8
+  _fail:
+    Clip: {fileID: 8300000, guid: 054e6294e31e4057a00f1e78fdcebbca, type: 3}
+    Volume: 0.7
+  _correctStep:
+    Clip: {fileID: 8300000, guid: 309a4eb6d96b4e99a0c2ef1cde319a64, type: 3}
+    Volume: 0.45
+  _mistake:
+    Clip: {fileID: 8300000, guid: 3cbaeb873e1c415e9f9ce2c1775bea24, type: 3}
+    Volume: 0.55
