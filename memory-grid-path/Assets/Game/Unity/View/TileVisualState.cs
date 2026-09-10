@@ -30,6 +30,9 @@ namespace Game.Unity.View
         /// <summary>The tile that was just picked and turned out to be off the path.</summary>
         Wrong,
 
+        /// <summary>A harder wrong flash used when the player forgets a previously walked turn.</summary>
+        WrongIntense,
+
         /// <summary>Off-path tile greyed out from the start; never a valid choice.</summary>
         Blocked
     }

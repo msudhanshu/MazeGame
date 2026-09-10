@@ -22,6 +22,9 @@ namespace Game.Unity.Themes.Experimental
         Renderer _renderer;
         MaterialPropertyBlock _block;
         float _flashUntil;
+        TileVisualState _flashState;
+        Vector3 _restScale = Vector3.one;
+        bool _hasRestScale;
 
         public GridCoord Coord { get; private set; }
         public TileVisualState State { get; private set; } = TileVisualState.Idle;
@@ -31,6 +34,7 @@ namespace Game.Unity.Themes.Experimental
             Coord = coord;
             _renderer = tileRenderer;
             _block = new MaterialPropertyBlock();
+            CaptureRestScale();
             Apply(TileVisualState.Idle);
         }
 
@@ -43,7 +47,8 @@ namespace Game.Unity.Themes.Experimental
 
         public void Flash(TileVisualState state, float seconds)
         {
-            _flashUntil = Time.time + seconds;
+            _flashState = state;
+            _flashUntil = Time.time + Mathf.Max(0.01f, seconds);
             Apply(state);
         }
 
@@ -58,14 +63,19 @@ namespace Game.Unity.Themes.Experimental
             if (_flashUntil > 0f)
             {
                 if (Time.time < _flashUntil)
+                {
+                    Apply(_flashState);
                     return;
+                }
 
                 _flashUntil = 0f;
                 Apply(State);
                 return;
             }
 
-            if (State == TileVisualState.Pickup || State == TileVisualState.Wrong)
+            if (State == TileVisualState.Pickup
+                || State == TileVisualState.Wrong
+                || State == TileVisualState.WrongIntense)
                 Apply(State);
         }
 
@@ -74,19 +84,32 @@ namespace Game.Unity.Themes.Experimental
             if (_renderer == null)
                 return;
 
+            CaptureRestScale();
+
             var look = MosaicGlassLook.For(state);
+            var scale = 1f;
             if (state == TileVisualState.Pickup)
+            {
                 look = new MosaicGlassLook(
                     look.Tint,
                     look.TintStrength,
                     look.Frost,
                     look.Alpha + 0.12f * Mathf.Sin(Time.time * 4.2f + Coord.X));
-            else if (state == TileVisualState.Wrong)
+            }
+            else if (state == TileVisualState.Wrong || state == TileVisualState.WrongIntense)
+            {
+                var intense = state == TileVisualState.WrongIntense;
+                var beat = Mathf.Abs(Mathf.Sin(Time.time * (intense ? 18f : 14f)));
+                var whiteMix = intense ? 0.4f + 0.45f * beat : 0.2f + 0.35f * beat;
                 look = new MosaicGlassLook(
-                    look.Tint,
-                    look.TintStrength,
+                    Color.Lerp(look.Tint, Color.white, whiteMix),
+                    1f,
                     look.Frost,
-                    0.82f + 0.16f * Mathf.Abs(Mathf.Sin(Time.time * 12f)));
+                    intense ? 0.9f + 0.1f * beat : 0.82f + 0.16f * beat);
+                scale = 1f + (intense ? 0.12f : 0.07f) * beat;
+            }
+
+            transform.localScale = _restScale * scale;
 
             var seam = Color.Lerp(ClearSeam, look.Tint, look.TintStrength * 0.55f);
 
@@ -97,6 +120,16 @@ namespace Game.Unity.Themes.Experimental
             _block.SetFloat(GlassAlphaId, look.Alpha);
             _block.SetColor(SeamColorId, seam);
             _renderer.SetPropertyBlock(_block);
+        }
+
+        void CaptureRestScale()
+        {
+            if (_hasRestScale)
+                return;
+            _restScale = transform.localScale;
+            if (_restScale.sqrMagnitude < 0.0001f)
+                _restScale = Vector3.one;
+            _hasRestScale = true;
         }
     }
 }

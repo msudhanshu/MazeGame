@@ -46,6 +46,7 @@ namespace Game.Unity
         readonly OpeningCardChrome _openingCard = new OpeningCardChrome();
         bool _holdingReveal;
         Coroutine _revealHold;
+        MemoryPathStepCallout _stepCallout;
 
         const float RevealHoldSeconds = 1.25f;
 
@@ -312,6 +313,8 @@ namespace Game.Unity
                 case WalkOutcome.Advanced:
                     _effects.PlayCorrect(_board.TileAt(target));
                     _walker.HopTo(destination);
+                    if (run.WasFailedInPriorWalk(target))
+                        ShowStepCallout(MemoryPathStepCueCopy.RandomRecovered(), recover: true);
                     _hud.SetMessage(glimpse != null
                         ? "Glimpse — the whole path flashed."
                         : "On the path. Keep going!");
@@ -320,7 +323,13 @@ namespace Game.Unity
 
                 case WalkOutcome.WrongRevealed:
                     _hud.SetMessage($"Off the path. The real tile is lit — {run.LivesLeft} health left.");
-                    BeginMistake(wrongTile, wrongFrom, wrongTo, null);
+                    BeginMistake(
+                        wrongTile,
+                        wrongFrom,
+                        wrongTo,
+                        null,
+                        forgotPriorWalk: run.LastRevealed.HasValue
+                            && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
                     break;
 
                 case WalkOutcome.RunFailed:
@@ -328,7 +337,8 @@ namespace Game.Unity
                     {
                         ShowRetryFromMemory();
                         StartNextWalk();
-                    }, runFailed: true);
+                    }, runFailed: true, forgotPriorWalk: run.LastRevealed.HasValue
+                        && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
                     break;
 
                 case WalkOutcome.LevelCompleted:
@@ -374,26 +384,53 @@ namespace Game.Unity
             Vector3 wrongTo,
             Action afterPainted,
             bool runFailed = false,
-            bool sessionFailed = false)
+            bool sessionFailed = false,
+            bool forgotPriorWalk = false)
         {
             StopRevealHold();
             _holdingReveal = true;
             if (sessionFailed)
             {
-                wrong?.SetState(TileVisualState.Wrong);
+                wrong?.SetState(TileVisualState.WrongIntense);
+                wrong?.Flash(TileVisualState.WrongIntense, DanceFloorEffects.WrongIntenseFlashSeconds);
                 _effects.PlaySessionFailed();
             }
             else if (runFailed)
             {
-                wrong?.SetState(TileVisualState.Wrong);
+                wrong?.SetState(forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong);
+                wrong?.Flash(
+                    forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong,
+                    forgotPriorWalk
+                        ? DanceFloorEffects.WrongIntenseFlashSeconds
+                        : DanceFloorEffects.WrongFlashSeconds);
                 _effects.PlayRunFailed();
+                if (forgotPriorWalk)
+                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
             }
             else
             {
-                _effects.PlayMistake(wrong, RevealedTile(_game.Run));
+                _effects.PlayMistake(wrong, RevealedTile(_game.Run), forgotPriorWalk);
+                if (forgotPriorWalk)
+                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
             }
 
             _revealHold = StartCoroutine(MistakeRoutine(wrongFrom, wrongTo, afterPainted));
+        }
+
+        void ShowStepCallout(string caption, bool recover)
+        {
+            if (_hud == null || _walker == null)
+                return;
+
+            _stepCallout = MemoryPathStepCallout.Ensure(_hud.OverlayRoot);
+            if (_stepCallout == null)
+                return;
+
+            _stepCallout.ShowAwayFromAvatar(
+                _camera,
+                _walker.transform.position,
+                caption,
+                recover);
         }
 
         IEnumerator MistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, Action afterPainted)

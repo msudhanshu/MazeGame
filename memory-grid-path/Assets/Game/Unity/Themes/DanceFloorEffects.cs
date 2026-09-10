@@ -12,6 +12,9 @@ namespace Game.Unity.Themes
     /// </summary>
     public sealed class DanceFloorEffects : MonoBehaviour, ITileEffects
     {
+        public const float WrongFlashSeconds = 0.55f;
+        public const float WrongIntenseFlashSeconds = 0.85f;
+
         public static DanceFloorEffects Create(Transform parent)
         {
             var go = new GameObject("DanceFloor Effects");
@@ -25,10 +28,18 @@ namespace Game.Unity.Themes
             MemoryPathAudio.Play(MemoryPathCue.CorrectStep);
         }
 
-        public void PlayMistake(ITileView wrong, ITileView revealed)
+        public void PlayMistake(ITileView wrong, ITileView revealed, bool intense = false)
         {
             _ = revealed;
-            wrong?.SetState(TileVisualState.Wrong);
+            if (wrong == null)
+            {
+                MemoryPathAudio.PlayMistake();
+                return;
+            }
+
+            var state = intense ? TileVisualState.WrongIntense : TileVisualState.Wrong;
+            wrong.SetState(state);
+            wrong.Flash(state, intense ? WrongIntenseFlashSeconds : WrongFlashSeconds);
             MemoryPathAudio.PlayMistake();
         }
 

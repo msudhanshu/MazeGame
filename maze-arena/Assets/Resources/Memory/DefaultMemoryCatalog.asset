@@ -191,7 +191,7 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 5299226726603378315, guid: ff4cee198fb514cffb0e8c096dd8cdfd, type: 3}
+    ObjectPrefab: {fileID: 6629847069809937160, guid: ff4cee198fb514cffb0e8c096dd8cdfd, type: 3}
   - Id: lamp
     GenreId: objects
     Kind: 2
@@ -199,7 +199,7 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 1445937803081942383, guid: cf8542fba1a6d4562b38942bff95150c, type: 3}
+    ObjectPrefab: {fileID: 1939004402569524419, guid: cf8542fba1a6d4562b38942bff95150c, type: 3}
   - Id: vase
     GenreId: objects
     Kind: 2
@@ -207,7 +207,7 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 1090832683486401175, guid: ef87d40cbc7b14335b546270240d535d, type: 3}
+    ObjectPrefab: {fileID: 8881520713191951170, guid: ef87d40cbc7b14335b546270240d535d, type: 3}
   - Id: statue
     GenreId: objects
     Kind: 2
@@ -215,7 +215,7 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 7672542709231709494, guid: c4a16a855075e410f8ec6cd59b97b245, type: 3}
+    ObjectPrefab: {fileID: 814294500674418252, guid: c4a16a855075e410f8ec6cd59b97b245, type: 3}
   - Id: plant
     GenreId: objects
     Kind: 2
@@ -223,7 +223,7 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 8374230083189956304, guid: a0ed58d4147c2450181ce3ebc889702b, type: 3}
+    ObjectPrefab: {fileID: 2082142765024882096, guid: a0ed58d4147c2450181ce3ebc889702b, type: 3}
   - Id: shrine
     GenreId: objects
     Kind: 2
@@ -231,4 +231,4 @@ MonoBehaviour:
     SelectionWeight: 1
     Image: {fileID: 0}
     NormalMap: {fileID: 0}
-    ObjectPrefab: {fileID: 5520778688328456061, guid: 51f63dee49ca74e299875847f812460a, type: 3}
+    ObjectPrefab: {fileID: 228923223156149422, guid: 51f63dee49ca74e299875847f812460a, type: 3}

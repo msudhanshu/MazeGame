@@ -37,6 +37,30 @@ namespace Game.Unity.Tests
             }
         }
 
+        [Test]
+        public void PlayMistakeIntenseUsesHarderWrongState()
+        {
+            var previous = PlayerSettingsStore.SoundEffects;
+            var host = new GameObject("FxHostIntense");
+            try
+            {
+                PlayerSettingsStore.SoundEffects = false;
+                MemoryPathAudio.ResetForTests();
+                var fx = DanceFloorEffects.Create(host.transform);
+                var wrong = new FakeTileView(new GridCoord(1, 0));
+
+                fx.PlayMistake(wrong, null, intense: true);
+
+                Assert.That(wrong.State, Is.EqualTo(TileVisualState.WrongIntense));
+            }
+            finally
+            {
+                PlayerSettingsStore.SoundEffects = previous;
+                MemoryPathAudio.ResetForTests();
+                Object.DestroyImmediate(host);
+            }
+        }
+
         sealed class FakeTileView : ITileView
         {
             public FakeTileView(GridCoord coord) => Coord = coord;

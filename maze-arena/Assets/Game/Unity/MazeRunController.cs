@@ -23,6 +23,7 @@ namespace Game.Unity
         public void StartCampaign(int seed)
         {
             _nextSeed = seed == 0 ? 1 : seed;
+            ResetMemoryGenreHistory();
             Run = MazeRun.Start(CampaignCatalog.Default(), _nextSeed);
             ApplyAttempt();
         }
@@ -31,6 +32,7 @@ namespace Game.Unity
         {
             if (Run == null || Run.Phase != MazeRunPhase.Failed)
                 return;
+            ResetMemoryGenreHistory();
             Run.BeginAttempt(NextSeed());
             ApplyAttempt();
         }
@@ -39,6 +41,7 @@ namespace Game.Unity
         {
             if (Run == null)
                 return;
+            ResetMemoryGenreHistory();
             Run.RestartCampaign(NextSeed());
             ApplyAttempt();
         }
@@ -99,6 +102,12 @@ namespace Game.Unity
 
             if (Hud != null)
                 Hud.SyncFromRun(Run);
+        }
+
+        void ResetMemoryGenreHistory()
+        {
+            if (Memory != null)
+                Memory.ResetGenreHistory();
         }
 
         int NextSeed()

@@ -127,6 +127,25 @@ namespace Game.Core.Tests
         }
 
         [Test]
+        public void PriorWalkCoverageAndFailuresAreTrackedAcrossRestarts()
+        {
+            var run = NewRun(lives: 1);
+            var first = CorrectOption(run);
+
+            run.Choose(first);
+            Assert.That(run.WasCoveredInPriorWalk(first), Is.False);
+
+            run.Choose(WrongOption(run));
+            var failed = run.LastRevealed.Value;
+            run.BeginNextWalk();
+
+            Assert.That(run.WasCoveredInPriorWalk(first), Is.True);
+            Assert.That(run.WasFailedInPriorWalk(failed), Is.True);
+            Assert.That(run.WasCoveredInPriorWalk(failed), Is.True,
+                "revealed correct tiles also count as covered ground");
+        }
+
+        [Test]
         public void ProgressFromEarlierWalksIsRemembered()
         {
             var run = NewRun(lives: 1);

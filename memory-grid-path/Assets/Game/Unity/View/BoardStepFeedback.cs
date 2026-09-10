@@ -10,7 +10,7 @@ namespace Game.Unity.View
     public static class BoardStepFeedback
     {
         public const float MistakeHoldSeconds = 0.85f;
-        public const float WrongTurnFlashSeconds = 0.42f;
+        public const float WrongTurnFlashSeconds = 0.55f;
         public const float WrongTurnFollowDelaySeconds = 0.14f;
         public const float RewindCameraSeconds = 0.55f;
 

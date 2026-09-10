@@ -78,6 +78,7 @@ namespace Game.Unity
         LevelOneFueSession _levelOneFue;
         readonly MemoryPathLevelOneChrome _levelOneChrome = new MemoryPathLevelOneChrome();
         GraphLevelOneFueSession _graphLevelOneFue;
+        MemoryPathStepCallout _stepCallout;
         readonly MemoryPathGraphLevelOneChrome _graphLevelOneChrome = new MemoryPathGraphLevelOneChrome();
         IFueSeenStore _fueStore;
         FueDirector _fueDirector;
@@ -857,20 +858,29 @@ namespace Game.Unity
                     _walker.HopTo(destination);
                     _levelOneFue?.OnCorrectStep();
                     CompleteLevelOneFueIfNeeded();
+                    if (run.WasFailedInPriorWalk(target))
+                        ShowStepCallout(MemoryPathStepCueCopy.RandomRecovered(), recover: true);
                     _hud.SetMessage("On the path. Keep going!");
                     RefreshBoard();
                     break;
                 case WalkOutcome.WrongRevealed:
                     _levelOneFue?.OnWrongStep();
                     _hud.SetMessage($"Off the path — {run.LivesLeft} health left.");
-                    BeginGridMistake(wrongTile, wrongFrom, wrongTo, null);
+                    BeginGridMistake(
+                        wrongTile,
+                        wrongFrom,
+                        wrongTo,
+                        null,
+                        forgotPriorWalk: run.LastRevealed.HasValue
+                            && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
                     break;
                 case WalkOutcome.RunFailed:
                     BeginGridMistake(wrongTile, wrongFrom, wrongTo, () =>
                     {
                         ShowRetryFromMemory();
                         _revealHold = StartCoroutine(RewindAfterFailedWalk());
-                    }, runFailed: true);
+                    }, runFailed: true, forgotPriorWalk: run.LastRevealed.HasValue
+                        && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
                     break;
                 case WalkOutcome.LevelCompleted:
                     _levelOneFue?.OnCorrectStep();
@@ -912,27 +922,54 @@ namespace Game.Unity
             Vector3 wrongTo,
             Action afterPainted,
             bool runFailed = false,
-            bool sessionFailed = false)
+            bool sessionFailed = false,
+            bool forgotPriorWalk = false)
         {
             StopRevealHold();
             _holdingReveal = true;
             var run = _gridGame.Run;
             if (sessionFailed)
             {
-                wrong?.SetState(TileVisualState.Wrong);
+                wrong?.SetState(TileVisualState.WrongIntense);
+                wrong?.Flash(TileVisualState.WrongIntense, DanceFloorEffects.WrongIntenseFlashSeconds);
                 _effects.PlaySessionFailed();
             }
             else if (runFailed)
             {
-                wrong?.SetState(TileVisualState.Wrong);
+                wrong?.SetState(forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong);
+                wrong?.Flash(
+                    forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong,
+                    forgotPriorWalk
+                        ? DanceFloorEffects.WrongIntenseFlashSeconds
+                        : DanceFloorEffects.WrongFlashSeconds);
                 _effects.PlayRunFailed();
+                if (forgotPriorWalk)
+                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
             }
             else
             {
-                _effects.PlayMistake(wrong, _board.TileAt(run.CurrentCell));
+                _effects.PlayMistake(wrong, _board.TileAt(run.CurrentCell), forgotPriorWalk);
+                if (forgotPriorWalk)
+                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
             }
 
             _revealHold = StartCoroutine(GridMistakeRoutine(wrongFrom, wrongTo, afterPainted));
+        }
+
+        void ShowStepCallout(string caption, bool recover)
+        {
+            if (_hud == null || _walker == null)
+                return;
+
+            _stepCallout = MemoryPathStepCallout.Ensure(_hud.OverlayRoot);
+            if (_stepCallout == null)
+                return;
+
+            _stepCallout.ShowAwayFromAvatar(
+                _camera,
+                _walker.transform.position,
+                caption,
+                recover);
         }
 
         IEnumerator GridMistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, Action afterPainted)

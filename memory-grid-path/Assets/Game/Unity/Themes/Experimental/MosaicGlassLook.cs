@@ -38,6 +38,8 @@ namespace Game.Unity.Themes.Experimental
                     return WhiteCover;
                 case TileVisualState.Wrong:
                     return new MosaicGlassLook(DanceFloorPalette.Wrong, 1f, 0.9f, 0.94f);
+                case TileVisualState.WrongIntense:
+                    return new MosaicGlassLook(new Color(1f, 0.05f, 0.08f), 1f, 0.95f, 1f);
                 case TileVisualState.Candidate:
                     return new MosaicGlassLook(DanceFloorPalette.Candidate, 0.18f, 0.08f, 0.16f);
                 case TileVisualState.Start:

@@ -11,9 +11,9 @@
     <Compile Include="../../Assets/Game/Core/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.game.core/DotNet~/Nixin.Game.Core.csproj" />
-    <ProjectReference Include="../../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.grid.core/DotNet~/Nixin.Grid.Core.csproj" />
-    <ProjectReference Include="../../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.graph.core/DotNet~/Nixin.Graph.Core.csproj" />
-    <ProjectReference Include="../../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.memory.core/DotNet~/Nixin.Memory.Core.csproj" />
+    <ProjectReference Include="../../../../NixinStudioUnityCore/packages/com.nixin.game.core/DotNet~/Nixin.Game.Core.csproj" />
+    <ProjectReference Include="../../../../NixinStudioUnityCore/packages/com.nixin.grid.core/DotNet~/Nixin.Grid.Core.csproj" />
+    <ProjectReference Include="../../../../NixinStudioUnityCore/packages/com.nixin.graph.core/DotNet~/Nixin.Graph.Core.csproj" />
+    <ProjectReference Include="../../../../NixinStudioUnityCore/packages/com.nixin.memory.core/DotNet~/Nixin.Memory.Core.csproj" />
   </ItemGroup>
 </Project>

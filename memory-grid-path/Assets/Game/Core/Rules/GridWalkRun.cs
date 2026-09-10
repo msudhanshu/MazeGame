@@ -24,6 +24,8 @@ namespace Game.Core.Rules
         readonly HashSet<GridCoord> _sessionKnown = new HashSet<GridCoord>();
         readonly HashSet<GridCoord> _scouted = new HashSet<GridCoord>();
         readonly HashSet<GridCoord> _memorized = new HashSet<GridCoord>();
+        readonly HashSet<GridCoord> _priorWalked = new HashSet<GridCoord>();
+        readonly HashSet<GridCoord> _priorFailed = new HashSet<GridCoord>();
 
         readonly HashSet<GridCoord> _blocked = new HashSet<GridCoord>();
         readonly List<GridCoord> _blockedList = new List<GridCoord>();
@@ -158,6 +160,18 @@ namespace Game.Core.Rules
         public bool IsBlocked(GridCoord cell) => _blocked.Contains(cell);
 
         /// <summary>
+        /// True when this cell was walked correctly in an earlier walk of this session.
+        /// Used for "you forgot" feedback when the player misses it later.
+        /// </summary>
+        public bool WasCoveredInPriorWalk(GridCoord cell) => _priorWalked.Contains(cell);
+
+        /// <summary>
+        /// True when this cell was revealed by a mistake in an earlier walk.
+        /// Used for "you remembered" feedback when the player gets it right later.
+        /// </summary>
+        public bool WasFailedInPriorWalk(GridCoord cell) => _priorFailed.Contains(cell);
+
+        /// <summary>
         /// Full path cells from the most recent glimpse, or null if none is pending.
         /// Unity flashes them then calls this again to clear the flag.
         /// </summary>
@@ -247,8 +261,18 @@ namespace Game.Core.Rules
             if (!IsAwaitingNextWalk)
                 throw new InvalidOperationException("The current walk is still in progress.");
 
+            RememberWalkForNextRun();
             _budget.BeginNextRun();
             StartWalk();
+        }
+
+        void RememberWalkForNextRun()
+        {
+            for (var i = 0; i < _walked.Count; i++)
+                _priorWalked.Add(_walked[i]);
+
+            for (var i = 0; i < _revealed.Count; i++)
+                _priorFailed.Add(_revealed[i]);
         }
 
         void CollectPickup(GridCoord cell)

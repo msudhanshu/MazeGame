@@ -146,6 +146,23 @@ namespace Game.Core.Tests
         }
 
         [Test]
+        public void PlanFallsBackWhenAvoidingPreviousGenresWouldLeaveNoEntries()
+        {
+            var layout = SmallLayout();
+            var wallCount = layout.Grid.OccupiedWalls().Count;
+            var plan = MemoryWallPlanner.Plan(
+                layout,
+                LargeCatalog(wallCount),
+                DemoLevel(),
+                new XorShiftRandom(2),
+                new[] { "nature", "landmarks", "objects" });
+
+            Assert.That(plan.Placements.Count, Is.EqualTo(wallCount));
+            for (var i = 0; i < plan.Placements.Count; i++)
+                Assert.That(plan.Placements[i].GenreId, Is.EqualTo("nature"));
+        }
+
+        [Test]
         public void ValidatorRejectsMissingGenreReferences()
         {
             var catalog = new MemoryCatalogSnapshot(

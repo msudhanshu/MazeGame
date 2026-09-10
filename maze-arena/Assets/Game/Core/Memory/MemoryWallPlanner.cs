@@ -111,13 +111,26 @@ namespace Game.Core.Memory
             HashSet<string> enabled,
             HashSet<string> previousGenres)
         {
+            var avoidPrevious = level.AvoidPreviousGenres && previousGenres.Count > 0;
+            var pool = FillPool(catalog, level, enabled, avoidPrevious ? previousGenres : null);
+            if (pool.Count == 0 && avoidPrevious)
+                pool = FillPool(catalog, level, enabled, null);
+            return pool;
+        }
+
+        static List<MemoryEntrySnapshot> FillPool(
+            MemoryCatalogSnapshot catalog,
+            MemoryLevelSpec level,
+            HashSet<string> enabled,
+            HashSet<string> excludedGenres)
+        {
             var pool = new List<MemoryEntrySnapshot>();
             for (var i = 0; i < catalog.Entries.Count; i++)
             {
                 var entry = catalog.Entries[i];
                 if (!enabled.Contains(entry.GenreId))
                     continue;
-                if (level.AvoidPreviousGenres && previousGenres.Contains(entry.GenreId))
+                if (excludedGenres != null && excludedGenres.Contains(entry.GenreId))
                     continue;
                 if (!MatchesKindWeight(entry.Kind, level))
                     continue;
