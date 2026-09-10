@@ -5,7 +5,8 @@
         "Nixin.Game.Core",
         "Nixin.Grid.Core",
         "Nixin.Locomotion.Core",
-        "Nixin.Maze.Core"
+        "Nixin.Maze.Core",
+        "Nixin.Rail.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

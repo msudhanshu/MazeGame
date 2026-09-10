@@ -2,11 +2,13 @@ using Game.Core;
 using Game.Unity.Memory;
 using Nixin.Maze;
 using Nixin.Maze.Core;
+using Nixin.Rail;
+using Nixin.Rail.Core;
 using UnityEngine;
 
 namespace Game.Unity
 {
-    public sealed class MazeHud : MonoBehaviour
+    public sealed class MazeHud : MonoBehaviour, ILookStickHud
     {
         public MazeArena Arena;
         public OrbitCameraRig CameraRig;
@@ -14,7 +16,23 @@ namespace Game.Unity
         public MemoryArenaMemory Memory;
         public MazeRunController RunController;
         public MazeStyleSet[] Styles;
+        public bool AllowDebugTools;
         public bool DebugTools;
+
+        public bool BlocksPointer(float screenX, float screenY, float screenWidth, float screenHeight)
+        {
+            var yTop = screenHeight - screenY;
+            if (screenX >= 16f && screenX <= 296f && yTop >= 16f && yTop <= 300f)
+                return true;
+            if (DebugTools)
+            {
+                const float w = 260f;
+                if (screenX >= screenWidth - w - 16f && yTop >= 16f)
+                    return true;
+            }
+
+            return false;
+        }
 
         int _width = 8;
         int _height = 8;
@@ -28,6 +46,7 @@ namespace Game.Unity
         bool _walk = true;
         readonly string[] _difficultyNames = { "Easy", "Medium", "Hard", "Brutal" };
         readonly MazePresetCatalog _catalog = MazePresetCatalog.Default();
+        GUIStyle _wrap;
 
         void Start()
         {
@@ -57,14 +76,14 @@ namespace Game.Unity
         void OnGUI()
         {
             DrawPlayHud();
-            if (DebugTools)
+            if (AllowDebugTools && DebugTools)
                 DrawSandboxHud();
         }
 
         void DrawPlayHud()
         {
             var run = RunController != null ? RunController.Run : null;
-            GUILayout.BeginArea(new Rect(16, 16, 280, 220), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(16, 16, 280, 260), GUI.skin.box);
             if (run == null)
             {
                 GUILayout.Label("Maze Arena");
@@ -91,20 +110,25 @@ namespace Game.Unity
                 }
             }
 
-            DebugTools = GUILayout.Toggle(DebugTools, "Debug tools");
-            if (Walker != null && GUILayout.Button(_walk ? "Orbit view" : "Walk maze"))
-                SetWalk(!_walk);
+            if (AllowDebugTools)
+            {
+                DebugTools = GUILayout.Toggle(DebugTools, "Debug tools");
+                if (Walker != null && GUILayout.Button(_walk ? "Orbit view" : "Walk maze"))
+                    SetWalk(!_walk);
+            }
+
             GUILayout.Label(_walk ? WalkHint() : "RMB orbit, scroll zoom");
             GUILayout.EndArea();
         }
 
         void DrawSandboxHud()
         {
-            const float w = 260f;
+            const float w = 300f;
             var stickReserve = Mathf.Min(Screen.width, Screen.height) * 0.42f;
             var hudH = Mathf.Max(180f, Screen.height - 32f - stickReserve);
             GUILayout.BeginArea(new Rect(Screen.width - w - 16, 16, w, hudH), GUI.skin.box);
             GUILayout.Label("Sandbox");
+            DrawControlSchemeToggles();
 
             GUILayout.Label("Preset");
             for (var i = 0; i < _catalog.All.Count; i++)
@@ -221,8 +245,149 @@ namespace Game.Unity
             return m + ":" + s.ToString("00");
         }
 
-        static string WalkHint()
+        void DrawControlSchemeToggles()
         {
+            if (Walker == null || Walker.Controls == null)
+                return;
+
+            GUILayout.Label("Walk scheme");
+            var current = Walker.Controls.Scheme;
+            for (var i = 0; i < ArenaControlSchemes.All.Length; i++)
+            {
+                var scheme = ArenaControlSchemes.All[i];
+                var on = current == scheme;
+                if (GUILayout.Toggle(on, ArenaControlSchemes.Name(scheme), GUI.skin.button) && !on)
+                {
+                    Walker.Controls.Scheme = scheme;
+                    Walker.ApplyLocomotion();
+                    current = scheme;
+                }
+            }
+
+            GUILayout.Label(ArenaControlSchemes.Description(current), Wrap());
+            GUILayout.Space(6);
+
+            Walker.Controls.LimitLookYaw = GUILayout.Toggle(Walker.Controls.LimitLookYaw, "Limit Look Yaw");
+            GUILayout.Label("Stops look at 180° left or right of spawn facing.", Wrap());
+
+            if (current != ArenaControlScheme.RailWaypoint && current != ArenaControlScheme.RailJoystick)
+                return;
+
+            GUILayout.Label("Look Stick");
+            DrawLookStickButtons();
+
+            Walker.Controls.KeyboardWasd = GUILayout.Toggle(Walker.Controls.KeyboardWasd, "Keyboard WASD");
+            GUILayout.Label("Laptop: A/D looks, W/S walks the hall you face. Tap chips and touch look still work.", Wrap());
+
+            if (current != ArenaControlScheme.RailWaypoint)
+                return;
+
+            GUILayout.Label("Waypoint Style");
+            DrawWaypointStyleButtons();
+            GUILayout.Label("Intermediate Waypoints");
+            DrawIntermediateButtons();
+            GUILayout.Label(IntermediateWaypoints.Description(Walker.Controls.IntermediateWaypoint), Wrap());
+            Walker.Controls.AllowLookDown = GUILayout.Toggle(Walker.Controls.AllowLookDown, "Allow Look Down");
+            if (Walker.Controls.AllowLookDown && Walker.Controls.WaypointStyle == WaypointStyle.FloorTile)
+            {
+                GUILayout.Label("Max Look Down " + Mathf.RoundToInt(Walker.Controls.MaxLookDown) + "°");
+                GUILayout.Label("How far you can tilt your head down toward floor chips.", Wrap());
+                Walker.Controls.MaxLookDown = GUILayout.HorizontalSlider(Walker.Controls.MaxLookDown, 15f, 85f);
+            }
+            else if (!Walker.Controls.AllowLookDown)
+            {
+                GUILayout.Label("Default Look Down " + Mathf.RoundToInt(Walker.Controls.DefaultLookDown) + "°");
+                GUILayout.Label("Fixed look-down so nearby floor chips stay in view.", Wrap());
+                Walker.Controls.DefaultLookDown = GUILayout.HorizontalSlider(Walker.Controls.DefaultLookDown, 0f, 85f);
+                Walker.Controls.SwipeToStop = GUILayout.Toggle(Walker.Controls.SwipeToStop, "Swipe To Stop");
+                GUILayout.Label("Fast swipe down while walking parks you to look at wall photos.", Wrap());
+            }
+            else
+            {
+                GUILayout.Label("Look stays on the horizon for space blobs.", Wrap());
+            }
+        }
+
+        GUIStyle Wrap()
+        {
+            if (_wrap == null)
+                _wrap = new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 11 };
+            return _wrap;
+        }
+
+        void DrawLookStickButtons()
+        {
+            var current = Walker.Controls.LookStick;
+            DrawModeButton(current == LookStickMode.FixedBottom, LookStickModes.Name(LookStickMode.FixedBottom),
+                () => Walker.Controls.LookStick = LookStickMode.FixedBottom);
+            DrawModeButton(current == LookStickMode.AppearOnDrag, LookStickModes.Name(LookStickMode.AppearOnDrag),
+                () => Walker.Controls.LookStick = LookStickMode.AppearOnDrag);
+            DrawModeButton(current == LookStickMode.HiddenDrag, LookStickModes.Name(LookStickMode.HiddenDrag),
+                () => Walker.Controls.LookStick = LookStickMode.HiddenDrag);
+        }
+
+        void DrawWaypointStyleButtons()
+        {
+            var current = Walker.Controls.WaypointStyle;
+            DrawModeButton(current == WaypointStyle.FloorTile, "Floor tile",
+                () => Walker.Controls.WaypointStyle = WaypointStyle.FloorTile);
+            DrawModeButton(current == WaypointStyle.SpaceBlob, "Space blob",
+                () => Walker.Controls.WaypointStyle = WaypointStyle.SpaceBlob);
+        }
+
+        void DrawIntermediateButtons()
+        {
+            var current = Walker.Controls.IntermediateWaypoint;
+            DrawModeButton(current == IntermediateWaypointMode.Required, IntermediateWaypoints.Name(IntermediateWaypointMode.Required),
+                () => Walker.Controls.IntermediateWaypoint = IntermediateWaypointMode.Required);
+            DrawModeButton(current == IntermediateWaypointMode.Skip, IntermediateWaypoints.Name(IntermediateWaypointMode.Skip),
+                () => Walker.Controls.IntermediateWaypoint = IntermediateWaypointMode.Skip);
+            DrawModeButton(current == IntermediateWaypointMode.Remove, IntermediateWaypoints.Name(IntermediateWaypointMode.Remove),
+                () => Walker.Controls.IntermediateWaypoint = IntermediateWaypointMode.Remove);
+        }
+
+        static void DrawModeButton(bool on, string label, System.Action select)
+        {
+            if (GUILayout.Toggle(on, label, GUI.skin.button) && !on)
+                select();
+        }
+
+        string WalkHint()
+        {
+            var scheme = Walker != null && Walker.Controls != null
+                ? Walker.Controls.ActiveScheme
+                : ArenaControlScheme.RailWaypoint;
+            if (scheme == ArenaControlScheme.RailJoystick)
+            {
+                var mode = Walker != null && Walker.Controls != null
+                    ? Walker.Controls.LookStick
+                    : LookStickMode.AppearOnDrag;
+                var keys = Walker != null && Walker.Controls != null && Walker.Controls.KeyboardWasd
+                    ? "; A/D looks, W/S walks"
+                    : "";
+                if (mode == LookStickMode.FixedBottom)
+                    return "Bottom stick: left/right looks, up/down walks the corridor you face" + keys;
+                return "Drag: left/right looks, up/down walks the corridor you face" + keys;
+            }
+
+            if (scheme == ArenaControlScheme.RailWaypoint)
+            {
+                var mode = Walker != null && Walker.Controls != null
+                    ? Walker.Controls.LookStick
+                    : LookStickMode.AppearOnDrag;
+                var blob = Walker.Controls.WaypointStyle == WaypointStyle.SpaceBlob;
+                var keys = Walker.Controls.KeyboardWasd
+                    ? "; A/D looks, W/S walks the hall"
+                    : "";
+                if (mode == LookStickMode.FixedBottom)
+                    return blob
+                        ? "Tap a glowing blob to walk; bottom stick looks" + keys
+                        : "Tap a floor chip to walk; bottom stick looks around" + keys;
+                return blob
+                    ? "Tap a glowing blob to walk; drag to look" + keys
+                    : "Tap a floor chip to walk (far chips skip a straight hall); drag to look around" + keys;
+            }
+
 #if UNITY_EDITOR
             var mobile = UnityEngine.Device.Application.isMobilePlatform;
 #else

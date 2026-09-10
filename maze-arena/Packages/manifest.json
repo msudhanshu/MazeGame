@@ -46,10 +46,11 @@
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
     "com.unity.pipeline": "0.5.0-exp.1",
-    "com.nixin.game.core": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.game.core",
-    "com.nixin.boot": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.boot",
-    "com.nixin.grid.core": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.grid.core",
-    "com.nixin.locomotion": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.locomotion",
-    "com.nixin.maze": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.maze"
+    "com.nixin.game.core": "file:../../../NixinStudioUnityCore/packages/com.nixin.game.core",
+    "com.nixin.boot": "file:../../../NixinStudioUnityCore/packages/com.nixin.boot",
+    "com.nixin.grid.core": "file:../../../NixinStudioUnityCore/packages/com.nixin.grid.core",
+    "com.nixin.locomotion": "file:../../../NixinStudioUnityCore/packages/com.nixin.locomotion",
+    "com.nixin.maze": "file:../../../NixinStudioUnityCore/packages/com.nixin.maze",
+    "com.nixin.rail": "file:../../../NixinStudioUnityCore/packages/com.nixin.rail"
   }
 }

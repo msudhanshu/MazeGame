@@ -1,12 +1,15 @@
 using Game.Core;
 using Nixin.Locomotion;
 using Nixin.Maze;
+using Nixin.Rail;
+using Nixin.Rail.Core;
 using UnityEngine;
 
 namespace Game.Unity
 {
     /// <summary>
-    /// Maze-specific first-person walker. Locomotion comes from <see cref="FirstPersonController"/>.
+    /// Maze-specific first-person walker. Scheme A uses <see cref="FirstPersonController"/>;
+    /// scheme D uses <see cref="RailLocomotion"/>.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(FirstPersonController))]
@@ -18,12 +21,23 @@ namespace Game.Unity
         public Transform Eye;
 
         FirstPersonController _locomotion;
+        RailLocomotion _rail;
+        CharacterController _controller;
+        ArenaControls _controls;
         Renderer[] _bodyRenderers;
         bool _walking;
         Transform _cameraHome;
         Vector3 _cameraLocalPos;
         Quaternion _cameraLocalRot;
 
+        public ArenaControls Controls
+        {
+            get
+            {
+                EnsureRefs();
+                return _controls;
+            }
+        }
         public bool Walking => _walking;
 
         public const float ControllerRadius = 0.38f;
@@ -31,7 +45,7 @@ namespace Game.Unity
 
         void Awake()
         {
-            _locomotion = GetComponent<FirstPersonController>();
+            EnsureRefs();
             _bodyRenderers = GetComponentsInChildren<Renderer>(true);
             if (Eye == null)
             {
@@ -45,9 +59,8 @@ namespace Game.Unity
 
         public void PlaceAtEntry()
         {
-            if (_locomotion == null)
-                _locomotion = GetComponent<FirstPersonController>();
-            if (Arena == null || Arena.Layout == null || Arena.Dimensions == null || _locomotion == null)
+            EnsureRefs();
+            if (Arena == null || Arena.Layout == null || Arena.Dimensions == null)
                 return;
 
             var dims = Arena.Dimensions;
@@ -58,7 +71,23 @@ namespace Game.Unity
                 dims.Origin.y,
                 dims.Origin.z);
 
-            _locomotion.Teleport(new Vector3(pose.X, pose.Y, pose.Z), pose.YawDegrees);
+            if (_locomotion != null)
+                _locomotion.Teleport(new Vector3(pose.X, pose.Y, pose.Z), pose.YawDegrees);
+            else
+                transform.SetPositionAndRotation(new Vector3(pose.X, pose.Y, pose.Z), Quaternion.Euler(0f, pose.YawDegrees, 0f));
+
+            if (_rail != null)
+            {
+                var speed = Controls != null ? Controls.RailMoveSpeed : RailTravel.DefaultMoveSpeed;
+                _rail.Bind(Arena, speed);
+                _rail.PlaceAt(Arena.Layout.Entry.Cell, pose.YawDegrees, pose.Y);
+            }
+
+            if (_walking)
+                ApplyLocomotion();
+
+            var gate = GetComponent<LookYawGate>() ?? gameObject.AddComponent<LookYawGate>();
+            gate.SetCenter(pose.YawDegrees);
         }
 
         public void SetWalking(bool walking)
@@ -67,16 +96,102 @@ namespace Game.Unity
                 return;
 
             _walking = walking;
-            if (_locomotion == null)
-                _locomotion = GetComponent<FirstPersonController>();
-
-            if (_locomotion != null)
-                _locomotion.SetActive(walking);
+            EnsureRefs();
 
             if (walking)
+            {
                 AttachCamera();
+                ApplyLocomotion();
+            }
             else
+            {
+                DisableLocomotion();
                 DetachCamera();
+            }
+        }
+
+        public void ApplyLocomotion()
+        {
+            EnsureRefs();
+            if (!_walking)
+            {
+                DisableLocomotion();
+                return;
+            }
+
+            var yaw = CurrentYaw();
+            var rail = Controls != null && ArenaControlSchemes.UsesRail(Controls.ActiveScheme);
+            if (rail)
+            {
+                if (_locomotion != null)
+                    _locomotion.SetActive(false);
+                if (_rail != null)
+                {
+                    if (_rail.Travel == null && Arena != null)
+                    {
+                        var speed = Controls != null ? Controls.RailMoveSpeed : RailTravel.DefaultMoveSpeed;
+                        _rail.Bind(Arena, speed);
+                    }
+
+                    if (_rail.Travel != null && Arena != null && Arena.Layout != null && Arena.Dimensions != null
+                        && MazeGeometry.TryCellFromWorld(transform.position, Arena.Dimensions, Arena.Layout.Size, out var cell))
+                    {
+                        _rail.PlaceAt(cell, yaw, transform.position.y);
+                    }
+
+                    _rail.SetActive(true);
+                }
+            }
+            else
+            {
+                if (_rail != null)
+                    _rail.SetActive(false);
+                if (_locomotion != null)
+                {
+                    _locomotion.Teleport(transform.position, yaw, 0f);
+                    _locomotion.SetActive(true);
+                }
+            }
+
+            if (_controller != null)
+                _controller.enabled = !rail;
+        }
+
+        void DisableLocomotion()
+        {
+            if (_locomotion != null)
+                _locomotion.SetActive(false);
+            if (_rail != null)
+                _rail.SetActive(false);
+            if (_controller != null)
+                _controller.enabled = true;
+        }
+
+        void EnsureRefs()
+        {
+            if (_controller == null)
+                _controller = GetComponent<CharacterController>();
+            if (_locomotion == null)
+                _locomotion = GetComponent<FirstPersonController>();
+            if (_controls == null)
+                _controls = GetComponent<ArenaControls>() ?? gameObject.AddComponent<ArenaControls>();
+            if (GetComponent<YawLookStick>() == null)
+                gameObject.AddComponent<YawLookStick>();
+            if (GetComponent<FloorWaypoints>() == null)
+                gameObject.AddComponent<FloorWaypoints>();
+            if (_rail == null)
+                _rail = GetComponent<RailLocomotion>() ?? gameObject.AddComponent<RailLocomotion>();
+            if (GetComponent<LookYawGate>() == null)
+                gameObject.AddComponent<LookYawGate>();
+        }
+
+        float CurrentYaw()
+        {
+            if (_rail != null && _rail.Active)
+                return _rail.Yaw;
+            if (_locomotion != null && _locomotion.Active)
+                return _locomotion.Yaw;
+            return transform.eulerAngles.y;
         }
 
         void AttachCamera()
@@ -116,8 +231,7 @@ namespace Game.Unity
             if (_walking)
             {
                 _walking = false;
-                if (_locomotion != null)
-                    _locomotion.SetActive(false);
+                DisableLocomotion();
                 DetachCamera();
             }
         }
@@ -173,6 +287,16 @@ namespace Game.Unity
 
             if (go.GetComponent<FirstPersonController>() == null)
                 go.AddComponent<FirstPersonController>();
+            if (go.GetComponent<ArenaControls>() == null)
+                go.AddComponent<ArenaControls>();
+            if (go.GetComponent<YawLookStick>() == null)
+                go.AddComponent<YawLookStick>();
+            if (go.GetComponent<FloorWaypoints>() == null)
+                go.AddComponent<FloorWaypoints>();
+            if (go.GetComponent<RailLocomotion>() == null)
+                go.AddComponent<RailLocomotion>();
+            if (go.GetComponent<LookYawGate>() == null)
+                go.AddComponent<LookYawGate>();
 
             var walker = go.GetComponent<MazeWalker>() ?? go.AddComponent<MazeWalker>();
             walker.Arena = arena;

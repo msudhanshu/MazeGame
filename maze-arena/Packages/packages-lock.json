@@ -1,34 +1,42 @@
 {
   "dependencies": {
     "com.nixin.boot": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.boot",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.boot",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.game.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.game.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.game.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.grid.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.grid.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.grid.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.locomotion": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.locomotion",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.locomotion",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.maze": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.maze",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.maze",
       "depth": 0,
       "source": "local",
       "dependencies": {}
+    },
+    "com.nixin.rail": {
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.rail",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.nixin.locomotion": "0.1.0"
+      }
     },
     "com.unity.ai.navigation": {
       "version": "2.0.14",

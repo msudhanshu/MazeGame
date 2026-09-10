@@ -9,6 +9,8 @@
         "Nixin.Locomotion.Core",
         "Nixin.Maze.Core",
         "Nixin.Maze",
+        "Nixin.Rail.Core",
+        "Nixin.Rail",
         "UnityEngine.UI"
     ],
     "includePlatforms": [],
