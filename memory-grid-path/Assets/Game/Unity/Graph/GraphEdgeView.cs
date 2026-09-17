@@ -11,7 +11,6 @@ namespace Game.Unity.Graph
             var root = new GameObject("Graph Edges");
             root.transform.SetParent(parent, false);
 
-            var material = CreateLineMaterial();
             var edges = new GraphEdgeLine[level.Edges.Count];
             for (var i = 0; i < level.Edges.Count; i++)
             {
@@ -19,7 +18,7 @@ namespace Game.Unity.Graph
                 var a = new GraphNodeId(edge.NodeA);
                 var b = new GraphNodeId(edge.NodeB);
                 var points = layout.EdgeWorldPoints(a, b);
-                edges[i] = CreateEdge(root.transform, a, b, points, material);
+                edges[i] = CreateEdge(root.transform, a, b, points);
             }
 
             return edges;
@@ -29,8 +28,7 @@ namespace Game.Unity.Graph
             Transform parent,
             GraphNodeId a,
             GraphNodeId b,
-            Vector3[] worldPoints,
-            Material material)
+            Vector3[] worldPoints)
         {
             var go = new GameObject("Edge " + a.Value + "-" + b.Value);
             go.transform.SetParent(parent, false);
@@ -44,14 +42,14 @@ namespace Game.Unity.Graph
             line.endWidth = 0.08f;
             line.numCornerVertices = 2;
             line.numCapVertices = 2;
-            line.material = material;
+            line.material = CreateLineMaterial();
             line.startColor = new Color(0.55f, 0.62f, 0.72f, 0.85f);
             line.endColor = line.startColor;
             for (var i = 0; i < points.Length; i++)
                 line.SetPosition(i, points[i] + Vector3.up * 0.02f);
 
             var view = go.AddComponent<GraphEdgeLine>();
-            view.Initialise(a, b, points);
+            view.Initialise(a, b, points, line);
             view.SetVisible(false);
             return view;
         }

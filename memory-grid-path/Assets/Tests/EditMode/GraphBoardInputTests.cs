@@ -71,6 +71,26 @@ namespace Game.Unity.Tests
         }
 
         [Test]
+        public void TappingCurrentNodeScreenPointDoesNotPick()
+        {
+            var current = new GraphNodeId("n0");
+            var options = new[] { new GraphNodeId("n1"), new GraphNodeId("n2") };
+
+            var screenPoint = _camera.WorldToScreenPoint(_layout.WorldPosition(current));
+            var ray = _camera.ScreenPointToRay(screenPoint);
+
+            var picked = _layout.TryPickOptionUnderRay(
+                ray,
+                current,
+                options,
+                GraphBoardInput.NodePickRadius,
+                GraphBoardInput.EdgePickRadius,
+                out _);
+
+            Assert.That(picked, Is.False);
+        }
+
+        [Test]
         public void TappingEdgeScreenPointPicksOptionUnderRay()
         {
             var current = new GraphNodeId("n0");
@@ -80,6 +100,34 @@ namespace Game.Unity.Tests
 
             var edgeMidpoint = (_layout.WorldPosition(current) + _layout.WorldPosition(n2)) * 0.5f;
             var screenPoint = _camera.WorldToScreenPoint(edgeMidpoint);
+            var ray = _camera.ScreenPointToRay(screenPoint);
+
+            var picked = _layout.TryPickOptionUnderRay(
+                ray,
+                current,
+                options,
+                GraphBoardInput.NodePickRadius,
+                GraphBoardInput.EdgePickRadius,
+                out var target);
+
+            Assert.That(picked, Is.True);
+            Assert.That(target, Is.EqualTo(n2));
+        }
+
+        [Test]
+        public void TappingEdgeNearCurrentPicksOptionUnderRay()
+        {
+            var current = new GraphNodeId("n0");
+            var n1 = new GraphNodeId("n1");
+            var n2 = new GraphNodeId("n2");
+            var options = new[] { n1, n2 };
+
+            var from = _layout.WorldPosition(current);
+            var to = _layout.WorldPosition(n2);
+            var along = to - from;
+            along.y = 0f;
+            var near = from + along.normalized * 0.12f;
+            var screenPoint = _camera.WorldToScreenPoint(near);
             var ray = _camera.ScreenPointToRay(screenPoint);
 
             var picked = _layout.TryPickOptionUnderRay(

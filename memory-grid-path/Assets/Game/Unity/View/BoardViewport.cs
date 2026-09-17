@@ -10,7 +10,7 @@ namespace Game.Unity.View
     {
         public const float DefaultMinZoomFactor = 0.30f;
         public const float DefaultMaxZoomFactor = 1f;
-        public const float DefaultPanSlack = 0.12f;
+        public const float DefaultPanSlack = 0f;
 
         public struct Framing
         {
@@ -27,6 +27,7 @@ namespace Game.Unity.View
             public float MinOrthographicSize;
             public float MaxOrthographicSize;
             public float PanSlack;
+            public float TopViewportInset;
         }
 
         public static Limits ComputeLimits(
@@ -36,9 +37,10 @@ namespace Game.Unity.View
             float aspect,
             float minZoomFactor = DefaultMinZoomFactor,
             float maxZoomFactor = DefaultMaxZoomFactor,
-            float panSlack = DefaultPanSlack)
+            float panSlack = DefaultPanSlack,
+            float topViewportInset = 0f)
         {
-            var defaultSize = BoardCamera.ContainOrthographicSize(worldWidth, worldDepth, aspect);
+            var defaultSize = BoardCamera.ContainOrthographicSize(worldWidth, worldDepth, aspect, topViewportInset);
             return new Limits
             {
                 Origin = origin,
@@ -47,14 +49,20 @@ namespace Game.Unity.View
                 DefaultOrthographicSize = defaultSize,
                 MinOrthographicSize = defaultSize * Mathf.Max(0.1f, minZoomFactor),
                 MaxOrthographicSize = defaultSize * Mathf.Max(minZoomFactor, maxZoomFactor),
-                PanSlack = Mathf.Max(0f, panSlack)
+                PanSlack = Mathf.Max(0f, panSlack),
+                TopViewportInset = BoardCamera.ClampTopInset(topViewportInset)
             };
         }
 
         public static Framing DefaultFraming(Limits limits) =>
             new Framing
             {
-                Focus = limits.Origin,
+                Focus = new Vector3(
+                    limits.Origin.x,
+                    limits.Origin.y,
+                    limits.Origin.z + BoardCamera.TopHudFocusOffset(
+                        limits.TopViewportInset,
+                        limits.DefaultOrthographicSize)),
                 OrthographicSize = limits.DefaultOrthographicSize
             };
 
@@ -143,7 +151,12 @@ namespace Game.Unity.View
             if (minX > maxX)
                 minX = maxX = limits.Origin.x;
             if (minZ > maxZ)
-                minZ = maxZ = limits.Origin.z;
+            {
+                var centeredZ = limits.Origin.z + BoardCamera.TopHudFocusOffset(
+                    limits.TopViewportInset,
+                    orthographicSize);
+                minZ = maxZ = centeredZ;
+            }
 
             return new Vector3(
                 Mathf.Clamp(focus.x, minX, maxX),

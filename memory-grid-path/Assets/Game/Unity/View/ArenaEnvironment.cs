@@ -20,6 +20,8 @@ namespace Game.Unity.View
             DestroyChild(playRoot, "Mosaic Photo");
             DestroyChild(playRoot, "Mosaic Dust");
             DestroyChild(playRoot, "Patchwork Ocean");
+            DestroyChild(playRoot, "Scout Fog Padding");
+            DestroyChild(playRoot, "Scout Fog Overlay");
             DestroyChild(playRoot, "DanceFloor Post");
             DestroyChild(playRoot, "MosaicArena Post");
             DestroyChild(playRoot, "PatchworkArena Post");
@@ -36,9 +38,19 @@ namespace Game.Unity.View
             floor.transform.position = layout.Origin + new Vector3(0f, -RoomFloorDepth, 0f);
             var span = Mathf.Max(layout.Width, layout.Depth, 4f) * 4f;
             floor.transform.localScale = new Vector3(span / 10f, 1f, span / 10f);
-            Object.Destroy(floor.GetComponent<Collider>());
+            DestroyNow(floor.GetComponent<Collider>());
             floor.GetComponent<Renderer>().sharedMaterial = ArenaMaterials.Unlit("RoomFloor", color);
             return floor.transform;
+        }
+
+        public static void DestroyNow(Object obj)
+        {
+            if (obj == null)
+                return;
+            if (Application.isPlaying)
+                Object.Destroy(obj);
+            else
+                Object.DestroyImmediate(obj);
         }
 
         static void DestroyChild(Transform parent, string name)

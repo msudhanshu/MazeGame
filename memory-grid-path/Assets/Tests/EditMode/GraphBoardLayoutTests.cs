@@ -88,6 +88,19 @@ namespace Game.Unity.Tests
         }
 
         [Test]
+        public void ClickingTheCurrentNodeDoesNotPickAnOption()
+        {
+            var layout = new GraphBoardLayout(_level, Vector3.zero);
+            var current = new GraphNodeId("n0");
+            var n1 = new GraphNodeId("n1");
+            var n2 = new GraphNodeId("n2");
+
+            Assert.That(
+                layout.TryPickOption(layout.WorldPosition(current), current, new[] { n1, n2 }, 1.15f, 0.85f, out _),
+                Is.False);
+        }
+
+        [Test]
         public void ANodeHitWinsOverTheEdge()
         {
             var layout = new GraphBoardLayout(_level, Vector3.zero);

@@ -62,10 +62,10 @@ namespace Game.Unity.Themes.Experimental
             if (camera != null)
             {
                 camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = PatchworkOceanBackdrop.Background;
+                camera.backgroundColor = ScoutFogOfWar.Background;
             }
 
-            BuildOceanRoom(layout, parent);
+            BuildFogRoom(layout, parent);
         }
 
         Material SharedMaterial()
@@ -85,9 +85,9 @@ namespace Game.Unity.Themes.Experimental
             return _sharedMaterial;
         }
 
-        static void BuildOceanRoom(BoardLayout layout, Transform parent)
+        static void BuildFogRoom(BoardLayout layout, Transform parent)
         {
-            PatchworkOceanBackdrop.Build(layout, parent);
+            ScoutFogOfWar.Build(layout, parent);
 
             foreach (var light in Object.FindObjectsByType<Light>())
             {
@@ -96,7 +96,7 @@ namespace Game.Unity.Themes.Experimental
             }
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.18f, 0.28f, 0.32f);
+            RenderSettings.ambientLight = new Color(0.22f, 0.28f, 0.26f);
         }
     }
 }

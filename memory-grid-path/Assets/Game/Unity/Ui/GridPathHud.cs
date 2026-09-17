@@ -14,6 +14,7 @@ namespace Game.Unity.Ui
     {
         public const float FigmaWidth = 420f;
         public const float BarWidth = 940f;
+        public const float BarSidePad = 20f;
         public const float PlayfieldGapFig = 16f;
 
         [SerializeField] Canvas _canvas;
@@ -27,13 +28,17 @@ namespace Game.Unity.Ui
         [SerializeField] Transform _barsRoot;
         int _builtRuns = -1;
         int _builtLives = -1;
-        Image[][] _segments;
+        Image[] _heartFills;
+        Image[] _heartSpent;
+        RectTransform[] _heartRects;
         int _paintedRun = int.MinValue;
         int _paintedLives = int.MinValue;
         Coroutine _healthPulse;
         Coroutine _hintFlash;
         Color _hintColor;
         Color _hintSubColor;
+
+        public const string DefaultHintSub = "Tap a glowing neighbour tile.";
 
         public static float S(float fig) => fig * (BarWidth / FigmaWidth);
 
@@ -71,6 +76,7 @@ namespace Game.Unity.Ui
             if (_canvas == null)
                 Build();
             EnsureSafeArea();
+            ApplyHealthChrome();
         }
 
         public bool IsShown => _canvas != null && _canvas.gameObject.activeSelf;
@@ -178,6 +184,15 @@ namespace Game.Unity.Ui
             _stepsValue.text = step + "/" + totalSteps;
         }
 
+        public RectTransform HeartRect(int runNumber)
+        {
+            EnsureBuilt();
+            if (_heartRects == null || _heartRects.Length == 0)
+                return HealthWell;
+            var index = Mathf.Clamp(runNumber - 1, 0, _heartRects.Length - 1);
+            return _heartRects[index];
+        }
+
         public void SetHealth(int currentRun, int livesLeft, int livesPerRun, int runsPerSession)
         {
             if (livesPerRun < 1 || runsPerSession < 1)
@@ -188,22 +203,33 @@ namespace Game.Unity.Ui
             }
 
             _healthWell.gameObject.SetActive(true);
-            EnsureBars(runsPerSession, livesPerRun);
+            EnsureHearts(runsPerSession, livesPerRun);
 
             var run = Mathf.Clamp(currentRun, 1, runsPerSession);
             var lives = Mathf.Clamp(livesLeft, 0, livesPerRun);
             var lostLife = ShouldPulseHealth(_paintedRun, _paintedLives, run, lives);
-            for (var bar = 0; bar < runsPerSession; bar++)
+            for (var heart = 0; heart < runsPerSession; heart++)
             {
-                for (var segment = 0; segment < livesPerRun; segment++)
+                var fill = _heartFills[heart];
+                var spent = _heartSpent[heart];
+                var walk = heart + 1;
+                if (walk < run)
                 {
-                    var remaining = SessionHealthBars.Segment(bar, segment, run, lives, livesPerRun, runsPerSession)
-                        == HealthSegmentKind.Remaining;
-                    var image = _segments[bar][segment];
-                    image.color = remaining ? MemoryPathPalette.HealthFill : MemoryPathPalette.HealthEmpty;
-                    var glow = image.GetComponent<Outline>();
-                    if (glow != null)
-                        glow.enabled = remaining;
+                    fill.color = MemoryPathPalette.HeartSpent;
+                    spent.fillAmount = 1f;
+                    spent.color = MemoryPathPalette.HeartSpent;
+                }
+                else if (walk > run)
+                {
+                    fill.color = Color.white;
+                    spent.fillAmount = 0f;
+                }
+                else
+                {
+                    var glow = HeartHudFill.RemainingGlow(lives, livesPerRun);
+                    fill.color = Opaque(Color.Lerp(MemoryPathPalette.HeartDim, Color.white, glow));
+                    spent.fillAmount = HeartHudFill.SpentAmount(lives, livesPerRun);
+                    spent.color = MemoryPathPalette.HeartSpent;
                 }
             }
 
@@ -222,7 +248,7 @@ namespace Game.Unity.Ui
             StopHintFlash();
             _hint.text = title ?? "";
             _hintSub.text = string.IsNullOrEmpty(subtitle)
-                ? "Tap a neighbouring tile, or swipe toward it."
+                ? DefaultHintSub
                 : subtitle;
             _hint.color = _hintColor;
             _hintSub.color = _hintSubColor;
@@ -266,6 +292,52 @@ namespace Game.Unity.Ui
                 _hintSub.color = _hintSubColor;
         }
 
+        void ApplyHealthChrome()
+        {
+            if (_healthWell == null)
+                return;
+
+            var wellImage = _healthWell.GetComponent<Image>();
+            if (wellImage == null)
+            {
+                if (_healthWell.GetComponent<CanvasRenderer>() == null)
+                    _healthWell.gameObject.AddComponent<CanvasRenderer>();
+                wellImage = _healthWell.gameObject.AddComponent<Image>();
+            }
+            wellImage.enabled = true;
+            wellImage.sprite = UiDraw.Rounded;
+            wellImage.type = Image.Type.Sliced;
+            wellImage.color = MemoryPathPalette.HudHealthWellBorder;
+            wellImage.raycastTarget = false;
+            UiDraw.SetCornerRadius(wellImage, S(12));
+
+            var chrome = _healthWell.Find("Fill");
+            if (chrome == null)
+            {
+                var inner = UiDraw.Panel(_healthWell, "Fill", MemoryPathPalette.HudHealthWell);
+                inner.raycastTarget = false;
+                inner.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
+                UiDraw.Stretch(inner.rectTransform);
+                var inset = S(1.5f);
+                inner.rectTransform.offsetMin = new Vector2(inset, inset);
+                inner.rectTransform.offsetMax = new Vector2(-inset, -inset);
+                UiDraw.SetCornerRadius(inner, S(10));
+                inner.transform.SetAsFirstSibling();
+                chrome = inner.transform;
+            }
+
+            chrome.gameObject.SetActive(true);
+            var fill = chrome.GetComponent<Image>();
+            if (fill == null)
+                return;
+            fill.enabled = true;
+            fill.sprite = UiDraw.Rounded;
+            fill.type = Image.Type.Sliced;
+            fill.color = MemoryPathPalette.HudHealthWell;
+            fill.raycastTarget = false;
+            UiDraw.SetCornerRadius(fill, S(10));
+        }
+
         public void BindExit(Action onExit)
         {
             EnsureBuilt();
@@ -274,9 +346,9 @@ namespace Game.Unity.Ui
                 _exit.onClick.AddListener(() => onExit());
         }
 
-        void EnsureBars(int runs, int lives)
+        void EnsureHearts(int runs, int lives)
         {
-            if (_builtRuns == runs && _builtLives == lives && _segments != null)
+            if (_builtRuns == runs && _builtLives == lives && _heartFills != null)
                 return;
 
             for (var i = _barsRoot.childCount - 1; i >= 0; i--)
@@ -290,52 +362,48 @@ namespace Game.Unity.Ui
 
             _builtRuns = runs;
             _builtLives = lives;
-            _segments = new Image[runs][];
-            var colW = S(14);
-            var colH = S(41);
-            var divider = S(1);
-            var segH = lives <= 1 ? colH : (colH - divider * (lives - 1)) / lives;
-
+            _heartFills = new Image[runs];
+            _heartSpent = new Image[runs];
+            _heartRects = new RectTransform[runs];
+            var heartSize = S(28);
             var wellFit = _healthWell.GetComponent<LayoutElement>();
-            var wellW = S(16) + runs * colW + Mathf.Max(0, runs - 1) * S(6);
-            wellFit.minWidth = wellFit.preferredWidth = wellW;
-
-            for (var bar = 0; bar < runs; bar++)
+            var wellW = S(16) + runs * heartSize + Mathf.Max(0, runs - 1) * S(4);
+            if (wellFit != null)
             {
-                var tray = UiDraw.Panel(_barsRoot, "Bar" + bar, MemoryPathPalette.HealthEmpty);
-                UiDraw.SetCornerRadius(tray, S(3));
-                tray.raycastTarget = false;
-                tray.gameObject.AddComponent<RectMask2D>();
-                var trayLayout = tray.gameObject.AddComponent<VerticalLayoutGroup>();
-                trayLayout.padding = new RectOffset(0, 0, 0, 0);
-                trayLayout.spacing = 0;
-                trayLayout.childAlignment = TextAnchor.UpperCenter;
-                trayLayout.childControlWidth = true;
-                trayLayout.childControlHeight = true;
-                trayLayout.childForceExpandWidth = true;
-                trayLayout.childForceExpandHeight = false;
-                Fit(tray, colW, colH);
+                wellFit.minWidth = wellFit.preferredWidth = wellW;
+                wellFit.flexibleWidth = 0;
+                wellFit.layoutPriority = 2;
+            }
+            ApplyHealthChrome();
 
-                _segments[bar] = new Image[lives];
-                for (var fromTop = lives - 1; fromTop >= 0; fromTop--)
-                {
-                    var chip = UiDraw.Panel(tray.transform, "Seg" + fromTop, MemoryPathPalette.HealthEmpty);
-                    chip.raycastTarget = false;
-                    UiDraw.SetCornerRadius(chip, 0f);
-                    var glow = chip.gameObject.AddComponent<Outline>();
-                    glow.effectColor = MemoryPathPalette.HealthGlow;
-                    glow.effectDistance = new Vector2(0f, 0f);
-                    glow.enabled = false;
-                    Fit(chip, colW, segH);
-                    _segments[bar][fromTop] = chip;
+            var sprite = UiDraw.Heart;
+            for (var heart = 0; heart < runs; heart++)
+            {
+                var root = new GameObject("Heart" + heart, typeof(RectTransform)).transform;
+                root.SetParent(_barsRoot, false);
+                var rootRect = root.GetComponent<RectTransform>();
+                Fit(rootRect, heartSize, heartSize);
+                _heartRects[heart] = rootRect;
 
-                    if (fromTop > 0)
-                    {
-                        var line = UiDraw.Panel(tray.transform, "Div", MemoryPathPalette.HealthDivider);
-                        line.raycastTarget = false;
-                        Fit(line, colW, divider);
-                    }
-                }
+                var fill = UiDraw.Icon(root, "Fill", sprite, heartSize);
+                fill.raycastTarget = false;
+                fill.color = Color.white;
+                fill.preserveAspect = true;
+                fill.type = Image.Type.Simple;
+                fill.useSpriteMesh = true;
+                UiDraw.Stretch(fill.rectTransform);
+                _heartFills[heart] = fill;
+
+                var spent = UiDraw.Icon(root, "Spent", sprite, heartSize);
+                spent.raycastTarget = false;
+                spent.color = MemoryPathPalette.HeartSpent;
+                spent.preserveAspect = true;
+                spent.type = Image.Type.Filled;
+                spent.fillMethod = Image.FillMethod.Vertical;
+                spent.fillOrigin = (int)Image.OriginVertical.Bottom;
+                spent.fillAmount = 0f;
+                UiDraw.Stretch(spent.rectTransform);
+                _heartSpent[heart] = spent;
             }
         }
 
@@ -356,12 +424,7 @@ namespace Game.Unity.Ui
             var safe = MakeSafeArea(canvasGo.transform);
 
             var bar = Chrome(safe, "Bar", MemoryPathPalette.HudPanel, MemoryPathPalette.HudBorder, S(22), 1.5f);
-            var barRect = bar.rectTransform;
-            barRect.anchorMin = new Vector2(0.5f, 1f);
-            barRect.anchorMax = new Vector2(0.5f, 1f);
-            barRect.pivot = new Vector2(0.5f, 1f);
-            barRect.anchoredPosition = new Vector2(0f, -S(16));
-            barRect.sizeDelta = new Vector2(BarWidth, S(84));
+            FitTopSpan(bar.rectTransform, S(84));
             UiDraw.DropShadow(bar, new Color(0f, 0f, 0f, 0.7f), new Vector2(0f, -S(12)));
 
             var row = new GameObject("Row", typeof(RectTransform), typeof(HorizontalLayoutGroup)).transform;
@@ -388,36 +451,26 @@ namespace Game.Unity.Ui
 
             var hintTop = -(S(16) + S(84) + S(18));
             _hint = UiDraw.Label(safe, "Hint", "", S(16), UiWeight.ExtraBold, MemoryPathPalette.HudText);
-            var hintRect = _hint.rectTransform;
-            hintRect.anchorMin = new Vector2(0.5f, 1f);
-            hintRect.anchorMax = new Vector2(0.5f, 1f);
-            hintRect.pivot = new Vector2(0.5f, 1f);
-            hintRect.anchoredPosition = new Vector2(0f, hintTop);
-            hintRect.sizeDelta = new Vector2(BarWidth, S(22));
+            FitTopSpan(_hint.rectTransform, S(22), hintTop);
 
             _hintSub = UiDraw.Label(safe, "HintSub", "", S(12), UiWeight.Regular, MemoryPathPalette.HudMuted);
-            var subRect = _hintSub.rectTransform;
-            subRect.anchorMin = new Vector2(0.5f, 1f);
-            subRect.anchorMax = new Vector2(0.5f, 1f);
-            subRect.pivot = new Vector2(0.5f, 1f);
-            subRect.anchoredPosition = new Vector2(0f, hintTop - S(22));
-            subRect.sizeDelta = new Vector2(BarWidth, S(18));
+            FitTopSpan(_hintSub.rectTransform, S(18), hintTop - S(22));
             _hintColor = _hint.color;
             _hintSubColor = _hintSub.color;
         }
 
         void BuildHealth(Transform parent)
         {
-            var well = Chrome(parent, "Health", MemoryPathPalette.HudHealthWell, MemoryPathPalette.HudBorder, S(14), 1f, raycast: false);
+            var well = Chrome(parent, "Health", MemoryPathPalette.HudHealthWell, MemoryPathPalette.HudHealthWellBorder, S(12), 1.5f);
             _healthWell = well.transform;
             Fit(well, S(110), S(44));
 
             var bars = new GameObject("Bars", typeof(RectTransform), typeof(HorizontalLayoutGroup));
             bars.transform.SetParent(well.transform, false);
             UiDraw.Stretch(bars.GetComponent<RectTransform>());
-            var inset = S(8);
-            bars.GetComponent<RectTransform>().offsetMin = new Vector2(inset, S(1.5f));
-            bars.GetComponent<RectTransform>().offsetMax = new Vector2(-inset, -S(1.5f));
+            var inset = S(4);
+            bars.GetComponent<RectTransform>().offsetMin = new Vector2(inset, 0f);
+            bars.GetComponent<RectTransform>().offsetMax = new Vector2(-inset, 0f);
             _barsRoot = bars.transform;
             var layout = bars.GetComponent<HorizontalLayoutGroup>();
             layout.spacing = S(6);
@@ -468,13 +521,7 @@ namespace Game.Unity.Ui
                 ReparentInto(bar, safe);
                 var barRect = bar as RectTransform;
                 if (barRect != null)
-                {
-                    barRect.anchorMin = new Vector2(0.5f, 1f);
-                    barRect.anchorMax = new Vector2(0.5f, 1f);
-                    barRect.pivot = new Vector2(0.5f, 1f);
-                    barRect.anchoredPosition = new Vector2(0f, -S(16));
-                    barRect.sizeDelta = new Vector2(BarWidth, S(84));
-                }
+                    FitTopSpan(barRect, S(84));
             }
 
             var hintTop = -(S(16) + S(84) + S(18));
@@ -482,31 +529,29 @@ namespace Game.Unity.Ui
             if (hint != null)
             {
                 ReparentInto(hint, safe);
-                var hintRect = hint as RectTransform;
-                if (hintRect != null)
-                {
-                    hintRect.anchorMin = new Vector2(0.5f, 1f);
-                    hintRect.anchorMax = new Vector2(0.5f, 1f);
-                    hintRect.pivot = new Vector2(0.5f, 1f);
-                    hintRect.anchoredPosition = new Vector2(0f, hintTop);
-                    hintRect.sizeDelta = new Vector2(BarWidth, S(22));
-                }
+                if (hint is RectTransform hintRect)
+                    FitTopSpan(hintRect, S(22), hintTop);
             }
 
             var hintSub = _canvas.transform.Find("HintSub") ?? safe.Find("HintSub");
             if (hintSub != null)
             {
                 ReparentInto(hintSub, safe);
-                var subRect = hintSub as RectTransform;
-                if (subRect != null)
-                {
-                    subRect.anchorMin = new Vector2(0.5f, 1f);
-                    subRect.anchorMax = new Vector2(0.5f, 1f);
-                    subRect.pivot = new Vector2(0.5f, 1f);
-                    subRect.anchoredPosition = new Vector2(0f, hintTop - S(22));
-                    subRect.sizeDelta = new Vector2(BarWidth, S(18));
-                }
+                if (hintSub is RectTransform subRect)
+                    FitTopSpan(subRect, S(18), hintTop - S(22));
             }
+        }
+
+        static void FitTopSpan(RectTransform rect, float height, float anchoredY = float.NaN)
+        {
+            if (rect == null)
+                return;
+
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(0.5f, 1f);
+            rect.anchoredPosition = new Vector2(0f, float.IsNaN(anchoredY) ? -S(16) : anchoredY);
+            rect.sizeDelta = new Vector2(-2f * BarSidePad, height);
         }
 
         static void ReparentInto(Transform child, Transform parent)
@@ -668,6 +713,12 @@ namespace Game.Unity.Ui
             }
 
             return fit;
+        }
+
+        static Color Opaque(Color color)
+        {
+            color.a = 1f;
+            return color;
         }
 
         static void EnsureEventSystem()

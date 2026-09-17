@@ -13,7 +13,8 @@ namespace Game.Unity.Graph
             GraphBoardView board,
             GraphWalkRun run,
             bool showPath,
-            System.Collections.Generic.IReadOnlyList<Nixin.Graph.Core.GraphNodeId> visibleOptions = null)
+            System.Collections.Generic.IReadOnlyList<GraphNodeId> visibleOptions = null,
+            bool showChoicePaths = true)
         {
             if (board == null || !board.IsBuilt || run == null)
                 return;
@@ -44,15 +45,18 @@ namespace Game.Unity.Graph
 
             board.SetState(run.Path.Goal, run.IsLevelCompleted ? GraphNodeVisualState.Walked : GraphNodeVisualState.Goal);
 
-            if (run.Step == 0)
-                board.SetState(run.Path.Start, GraphNodeVisualState.Start);
-
             board.SetEdgesVisible(run.CurrentNode, run.WalkedNodes, options, showPath);
             board.SetNodesVisible(run.CurrentNode, run.WalkedNodes, options, showPath);
+            board.PaintOptionEdges(
+                run.CurrentNode,
+                showChoicePaths && !run.IsOver ? options : null);
             RefreshOverlay(board, run, showPath);
         }
 
-        static void RefreshOverlay(GraphBoardView board, GraphWalkRun run, bool showPath)
+        static void RefreshOverlay(
+            GraphBoardView board,
+            GraphWalkRun run,
+            bool showPath)
         {
             var overlay = board.Overlay;
             if (overlay == null)

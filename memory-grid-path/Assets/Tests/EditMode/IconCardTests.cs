@@ -92,6 +92,30 @@ namespace Game.Unity.Tests
                 });
                 Assert.That(card.Highlight.gameObject.activeSelf, Is.False);
                 Assert.That(card.Outline.effectColor, Is.EqualTo(Color.cyan));
+                Assert.That(card.Outline.useGraphicAlpha, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(card.gameObject);
+            }
+        }
+
+        [Test]
+        public void ApplyUsesCustomOutlineThicknessWhenSelected()
+        {
+            var card = IconCard.CreateTemplate();
+            try
+            {
+                card.gameObject.SetActive(true);
+                card.Apply(new IconCardLook
+                {
+                    Highlighted = true,
+                    HighlightColor = Color.cyan,
+                    OutlineThickness = 8f,
+                    Caption = "Tile Arena"
+                });
+                Assert.That(card.Outline.effectDistance, Is.EqualTo(new Vector2(8f, -8f)));
+                Assert.That(card.Outline.useGraphicAlpha, Is.False);
             }
             finally
             {

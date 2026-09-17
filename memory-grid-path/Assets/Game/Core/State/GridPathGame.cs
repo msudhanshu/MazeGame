@@ -127,7 +127,8 @@ namespace Game.Core.State
                     Run.IsLevelCompleted,
                     Catalog.Count,
                     Run.MemoryGrade,
-                    Config);
+                    Config,
+                    Run.MistakesMade);
 
             return outcome;
         }

@@ -8,6 +8,8 @@ namespace Game.Unity.Graph
     /// <summary>Maps authored node positions to world space on the XZ plane.</summary>
     public sealed class GraphBoardLayout
     {
+        public const float StandingPickRadius = 0.05f;
+
         readonly Dictionary<GraphNodeId, Vector3> _positions = new Dictionary<GraphNodeId, Vector3>();
         readonly List<GraphEdgePolyline> _edges = new List<GraphEdgePolyline>();
 
@@ -183,6 +185,23 @@ namespace Game.Unity.Graph
             var point = worldPoint;
             point.y = Origin.y;
 
+            Vector3 currentWorld;
+            try
+            {
+                currentWorld = WorldPosition(current);
+            }
+            catch (System.ArgumentException)
+            {
+                return false;
+            }
+
+            currentWorld.y = Origin.y;
+            var standing = StandingPickRadius * StandingPickRadius;
+            var toStanding = currentWorld - point;
+            toStanding.y = 0f;
+            if (toStanding.sqrMagnitude <= standing)
+                return false;
+
             var bestNode = nodePickRadius * nodePickRadius;
             var foundNode = false;
             for (var i = 0; i < options.Count; i++)
@@ -201,15 +220,6 @@ namespace Game.Unity.Graph
 
             if (foundNode)
                 return true;
-
-            try
-            {
-                WorldPosition(current);
-            }
-            catch (System.ArgumentException)
-            {
-                return false;
-            }
 
             var bestEdge = edgePickRadius * edgePickRadius;
             var foundEdge = false;

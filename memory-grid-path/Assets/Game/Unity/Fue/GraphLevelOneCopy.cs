@@ -2,8 +2,7 @@ namespace Game.Unity.Fue
 {
     public static class GraphLevelOneCopy
     {
-        public const string Opening = "Pinch or scroll to zoom in. Drag to explore the map.";
-        public const string Zoom = "Scroll or pinch to zoom in.";
-        public const string Pan = "Click and drag to pan the map.";
+        public const string Prompt = "Tap the node the finger is pointing at. Follow it to the end.";
+        public const string Health = "Wrong nodes cost a heart. Follow the finger to the goal.";
     }
 }

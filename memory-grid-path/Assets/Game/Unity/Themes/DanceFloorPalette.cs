@@ -25,7 +25,8 @@ namespace Game.Unity.Themes
         public static readonly Color Walked = new Color(1.00f, 1.00f, 1.00f);
         public static readonly Color Revealed = new Color(0.85f, 0.95f, 1.00f);
         public static readonly Color Wrong = new Color(1.00f, 0.12f, 0.12f);
-        public static readonly Color Candidate = new Color(0.75f, 0.80f, 0.90f);
+        public static readonly Color Candidate = new Color(0.92f, 0.96f, 1.00f);
+        public static readonly Color CandidateEdge = new Color(1.00f, 0.95f, 0.35f);
         public static readonly Color Start = new Color(0.30f, 1.00f, 0.55f);
         public static readonly Color Goal = new Color(1.00f, 0.85f, 0.25f);
         // Distinct pulse until real pickup VFX lands. Lighthouses reuse Revealed white.

@@ -68,6 +68,47 @@ namespace Game.Unity.Audio
             return true;
         }
 
+        public static bool PlayCorrectStep(int stepIndex)
+        {
+            if (!PlayerSettingsStore.SoundEffects)
+                return false;
+
+            Ensure();
+            if (_source == null)
+                return false;
+
+            var pitch = Mathf.Pow(1.059463f, Mathf.Clamp(stepIndex, 0, 14));
+            _source.pitch = pitch;
+            var played = Play(MemoryPathCue.CorrectStep);
+            if (!played)
+            {
+                _source.PlayOneShot(BuildSuccessSound("correct-step", 0.18f), 0.45f);
+                played = true;
+            }
+
+            _source.pitch = 1f;
+            return played;
+        }
+
+        public static bool PlayRevealChime()
+        {
+            if (!PlayerSettingsStore.SoundEffects)
+                return false;
+
+            Ensure();
+            if (_source == null)
+                return false;
+
+            _source.pitch = 1.35f;
+            var played = Play(MemoryPathCue.CorrectStep);
+            _source.pitch = 1f;
+            if (played)
+                return true;
+
+            _source.PlayOneShot(BuildSuccessSound("reveal-chime", 0.22f), 0.5f);
+            return true;
+        }
+
         static bool TryPlayCatalogCue(MemoryPathCue cue, float volumeMultiplier)
         {
             if (_catalog == null || _source == null)
@@ -132,7 +173,7 @@ namespace Game.Unity.Audio
             if (_longFail == null)
                 _longFail = BuildBigFailSound("session-fail", LongFailSeconds);
 
-            _source.PlayOneShot(_longFail, 0.98f);
+            _source.PlayOneShot(_longFail, 1f);
             return true;
         }
 
@@ -148,7 +189,7 @@ namespace Game.Unity.Audio
             if (_successSting == null)
                 _successSting = BuildSuccessSound("level-success", SuccessSeconds);
 
-            _source.PlayOneShot(_successSting, 0.92f);
+            _source.PlayOneShot(_successSting, 1f);
             return true;
         }
 

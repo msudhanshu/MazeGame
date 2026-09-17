@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Game.Core.State;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -40,8 +41,8 @@ namespace Game.Unity.Ui
         public const float FigmaWidth = 402f;
         public const float ScreenWidth = 720f;
 
-        public const string TitleCopy = "Memorize Way Home";
-        public const string TagCopy = "Watch the path. Walk it from memory.";
+        public const string TitleCopy = "Memory Game: Remember the Path Home";
+        public const string TagCopy = "Watch the radar. Walk it from memory.";
         public const string LevelsCopy = "Show Level";
         public const string ModesCopy = "SELECT GAME MODE";
 
@@ -50,6 +51,16 @@ namespace Game.Unity.Ui
         public const float HeaderButtonSize = 42f;
         public const float HeaderIconSize = 22f;
         public const float ModeCardCorner = 16f;
+        public const float PlayButtonSize = 204f;
+        public const float PlayIconSize = 68f;
+        public const float PlayLabelSize = 22f;
+        public const float HeroHeight = 310f;
+        public const float ModeTitleSize = 26f;
+        public const float ModeTitleHeight = 36f;
+        public const float ModeHeadingSize = 15f;
+        public const float SelectedModeOutline = 6f;
+        public const string BodyName = "Body";
+        public const string BodyContentName = "Content";
 
         [SerializeField] TextMeshProUGUI _title;
         [SerializeField] TextMeshProUGUI _tag;
@@ -66,6 +77,9 @@ namespace Game.Unity.Ui
         [FormerlySerializedAs("_modeCard")]
         [SerializeField] IconCard _iconCard;
         JourneyHomePayload _payload;
+        Coroutine _modeTitleBounce;
+        string _shownModeTitle;
+        bool _pendingModeTitleBounce;
 
         public TextMeshProUGUI ModeTitle => _modeTitle;
 
@@ -88,9 +102,12 @@ namespace Game.Unity.Ui
             if (_title == null)
                 Build();
 
-            EnsureModeTitle();
-            if (_modeTitle != null)
-                _modeTitle.text = ResolveSelectedModeTitle();
+            if (_title != null)
+                _title.text = TitleCopy;
+            if (_tag != null)
+                _tag.text = TagCopy;
+
+            ApplyModeTitle(ResolveSelectedModeTitle());
 
             _level.text = Mathf.Max(1, _payload.Level).ToString();
             _stars.text = _payload.StarsEarned + "/" + _payload.StarsMax;
@@ -101,6 +118,10 @@ namespace Game.Unity.Ui
             Bind(_volume, ToggleVolume);
             ApplyVolume();
             ApplyHeaderButtons();
+            ApplyPlayButton();
+            ApplyModeHeading();
+            EnsureHomeBody();
+            ApplyHomeStackOrder();
             ConfigureIconRow();
             RebuildIcons();
             RefreshLayout();
@@ -145,44 +166,141 @@ namespace Game.Unity.Ui
             return "Tile Arena";
         }
 
+        void ApplyModeTitle(string title)
+        {
+            EnsureModeTitle();
+            if (_modeTitle == null)
+                return;
+
+            StyleModeTitle(_modeTitle);
+            var previous = _shownModeTitle;
+            _modeTitle.text = title;
+            _shownModeTitle = title;
+            if (title == previous)
+                return;
+
+            if (isActiveAndEnabled)
+                PlayModeTitleBounce();
+            else
+                _pendingModeTitleBounce = true;
+        }
+
+        void OnEnable()
+        {
+            if (!_pendingModeTitleBounce)
+                return;
+            PlayModeTitleBounce();
+        }
+
+        void OnDisable()
+        {
+            if (_modeTitleBounce != null)
+            {
+                StopCoroutine(_modeTitleBounce);
+                _modeTitleBounce = null;
+            }
+
+            if (_modeTitle == null)
+                return;
+            _modeTitle.rectTransform.localScale = Vector3.one;
+            _modeTitle.color = MemoryPathPalette.HomeInk;
+        }
+
+        void StyleModeTitle(TextMeshProUGUI label)
+        {
+            if (label == null)
+                return;
+            label.font = UiDraw.FontOf(UiWeight.Black);
+            label.fontStyle = FontStyles.Normal;
+            label.fontSize = S(ModeTitleSize);
+            label.color = MemoryPathPalette.HomeInk;
+            Size(label, S(ModeTitleHeight));
+            var section = label.transform.parent;
+            if (section != null)
+                Size(section, S(ModeTitleHeight));
+        }
+
+        void PlayModeTitleBounce()
+        {
+            _pendingModeTitleBounce = false;
+            if (_modeTitle == null)
+                return;
+
+            if (_modeTitleBounce != null)
+            {
+                StopCoroutine(_modeTitleBounce);
+                _modeTitleBounce = null;
+            }
+
+            _modeTitle.rectTransform.localScale = Vector3.one;
+            _modeTitle.color = MemoryPathPalette.HomeInk;
+            if (!Application.isPlaying || !isActiveAndEnabled)
+                return;
+
+            _modeTitleBounce = StartCoroutine(BounceModeTitle());
+        }
+
+        IEnumerator BounceModeTitle()
+        {
+            var label = _modeTitle;
+            if (label == null)
+                yield break;
+
+            var rect = label.rectTransform;
+            var rest = MemoryPathPalette.HomeInk;
+            var flash = MemoryPathPalette.HomeModeSelectedRing;
+            const float duration = 0.45f;
+            var elapsed = 0f;
+            label.color = flash;
+            rect.localScale = Vector3.one * 0.72f;
+            while (elapsed < duration && label != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(elapsed / duration);
+                rect.localScale = Vector3.one * ModeTitleBounceScale(t);
+                label.color = Color.Lerp(flash, rest, Mathf.SmoothStep(0f, 1f, t));
+                yield return null;
+            }
+
+            if (label != null)
+            {
+                label.color = rest;
+                label.rectTransform.localScale = Vector3.one;
+            }
+
+            _modeTitleBounce = null;
+        }
+
+        public static float ModeTitleBounceScale(float t)
+        {
+            const float c1 = 2.2f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * Mathf.Pow(t - 1f, 3f) + c1 * Mathf.Pow(t - 1f, 2f);
+        }
+
         void EnsureModeTitle()
         {
             if (_modeTitle != null)
                 return;
 
-            var existing = FindChrome("Column/GameMode/Title");
+            var existing = FindHome("GameMode/Title");
             if (existing != null)
             {
                 _modeTitle = existing.GetComponent<TextMeshProUGUI>();
                 return;
             }
 
-            var col = FindChrome("Column");
-            if (col == null)
+            var content = HomeContent();
+            if (content == null)
                 return;
 
-            var hero = col.Find("Hero");
+            var hero = content.Find("Hero");
             var section = new GameObject("GameMode", typeof(VerticalLayoutGroup), typeof(ContentSizeFitter)).transform;
-            section.SetParent(col, false);
+            section.SetParent(content, false);
             if (hero != null)
-                section.SetSiblingIndex(hero.GetSiblingIndex());
+                section.SetSiblingIndex(hero.GetSiblingIndex() + 1);
 
-            Size(section, S(32));
-            var layout = section.GetComponent<VerticalLayoutGroup>();
-            UiDraw.Vertical(layout, 0f, TextAnchor.MiddleCenter);
-            section.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            _modeTitle = UiDraw.Label(
-                section,
-                "Title",
-                "Tile Arena",
-                S(22),
-                UiWeight.ExtraBold,
-                MemoryPathPalette.HomeInk,
-                TextAnchor.MiddleCenter);
-            _modeTitle.textWrappingMode = TextWrappingModes.NoWrap;
-            _modeTitle.overflowMode = TextOverflowModes.Overflow;
-            Size(_modeTitle, S(28));
+            MakeModeTitleLabel(section);
         }
 
         void ToggleVolume()
@@ -207,6 +325,9 @@ namespace Game.Unity.Ui
             var column = FindChrome("Column") as RectTransform;
             if (column != null)
                 LayoutRebuilder.ForceRebuildLayoutImmediate(column);
+            var content = HomeContent() as RectTransform;
+            if (content != null && content != column)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(content);
         }
 
         static void Bind(Button button, Action action)
@@ -354,6 +475,9 @@ namespace Game.Unity.Ui
             fit.minWidth = 0f;
             card.Apply(ToLook(info));
             RoundModeCard(card);
+            var mask = card.GetComponent<Mask>();
+            if (mask != null)
+                mask.enabled = !(info.Selected && info.Unlocked);
             var id = info.Id;
             if (_payload.OnSelectMode != null)
                 card.SetClick(() => _payload.OnSelectMode(id));
@@ -369,8 +493,9 @@ namespace Game.Unity.Ui
             {
                 BackgroundColor = info.Unlocked ? MemoryPathPalette.HomeFrost : MemoryPathPalette.HomeLockedCard,
                 BorderColor = MemoryPathPalette.HomeFrostBorder,
-                HighlightColor = MemoryPathPalette.HomeModeSelected,
+                HighlightColor = MemoryPathPalette.HomeModeSelectedRing,
                 Highlighted = selected,
+                OutlineThickness = S(SelectedModeOutline),
                 AccentColor = HeaderTint(info),
                 Item = item,
                 ItemColor = Color.white,
@@ -425,34 +550,148 @@ namespace Game.Unity.Ui
                 MemoryPathPalette.MenuMid,
                 MemoryPathPalette.MenuFrom);
 
-            var col = new GameObject("Column", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter)).transform;
+            var col = new GameObject("Column", typeof(RectTransform), typeof(VerticalLayoutGroup)).transform;
             col.SetParent(transform, false);
             var colRect = col.GetComponent<RectTransform>();
-            colRect.anchorMin = new Vector2(0f, 1f);
-            colRect.anchorMax = new Vector2(1f, 1f);
-            colRect.pivot = new Vector2(0.5f, 1f);
-            colRect.anchoredPosition = Vector2.zero;
-            colRect.sizeDelta = Vector2.zero;
-            var fitter = col.GetComponent<ContentSizeFitter>();
-            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            StretchColumn(colRect);
             var layout = col.GetComponent<VerticalLayoutGroup>();
-            UiDraw.Vertical(layout, S(20), TextAnchor.UpperCenter);
-            layout.padding = new RectOffset(Si(24), Si(24), Si(12), Si(40));
+            UiDraw.Vertical(layout, S(16), TextAnchor.UpperCenter);
+            layout.padding = new RectOffset(Si(24), Si(24), Si(12), Si(24));
 
             BuildHeader(col);
             BuildBrand(col);
-            BuildModeTitle(col);
-            BuildHero(col);
+            var body = BuildBody(col);
+            BuildHero(body);
+            BuildModeTitle(body);
+            BuildModes(body);
             BuildLevelChip(col);
             BuildStats(col);
-            BuildModes(col);
+            EnsureHomeScroll();
+        }
+
+        Transform FindHome(string path)
+        {
+            return FindChrome("Column/" + BodyName + "/" + BodyContentName + "/" + path)
+                ?? FindChrome("Column/" + BodyName + "/" + path)
+                ?? FindChrome("Column/" + path);
+        }
+
+        Transform HomeContent()
+        {
+            return FindChrome("Column/" + BodyName + "/" + BodyContentName)
+                ?? FindChrome("Column/" + BodyName)
+                ?? FindChrome("Column");
+        }
+
+        void EnsureHomeBody()
+        {
+            var col = FindChrome("Column") as RectTransform;
+            if (col == null)
+                return;
+
+            Transform content;
+            if (col.Find(BodyName) == null)
+            {
+                StretchColumn(col);
+                content = BuildBody(col);
+            }
+            else
+            {
+                content = HomeContent();
+            }
+
+            if (content != null && content != col)
+            {
+                MoveNamed(col, "Hero", content);
+                MoveNamed(col, "GameMode", content);
+                MoveNamed(col, "Modes", content);
+            }
+
+            EnsureHomeScroll();
+        }
+
+        static void MoveNamed(Transform from, string name, Transform to)
+        {
+            var child = from.Find(name);
+            if (child == null || to == null)
+                return;
+            child.SetParent(to, false);
+        }
+
+        Transform BuildBody(Transform col)
+        {
+            var body = new GameObject(
+                BodyName,
+                typeof(RectTransform),
+                typeof(VerticalLayoutGroup),
+                typeof(ContentSizeFitter),
+                typeof(LayoutElement)).transform;
+            body.SetParent(col, false);
+            var layout = body.GetComponent<VerticalLayoutGroup>();
+            UiDraw.Vertical(layout, S(16), TextAnchor.UpperCenter);
+            body.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var fit = body.GetComponent<LayoutElement>();
+            fit.flexibleHeight = 0f;
+            fit.flexibleWidth = 1f;
+            return body;
+        }
+
+        void EnsureHomeScroll()
+        {
+            var col = FindChrome("Column") as RectTransform;
+            if (col == null || col.parent == null)
+                return;
+
+            var viewport = col.parent as RectTransform;
+            if (viewport == null)
+                return;
+
+            if (viewport.GetComponent<ScrollRect>() != null)
+                return;
+
+            if (viewport.GetComponent<Image>() == null)
+            {
+                var hit = viewport.gameObject.AddComponent<Image>();
+                hit.color = Color.clear;
+                hit.raycastTarget = true;
+            }
+
+            var scroll = viewport.gameObject.AddComponent<ScrollRect>();
+            scroll.content = col;
+            scroll.viewport = viewport;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.scrollSensitivity = 60f;
+            scroll.inertia = true;
+            scroll.verticalNormalizedPosition = 1f;
+        }
+
+        static void StretchColumn(RectTransform col)
+        {
+            if (col == null)
+                return;
+            col.anchorMin = new Vector2(0f, 1f);
+            col.anchorMax = new Vector2(1f, 1f);
+            col.pivot = new Vector2(0.5f, 1f);
+            col.anchoredPosition = Vector2.zero;
+            col.sizeDelta = new Vector2(0f, col.sizeDelta.y);
+            var fitter = col.GetComponent<ContentSizeFitter>() ?? col.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.enabled = true;
         }
 
         void BuildModeTitle(Transform col)
         {
             var section = new GameObject("GameMode", typeof(VerticalLayoutGroup), typeof(ContentSizeFitter)).transform;
             section.SetParent(col, false);
-            Size(section, S(32));
+            MakeModeTitleLabel(section);
+        }
+
+        void MakeModeTitleLabel(Transform section)
+        {
+            Size(section, S(ModeTitleHeight));
             var layout = section.GetComponent<VerticalLayoutGroup>();
             UiDraw.Vertical(layout, 0f, TextAnchor.MiddleCenter);
             section.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -461,13 +700,85 @@ namespace Game.Unity.Ui
                 section,
                 "Title",
                 "Tile Arena",
-                S(22),
-                UiWeight.ExtraBold,
+                S(ModeTitleSize),
+                UiWeight.Black,
                 MemoryPathPalette.HomeInk,
                 TextAnchor.MiddleCenter);
             _modeTitle.textWrappingMode = TextWrappingModes.NoWrap;
             _modeTitle.overflowMode = TextOverflowModes.Overflow;
-            Size(_modeTitle, S(28));
+            Size(_modeTitle, S(ModeTitleHeight));
+        }
+
+        void ApplyPlayButton()
+        {
+            if (_play == null)
+                return;
+
+            var playRect = _play.GetComponent<RectTransform>();
+            var size = S(PlayButtonSize);
+            playRect.sizeDelta = new Vector2(size, size);
+
+            var hero = _play.transform.parent as RectTransform;
+            if (hero != null && hero.name == "Hero")
+                Size(hero, S(HeroHeight));
+
+            playRect.anchoredPosition = Vector2.zero;
+
+            var stack = _play.transform.Find("Stack") as RectTransform;
+            if (stack != null)
+                stack.sizeDelta = new Vector2(S(126), S(108));
+
+            var icon = _play.transform.Find("Stack/Icon");
+            if (icon != null)
+                Fit(icon, S(PlayIconSize));
+
+            var label = _play.transform.Find("Stack/Label")?.GetComponent<TextMeshProUGUI>();
+            if (label != null)
+                label.fontSize = S(PlayLabelSize);
+        }
+
+        void ApplyModeHeading()
+        {
+            var heading = FindHome("Modes/Heading");
+            if (heading == null)
+                return;
+            var text = heading.GetComponent<TextMeshProUGUI>();
+            if (text == null)
+                return;
+            text.font = UiDraw.FontOf(UiWeight.Black);
+            text.fontStyle = FontStyles.Normal;
+            text.color = MemoryPathPalette.HomeInk;
+            text.fontSize = S(ModeHeadingSize);
+            Size(text, S(20));
+        }
+
+        void ApplyHomeStackOrder()
+        {
+            var col = FindChrome("Column");
+            if (col == null)
+                return;
+
+            Place(col, "Header", 0);
+            Place(col, "Brand", 1);
+            Place(col, BodyName, 2);
+            Place(col, "LevelWrap", 3);
+            Place(col, "Stats", 4);
+
+            var content = HomeContent();
+            if (content != null && content != col)
+            {
+                Place(content, "Hero", 0);
+                Place(content, "GameMode", 1);
+                Place(content, "Modes", 2);
+            }
+        }
+
+        static void Place(Transform parent, string name, int index)
+        {
+            var child = parent.Find(name);
+            if (child == null)
+                return;
+            child.SetSiblingIndex(Mathf.Clamp(index, 0, parent.childCount - 1));
         }
 
         void BuildHeader(Transform col)
@@ -494,9 +805,12 @@ namespace Game.Unity.Ui
             Size(brand, S(105));
             UiDraw.Vertical(brand.GetComponent<VerticalLayoutGroup>(), S(6), TextAnchor.UpperCenter);
 
-            _title = UiDraw.Label(brand, "Title", TitleCopy, S(32), UiWeight.Black, MemoryPathPalette.HomeInk);
-            _title.textWrappingMode = TextWrappingModes.Normal;
+            _title = UiDraw.Label(brand, "Title", TitleCopy, S(28), UiWeight.Black, MemoryPathPalette.HomeInk);
+            _title.textWrappingMode = TextWrappingModes.NoWrap;
             _title.overflowMode = TextOverflowModes.Overflow;
+            _title.enableAutoSizing = true;
+            _title.fontSizeMin = S(16);
+            _title.fontSizeMax = S(28);
             Size(_title, S(80));
             _tag = UiDraw.Label(brand, "Tag", TagCopy, S(15), UiWeight.Regular, MemoryPathPalette.HomeMuted);
             Size(_tag, S(19));
@@ -506,7 +820,7 @@ namespace Game.Unity.Ui
         {
             var hero = new GameObject("Hero", typeof(RectTransform)).transform;
             hero.SetParent(col, false);
-            Size(hero, S(270));
+            Size(hero, S(HeroHeight));
 
             var art = UiDraw.Icon(hero, "Path", UiDraw.ResourceSprite("Home/path-graphic"), S(260));
             var artRect = art.rectTransform;
@@ -519,8 +833,8 @@ namespace Game.Unity.Ui
             var playRect = _play.GetComponent<RectTransform>();
             playRect.anchorMin = playRect.anchorMax = new Vector2(0.5f, 0.5f);
             playRect.pivot = new Vector2(0.5f, 0.5f);
-            playRect.anchoredPosition = new Vector2(0f, -S(15));
-            playRect.sizeDelta = new Vector2(S(130), S(130));
+            playRect.anchoredPosition = Vector2.zero;
+            playRect.sizeDelta = new Vector2(S(PlayButtonSize), S(PlayButtonSize));
         }
 
         Button MakePlay(Transform parent)
@@ -528,7 +842,7 @@ namespace Game.Unity.Ui
             var ring = UiDraw.Panel(parent, "Play", MemoryPathPalette.HomePlayRing, UiDraw.Circle);
             var button = ring.gameObject.AddComponent<Button>();
             button.targetGraphic = ring;
-            UiDraw.DropShadow(ring, MemoryPathPalette.HomePlayShadow, new Vector2(0f, -S(12)));
+            UiDraw.DropShadow(ring, MemoryPathPalette.HomePlayShadow, new Vector2(0f, -S(14)));
 
             var fill = UiDraw.Panel(ring.transform, "Fill", Color.white, UiDraw.Circle);
             fill.raycastTarget = false;
@@ -555,13 +869,13 @@ namespace Game.Unity.Ui
             var stackRect = stack.GetComponent<RectTransform>();
             stackRect.anchorMin = stackRect.anchorMax = new Vector2(0.5f, 0.5f);
             stackRect.pivot = new Vector2(0.5f, 0.5f);
-            stackRect.sizeDelta = new Vector2(S(80), S(68));
+            stackRect.sizeDelta = new Vector2(S(126), S(108));
             var layout = stack.GetComponent<VerticalLayoutGroup>();
             UiDraw.Vertical(layout, S(4), TextAnchor.MiddleCenter);
             layout.childForceExpandWidth = false;
 
-            LayoutIcon(stack, "Icon", "Home/play-circle", S(44));
-            UiDraw.Label(stack, "Label", "PLAY", S(16), UiWeight.ExtraBold, Color.white);
+            LayoutIcon(stack, "Icon", "Home/play-circle", S(PlayIconSize));
+            UiDraw.Label(stack, "Label", "PLAY", S(PlayLabelSize), UiWeight.ExtraBold, Color.white);
             return button;
         }
 
@@ -616,9 +930,9 @@ namespace Game.Unity.Ui
             var layout = section.GetComponent<VerticalLayoutGroup>();
             UiDraw.Vertical(layout, S(12), TextAnchor.UpperLeft);
 
-            var heading = UiDraw.Label(section, "Heading", ModesCopy, S(13), UiWeight.ExtraBold, MemoryPathPalette.HomeMuted, TextAnchor.MiddleLeft);
+            var heading = UiDraw.Label(section, "Heading", ModesCopy, S(ModeHeadingSize), UiWeight.Black, MemoryPathPalette.HomeInk, TextAnchor.MiddleLeft);
             heading.textWrappingMode = TextWrappingModes.NoWrap;
-            Size(heading, S(16));
+            Size(heading, S(20));
 
             var panel = MakeModePanel(section);
             var row = new GameObject("Row", typeof(HorizontalLayoutGroup), typeof(LayoutElement)).transform;

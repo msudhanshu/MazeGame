@@ -29,7 +29,7 @@ namespace Game.Unity.Themes
 
             // Tiles are picked by projecting a ray onto the board plane, so the primitive's
             // collider is only in the way.
-            Object.Destroy(go.GetComponent<Collider>());
+            ArenaEnvironment.DestroyNow(go.GetComponent<Collider>());
 
             var tileRenderer = go.GetComponent<Renderer>();
             tileRenderer.sharedMaterial = SharedMaterial();
@@ -84,7 +84,7 @@ namespace Game.Unity.Themes
             // Plane primitives are 10 units across, and this one sits just under the tiles.
             floor.transform.position = layout.Origin + new Vector3(0f, -0.02f, 0f);
             floor.transform.localScale = new Vector3(layout.Width * 0.4f, 1f, layout.Depth * 0.4f);
-            Object.Destroy(floor.GetComponent<Collider>());
+            ArenaEnvironment.DestroyNow(floor.GetComponent<Collider>());
             floor.GetComponent<Renderer>().sharedMaterial = ArenaMaterials.Unlit("RoomFloor", DanceFloorPalette.Grout);
 
             foreach (var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))

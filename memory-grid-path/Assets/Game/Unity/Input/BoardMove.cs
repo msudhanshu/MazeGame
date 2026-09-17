@@ -16,6 +16,16 @@ namespace Game.Unity.Input
             Camera camera,
             BoardLayout layout,
             GridCoord current,
+            out GridCoord target) =>
+            TryResolve(stroke, screenPosition, camera, layout, current, headingYaw: 0f, out target);
+
+        public static bool TryResolve(
+            StrokeResult stroke,
+            Vector2 screenPosition,
+            Camera camera,
+            BoardLayout layout,
+            GridCoord current,
+            float headingYaw,
             out GridCoord target)
         {
             target = default;
@@ -28,7 +38,8 @@ namespace Game.Unity.Input
                     return layout.TryCoordUnderRay(camera.ScreenPointToRay(screenPosition), out target);
 
                 case StrokeKind.Swipe:
-                    target = current.Offset(stroke.Offset.X, stroke.Offset.Y);
+                    var offset = ScoutRotationMove.RotateSwipe(stroke.Offset, headingYaw);
+                    target = current.Offset(offset.X, offset.Y);
                     return true;
 
                 default:

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Core.Domain;
 using UnityEngine;
 
 namespace Game.Unity.Data
@@ -22,6 +23,8 @@ namespace Game.Unity.Data
         public int MaxTurns = 8;
         public int LivesPerRun = 3;
         public int RunsPerSession = 5;
+        public PathPreviewKind PreviewKind = PathPreviewKind.CameraFlash;
+        public float PreviewSeconds;
 
         public string ResolvedGoalNodeId =>
             string.IsNullOrEmpty(GoalNodeId)
@@ -46,7 +49,9 @@ namespace Game.Unity.Data
                 MinTurns = MinTurns,
                 MaxTurns = MaxTurns,
                 LivesPerRun = LivesPerRun,
-                RunsPerSession = RunsPerSession
+                RunsPerSession = RunsPerSession,
+                PreviewKind = PreviewKind,
+                PreviewSeconds = PreviewSeconds
             };
 
             for (var i = 0; i < Nodes.Count; i++)
@@ -95,6 +100,8 @@ namespace Game.Unity.Data
                 a.MaxTurns != b.MaxTurns ||
                 a.LivesPerRun != b.LivesPerRun ||
                 a.RunsPerSession != b.RunsPerSession ||
+                a.PreviewKind != b.PreviewKind ||
+                !Mathf.Approximately(a.PreviewSeconds, b.PreviewSeconds) ||
                 a.Nodes.Count != b.Nodes.Count ||
                 a.Edges.Count != b.Edges.Count)
                 return false;

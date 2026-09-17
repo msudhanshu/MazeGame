@@ -17,18 +17,18 @@ namespace Game.Unity.Editor
         const string SplashLandscapePath = "Packages/com.nixin.boot/Runtime/Unity/Resources/NixinBrand/SplashLandscape.jpg";
         const string LogoPath = "Packages/com.nixin.boot/Runtime/Unity/Resources/NixinBrand/LogoNeon.png";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Apply Brand (name, icon, splash)")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Bake/Apply Brand", false, 42)]
         public static void ApplyFromMenu()
         {
             Apply();
             AssetDatabase.SaveAssets();
-            Debug.Log("Brand applied: " + AppIdentity.ProductName + " / " + AppIdentity.AndroidPackage);
+            Debug.Log("Brand applied: " + AppIdentity.DisplayName + " / " + AppIdentity.AndroidPackage);
         }
 
         public static void Apply()
         {
             PlayerSettings.companyName = "Nixin Studio";
-            PlayerSettings.productName = AppIdentity.ProductName;
+            PlayerSettings.productName = AppIdentity.DisplayName;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, AppIdentity.AndroidPackage);
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, AppIdentity.AndroidPackage);
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, AppIdentity.AndroidPackage);

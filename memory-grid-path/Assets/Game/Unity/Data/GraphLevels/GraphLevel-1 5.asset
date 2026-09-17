@@ -1,0 +1,1145 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 487aab13424064c68be68ea064f10115, type: 3}
+  m_Name: GraphLevel-1 5
+  m_EditorClassIdentifier: Game.Unity::Game.Unity.Data.GraphLevelDefinition
+  _displayName: Extracted Graph 5
+  _background: {fileID: 2800000, guid: 3798320e1113a465a80d9cfb0c2cf4aa, type: 3}
+  _imageAspect: 0.6708861
+  _worldWidth: 12
+  _nodes:
+  - Id: n0
+    NormalizedPosition: {x: 0.007084, y: 0.991291}
+  - Id: n1
+    NormalizedPosition: {x: 0.472255, y: 0.938836}
+  - Id: n2
+    NormalizedPosition: {x: 0.121163, y: 0.93656}
+  - Id: n3
+    NormalizedPosition: {x: 0.336482, y: 0.909739}
+  - Id: n4
+    NormalizedPosition: {x: 0.837072, y: 0.870942}
+  - Id: n5
+    NormalizedPosition: {x: 0.465958, y: 0.860913}
+  - Id: n6
+    NormalizedPosition: {x: 0.664362, y: 0.851374}
+  - Id: n7
+    NormalizedPosition: {x: 0.139709, y: 0.845078}
+  - Id: n8
+    NormalizedPosition: {x: 0.232192, y: 0.842175}
+  - Id: n9
+    NormalizedPosition: {x: 0.740653, y: 0.823964}
+  - Id: n10
+    NormalizedPosition: {x: 0.560213, y: 0.823436}
+  - Id: n11
+    NormalizedPosition: {x: 0.308737, y: 0.798364}
+  - Id: n12
+    NormalizedPosition: {x: 0.623573, y: 0.769464}
+  - Id: n13
+    NormalizedPosition: {x: 0.216057, y: 0.740866}
+  - Id: n14
+    NormalizedPosition: {x: 0.811688, y: 0.714568}
+  - Id: n15
+    NormalizedPosition: {x: 0.514994, y: 0.712589}
+  - Id: n16
+    NormalizedPosition: {x: 0.751279, y: 0.692003}
+  - Id: n17
+    NormalizedPosition: {x: 0.800472, y: 0.684086}
+  - Id: n18
+    NormalizedPosition: {x: 0.395176, y: 0.676055}
+  - Id: n19
+    NormalizedPosition: {x: 0.607438, y: 0.64872}
+  - Id: n20
+    NormalizedPosition: {x: 0.216057, y: 0.618567}
+  - Id: n21
+    NormalizedPosition: {x: 0.458593, y: 0.617238}
+  - Id: n22
+    NormalizedPosition: {x: 0.668634, y: 0.600422}
+  - Id: n23
+    NormalizedPosition: {x: 0.433294, y: 0.597783}
+  - Id: n24
+    NormalizedPosition: {x: 0.401712, y: 0.593824}
+  - Id: n25
+    NormalizedPosition: {x: 0.976978, y: 0.579572}
+  - Id: n26
+    NormalizedPosition: {x: 0.913577, y: 0.57688}
+  - Id: n27
+    NormalizedPosition: {x: 0.730815, y: 0.575416}
+  - Id: n28
+    NormalizedPosition: {x: 0.361106, y: 0.561814}
+  - Id: n30
+    NormalizedPosition: {x: 0.802361, y: 0.551702}
+  - Id: n31
+    NormalizedPosition: {x: 0.936246, y: 0.541568}
+  - Id: n32
+    NormalizedPosition: {x: 0.728847, y: 0.537081}
+  - Id: n34
+    NormalizedPosition: {x: 0.571429, y: 0.530483}
+  - Id: n35
+    NormalizedPosition: {x: 0.891291, y: 0.518789}
+  - Id: n36
+    NormalizedPosition: {x: 0.822904, y: 0.513064}
+  - Id: n37
+    NormalizedPosition: {x: 0.992916, y: 0.497229}
+  - Id: n38
+    NormalizedPosition: {x: 0.727273, y: 0.483769}
+  - Id: n39
+    NormalizedPosition: {x: 0.451135, y: 0.464766}
+  - Id: n40
+    NormalizedPosition: {x: 0.627804, y: 0.464766}
+  - Id: n41
+    NormalizedPosition: {x: 0.07353248, y: 0.48055553}
+  - Id: n42
+    NormalizedPosition: {x: 0.295422, y: 0.449987}
+  - Id: n43
+    NormalizedPosition: {x: 0.537584, y: 0.438374}
+  - Id: n44
+    NormalizedPosition: {x: 0.379378, y: 0.403537}
+  - Id: n45
+    NormalizedPosition: {x: 0.566706, y: 0.37688}
+  - Id: n46
+    NormalizedPosition: {x: 0.802046, y: 0.363684}
+  - Id: n48
+    NormalizedPosition: {x: 0.371901, y: 0.360451}
+  - Id: n49
+    NormalizedPosition: {x: 0.484534, y: 0.357403}
+  - Id: n50
+    NormalizedPosition: {x: 0.73416, y: 0.348509}
+  - Id: n51
+    NormalizedPosition: {x: 0.900236, y: 0.346793}
+  - Id: n52
+    NormalizedPosition: {x: 0.327037, y: 0.341251}
+  - Id: n53
+    NormalizedPosition: {x: 0.619329, y: 0.33322}
+  - Id: n54
+    NormalizedPosition: {x: 0.09209, y: 0.326999}
+  - Id: n55
+    NormalizedPosition: {x: 1, y: 0.311164}
+  - Id: n56
+    NormalizedPosition: {x: 0.005903, y: 0.304038}
+  - Id: n57
+    NormalizedPosition: {x: 0.072904, y: 0.285036}
+  - Id: n58
+    NormalizedPosition: {x: 0.913813, y: 0.269834}
+  - Id: n59
+    NormalizedPosition: {x: 0.569461, y: 0.23621}
+  - Id: n60
+    NormalizedPosition: {x: 0.98111, y: 0.235154}
+  - Id: n61
+    NormalizedPosition: {x: 0.700512, y: 0.229084}
+  - Id: n62
+    NormalizedPosition: {x: 0.82802, y: 0.202428}
+  - Id: n63
+    NormalizedPosition: {x: 0.248327, y: 0.199789}
+  - Id: n64
+    NormalizedPosition: {x: 0.203463, y: 0.170757}
+  - Id: n65
+    NormalizedPosition: {x: 0.775089, y: 0.159541}
+  - Id: n66
+    NormalizedPosition: {x: 0.255018, y: 0.146477}
+  - Id: n67
+    NormalizedPosition: {x: 0.92562, y: 0.128266}
+  - Id: n68
+    NormalizedPosition: {x: 0.985832, y: 0.120348}
+  - Id: n69
+    NormalizedPosition: {x: 0.299646, y: 0.118765}
+  - Id: n70
+    NormalizedPosition: {x: 0.724911, y: 0.114806}
+  - Id: n71
+    NormalizedPosition: {x: 0.825659, y: 0.104777}
+  - Id: n72
+    NormalizedPosition: {x: 0.567493, y: 0.097651}
+  - Id: n73
+    NormalizedPosition: {x: 0.188902, y: 0.097585}
+  - Id: n74
+    NormalizedPosition: {x: 0.853011, y: 0.066904}
+  - Id: n75
+    NormalizedPosition: {x: 0.67863, y: 0.051544}
+  - Id: n76
+    NormalizedPosition: {x: 0.022432, y: 0.015835}
+  - Id: n77
+    NormalizedPosition: {x: 0.927981, y: 0.001584}
+  - Id: n78
+    NormalizedPosition: {x: 0.72137, y: 0.000792}
+  _edges:
+  - NodeA: n2
+    NodeB: n7
+    ControlPoints:
+    - NormalizedPosition: {x: 0.115702, y: 0.889153}
+      TangentDegrees: -91.29427
+      TangentLength: 0.026929
+    - NormalizedPosition: {x: 0.121606, y: 0.867775}
+      TangentDegrees: -61.531918
+      TangentLength: 0.025276
+  - NodeA: n1
+    NodeB: n3
+    ControlPoints:
+    - NormalizedPosition: {x: 0.439197, y: 0.947743}
+      TangentDegrees: 174.32617
+      TangentLength: 0.032506
+    - NormalizedPosition: {x: 0.40732, y: 0.945368}
+      TangentDegrees: -169.63528
+      TangentLength: 0.033181
+    - NormalizedPosition: {x: 0.374262, y: 0.935867}
+      TangentDegrees: -160.90776
+      TangentLength: 0.038774
+  - NodeA: n1
+    NodeB: n5
+    ControlPoints:
+    - NormalizedPosition: {x: 0.480519, y: 0.916865}
+      TangentDegrees: -72.8036
+      TangentLength: 0.02202
+    - NormalizedPosition: {x: 0.485242, y: 0.896279}
+      TangentDegrees: -104.339165
+      TangentLength: 0.030375
+  - NodeA: n3
+    NodeB: n8
+    ControlPoints:
+    - NormalizedPosition: {x: 0.327037, y: 0.870942}
+      TangentDegrees: -151.78642
+      TangentLength: 0.028053
+    - NormalizedPosition: {x: 0.29634, y: 0.863816}
+      TangentDegrees: -170.48251
+      TangentLength: 0.031186
+    - NormalizedPosition: {x: 0.265643, y: 0.860649}
+      TangentDegrees: -161.46304
+      TangentLength: 0.034301
+  - NodeA: n6
+    NodeB: n10
+    ControlPoints:
+    - NormalizedPosition: {x: 0.619835, y: 0.852732}
+      TangentDegrees: -147.18477
+      TangentLength: 0.036638
+  - NodeA: n6
+    NodeB: n9
+    ControlPoints:
+    - NormalizedPosition: {x: 0.710744, y: 0.835313}
+      TangentDegrees: -15.436954
+      TangentLength: 0.031361
+  - NodeA: n5
+    NodeB: n11
+    ControlPoints:
+    - NormalizedPosition: {x: 0.433294, y: 0.85194}
+      TangentDegrees: -157.1083
+      TangentLength: 0.034879
+    - NormalizedPosition: {x: 0.401417, y: 0.833729}
+      TangentDegrees: -151.41478
+      TangentLength: 0.032277
+    - NormalizedPosition: {x: 0.376623, y: 0.821061}
+      TangentDegrees: -160.71548
+      TangentLength: 0.029015
+    - NormalizedPosition: {x: 0.347107, y: 0.814727}
+      TangentDegrees: -157.79439
+      TangentLength: 0.029803
+  - NodeA: n5
+    NodeB: n10
+    ControlPoints:
+    - NormalizedPosition: {x: 0.493506, y: 0.848773}
+      TangentDegrees: -28.708529
+      TangentLength: 0.040475
+  - NodeA: n7
+    NodeB: n8
+    ControlPoints: []
+  - NodeA: n8
+    NodeB: n11
+    ControlPoints:
+    - NormalizedPosition: {x: 0.252656, y: 0.825812}
+      TangentDegrees: -34.343967
+      TangentLength: 0.037938
+  - NodeA: n10
+    NodeB: n12
+    ControlPoints:
+    - NormalizedPosition: {x: 0.615112, y: 0.81156}
+      TangentDegrees: -53.292797
+      TangentLength: 0.032752
+  - NodeA: n9
+    NodeB: n4
+    ControlPoints:
+    - NormalizedPosition: {x: 0.779221, y: 0.840855}
+      TangentDegrees: 28.102957
+      TangentLength: 0.036276
+    - NormalizedPosition: {x: 0.805195, y: 0.858274}
+      TangentDegrees: 27.4779
+      TangentLength: 0.032788
+  - NodeA: n9
+    NodeB: n12
+    ControlPoints:
+    - NormalizedPosition: {x: 0.723731, y: 0.806017}
+      TangentDegrees: -144.00119
+      TangentLength: 0.026634
+    - NormalizedPosition: {x: 0.697757, y: 0.792557}
+      TangentDegrees: -151.65686
+      TangentLength: 0.030857
+    - NormalizedPosition: {x: 0.669421, y: 0.776722}
+      TangentDegrees: -157.74585
+      TangentLength: 0.03784
+  - NodeA: n9
+    NodeB: n26
+    ControlPoints:
+    - NormalizedPosition: {x: 0.806375, y: 0.790182}
+      TangentDegrees: -18.536959
+      TangentLength: 0.029895
+    - NormalizedPosition: {x: 0.834711, y: 0.781473}
+      TangentDegrees: -16.666985
+      TangentLength: 0.034508
+    - NormalizedPosition: {x: 0.872491, y: 0.770388}
+      TangentDegrees: -24.088638
+      TangentLength: 0.033416
+    - NormalizedPosition: {x: 0.894923, y: 0.754553}
+      TangentDegrees: -35.255554
+      TangentLength: 0.026748
+    - NormalizedPosition: {x: 0.916175, y: 0.739509}
+      TangentDegrees: -40.48153
+      TangentLength: 0.02572
+    - NormalizedPosition: {x: 0.933884, y: 0.721298}
+      TangentDegrees: -62.3157
+      TangentLength: 0.025198
+    - NormalizedPosition: {x: 0.938607, y: 0.696754}
+      TangentDegrees: -87.00497
+      TangentLength: 0.022858
+    - NormalizedPosition: {x: 0.936246, y: 0.676168}
+      TangentDegrees: -91.61158
+      TangentLength: 0.021066
+    - NormalizedPosition: {x: 0.937426, y: 0.65479}
+      TangentDegrees: -86.77938
+      TangentLength: 0.021015
+    - NormalizedPosition: {x: 0.938607, y: 0.634204}
+      TangentDegrees: -113.07602
+      TangentLength: 0.023011
+    - NormalizedPosition: {x: 0.920897, y: 0.615994}
+      TangentDegrees: -128.28862
+      TangentLength: 0.025856
+  - NodeA: n11
+    NodeB: n13
+    ControlPoints:
+    - NormalizedPosition: {x: 0.271547, y: 0.781473}
+      TangentDegrees: -148.13676
+      TangentLength: 0.028545
+    - NormalizedPosition: {x: 0.246753, y: 0.768013}
+      TangentDegrees: -138.57475
+      TangentLength: 0.030579
+  - NodeA: n11
+    NodeB: n15
+    ControlPoints:
+    - NormalizedPosition: {x: 0.343566, y: 0.783056}
+      TangentDegrees: -25.073872
+      TangentLength: 0.028406
+    - NormalizedPosition: {x: 0.373081, y: 0.774347}
+      TangentDegrees: -20.354065
+      TangentLength: 0.029667
+    - NormalizedPosition: {x: 0.399055, y: 0.76247}
+      TangentDegrees: -24.571997
+      TangentLength: 0.02856
+    - NormalizedPosition: {x: 0.42547166, y: 0.7472222}
+      TangentDegrees: -24.571997
+      TangentLength: 0.02856
+    - NormalizedPosition: {x: 0.451004, y: 0.738717}
+      TangentDegrees: -25.802568
+      TangentLength: 0.028201
+    - NormalizedPosition: {x: 0.475797, y: 0.726049}
+      TangentDegrees: -31.81251
+      TangentLength: 0.027882
+  - NodeA: n12
+    NodeB: n15
+    ControlPoints:
+    - NormalizedPosition: {x: 0.613932, y: 0.74426}
+      TangentDegrees: -143.14761
+      TangentLength: 0.026173
+    - NormalizedPosition: {x: 0.586777, y: 0.733175}
+      TangentDegrees: -164.56305
+      TangentLength: 0.031425
+  - NodeA: n13
+    NodeB: n18
+    ControlPoints:
+    - NormalizedPosition: {x: 0.251476, y: 0.726049}
+      TangentDegrees: -25.332066
+      TangentLength: 0.033388
+    - NormalizedPosition: {x: 0.286895, y: 0.711797}
+      TangentDegrees: -23.054083
+      TangentLength: 0.03337
+    - NormalizedPosition: {x: 0.312869, y: 0.699921}
+      TangentDegrees: -23.173773
+      TangentLength: 0.030188
+    - NormalizedPosition: {x: 0.342385, y: 0.688044}
+      TangentDegrees: -14.892416
+      TangentLength: 0.035644
+  - NodeA: n15
+    NodeB: n18
+    ControlPoints:
+    - NormalizedPosition: {x: 0.475797, y: 0.694378}
+      TangentDegrees: -154.19743
+      TangentLength: 0.028362
+    - NormalizedPosition: {x: 0.447462, y: 0.684086}
+      TangentDegrees: -162.34566
+      TangentLength: 0.036571
+  - NodeA: n15
+    NodeB: n19
+    ControlPoints:
+    - NormalizedPosition: {x: 0.541913, y: 0.691211}
+      TangentDegrees: -40.670452
+      TangentLength: 0.025025
+    - NormalizedPosition: {x: 0.563164, y: 0.676168}
+      TangentDegrees: -34.87359
+      TangentLength: 0.036697
+  - NodeA: n14
+    NodeB: n16
+    ControlPoints:
+    - NormalizedPosition: {x: 0.780401, y: 0.712589}
+      TangentDegrees: -174.84152
+      TangentLength: 0.030824
+  - NodeA: n14
+    NodeB: n17
+    ControlPoints: []
+  - NodeA: n17
+    NodeB: n16
+    ControlPoints: []
+  - NodeA: n16
+    NodeB: n19
+    ControlPoints:
+    - NormalizedPosition: {x: 0.702479, y: 0.674584}
+      TangentDegrees: -170.34312
+      TangentLength: 0.040123
+    - NormalizedPosition: {x: 0.671783, y: 0.669834}
+      TangentDegrees: -169.44762
+      TangentLength: 0.03244
+    - NormalizedPosition: {x: 0.638725, y: 0.662708}
+      TangentDegrees: -160.77504
+      TangentLength: 0.031536
+  - NodeA: n18
+    NodeB: n21
+    ControlPoints:
+    - NormalizedPosition: {x: 0.42621, y: 0.647664}
+      TangentDegrees: -45.600376
+      TangentLength: 0.037152
+  - NodeA: n19
+    NodeB: n21
+    ControlPoints:
+    - NormalizedPosition: {x: 0.580874, y: 0.633413}
+      TangentDegrees: -152.37177
+      TangentLength: 0.027539
+    - NormalizedPosition: {x: 0.553719, y: 0.62312}
+      TangentDegrees: -167.39915
+      TangentLength: 0.036537
+    - NormalizedPosition: {x: 0.510035, y: 0.617577}
+      TangentDegrees: -176.06528
+      TangentLength: 0.046223
+  - NodeA: n19
+    NodeB: n22
+    ControlPoints:
+    - NormalizedPosition: {x: 0.634002, y: 0.633413}
+      TangentDegrees: -40.567417
+      TangentLength: 0.036609
+  - NodeA: n20
+    NodeB: n28
+    ControlPoints:
+    - NormalizedPosition: {x: 0.250295, y: 0.616785}
+      TangentDegrees: -6.82891
+      TangentLength: 0.033377
+    - NormalizedPosition: {x: 0.283353, y: 0.610451}
+      TangentDegrees: -20.583681
+      TangentLength: 0.03204
+    - NormalizedPosition: {x: 0.309327, y: 0.594616}
+      TangentDegrees: -30.574133
+      TangentLength: 0.0288
+    - NormalizedPosition: {x: 0.33294, y: 0.581156}
+      TangentDegrees: -26.522413
+      TangentLength: 0.028409
+  - NodeA: n21
+    NodeB: n24
+    ControlPoints:
+    - NormalizedPosition: {x: 0.42503, y: 0.616785}
+      TangentDegrees: -157.08206
+      TangentLength: 0.031548
+  - NodeA: n21
+    NodeB: n23
+    ControlPoints: []
+  - NodeA: n23
+    NodeB: n24
+    ControlPoints: []
+  - NodeA: n22
+    NodeB: n34
+    ControlPoints:
+    - NormalizedPosition: {x: 0.638725, y: 0.590657}
+      TangentDegrees: -155.91136
+      TangentLength: 0.029294
+    - NormalizedPosition: {x: 0.615112, y: 0.576405}
+      TangentDegrees: -130.1249
+      TangentLength: 0.025427
+    - NormalizedPosition: {x: 0.608028, y: 0.554236}
+      TangentDegrees: -129.93385
+      TangentLength: 0.030804
+  - NodeA: n22
+    NodeB: n27
+    ControlPoints:
+    - NormalizedPosition: {x: 0.700118, y: 0.592241}
+      TangentDegrees: -22.177534
+      TangentLength: 0.032789
+  - NodeA: n24
+    NodeB: n28
+    ControlPoints: []
+  - NodeA: n26
+    NodeB: n30
+    ControlPoints:
+    - NormalizedPosition: {x: 0.847698, y: 0.588282}
+      TangentDegrees: -168.24315
+      TangentLength: 0.052846
+  - NodeA: n26
+    NodeB: n35
+    ControlPoints: []
+  - NodeA: n26
+    NodeB: n31
+    ControlPoints: []
+  - NodeA: n31
+    NodeB: n35
+    ControlPoints: []
+  - NodeA: n26
+    NodeB: n25
+    ControlPoints: []
+  - NodeA: n27
+    NodeB: n30
+    ControlPoints: []
+  - NodeA: n27
+    NodeB: n32
+    ControlPoints: []
+  - NodeA: n30
+    NodeB: n35
+    ControlPoints:
+    - NormalizedPosition: {x: 0.837072, y: 0.542359}
+      TangentDegrees: -16.89246
+      TangentLength: 0.032699
+  - NodeA: n30
+    NodeB: n36
+    ControlPoints: []
+  - NodeA: n36
+    NodeB: n35
+    ControlPoints: []
+  - NodeA: n30
+    NodeB: n32
+    ControlPoints:
+    - NormalizedPosition: {x: 0.762692, y: 0.524941}
+      TangentDegrees: 172.23288
+      TangentLength: 0.035902
+  - NodeA: n28
+    NodeB: n42
+    ControlPoints:
+    - NormalizedPosition: {x: 0.340024, y: 0.534442}
+      TangentDegrees: -129.98889
+      TangentLength: 0.025153
+    - NormalizedPosition: {x: 0.328217, y: 0.513856}
+      TangentDegrees: -129.30609
+      TangentLength: 0.026387
+    - NormalizedPosition: {x: 0.306966, y: 0.494062}
+      TangentDegrees: -128.3355
+      TangentLength: 0.033604
+  - NodeA: n28
+    NodeB: n39
+    ControlPoints:
+    - NormalizedPosition: {x: 0.391972, y: 0.537609}
+      TangentDegrees: -31.957468
+      TangentLength: 0.03021
+    - NormalizedPosition: {x: 0.412043, y: 0.52019}
+      TangentDegrees: -50.48116
+      TangentLength: 0.024521
+    - NormalizedPosition: {x: 0.422668, y: 0.500396}
+      TangentDegrees: -66.1218
+      TangentLength: 0.027762
+  - NodeA: n35
+    NodeB: n37
+    ControlPoints: []
+  - NodeA: n34
+    NodeB: n39
+    ControlPoints:
+    - NormalizedPosition: {x: 0.534829, y: 0.517815}
+      TangentDegrees: -151.01376
+      TangentLength: 0.031057
+    - NormalizedPosition: {x: 0.505313, y: 0.500396}
+      TangentDegrees: -144.87979
+      TangentLength: 0.029719
+    - NormalizedPosition: {x: 0.486423, y: 0.483769}
+      TangentDegrees: -133.5852
+      TangentLength: 0.025783
+  - NodeA: n34
+    NodeB: n40
+    ControlPoints:
+    - NormalizedPosition: {x: 0.606848, y: 0.510689}
+      TangentDegrees: -38.343792
+      TangentLength: 0.029558
+    - NormalizedPosition: {x: 0.623377, y: 0.49327}
+      TangentDegrees: -64.78482
+      TangentLength: 0.026062
+  - NodeA: n39
+    NodeB: n44
+    ControlPoints:
+    - NormalizedPosition: {x: 0.435655, y: 0.443389}
+      TangentDegrees: -125.546074
+      TangentLength: 0.023359
+    - NormalizedPosition: {x: 0.421488, y: 0.424386}
+      TangentDegrees: -144.49475
+      TangentLength: 0.034934
+  - NodeA: n39
+    NodeB: n43
+    ControlPoints:
+    - NormalizedPosition: {x: 0.498229, y: 0.452098}
+      TangentDegrees: -19.441034
+      TangentLength: 0.035684
+  - NodeA: n40
+    NodeB: n43
+    ControlPoints:
+    - NormalizedPosition: {x: 0.59268, y: 0.45289}
+      TangentDegrees: -163.55998
+      TangentLength: 0.046194
+  - NodeA: n40
+    NodeB: n46
+    ControlPoints:
+    - NormalizedPosition: {x: 0.657615, y: 0.456849}
+      TangentDegrees: -20.0253
+      TangentLength: 0.029103
+    - NormalizedPosition: {x: 0.682409, y: 0.444181}
+      TangentDegrees: -28.077784
+      TangentLength: 0.029443
+    - NormalizedPosition: {x: 0.709563, y: 0.429137}
+      TangentDegrees: -28.698475
+      TangentLength: 0.032977
+    - NormalizedPosition: {x: 0.74026, y: 0.41251}
+      TangentDegrees: -26.058529
+      TangentLength: 0.031575
+    - NormalizedPosition: {x: 0.766234, y: 0.401425}
+      TangentDegrees: -31.702852
+      TangentLength: 0.026703
+    - NormalizedPosition: {x: 0.785124, y: 0.384798}
+      TangentDegrees: -46.414795
+      TangentLength: 0.025783
+  - NodeA: n42
+    NodeB: n41
+    ControlPoints:
+    - NormalizedPosition: {x: 0.239669, y: 0.463975}
+      TangentDegrees: 178.65987
+      TangentLength: 0.050797
+    - NormalizedPosition: {x: 0.18536, y: 0.463975}
+      TangentDegrees: -178.73347
+      TangentLength: 0.053746
+  - NodeA: n42
+    NodeB: n44
+    ControlPoints:
+    - NormalizedPosition: {x: 0.345927, y: 0.434679}
+      TangentDegrees: -36.14823
+      TangentLength: 0.041301
+  - NodeA: n42
+    NodeB: n52
+    ControlPoints:
+    - NormalizedPosition: {x: 0.284534, y: 0.38559}
+      TangentDegrees: -73.777374
+      TangentLength: 0.035243
+    - NormalizedPosition: {x: 0.299882, y: 0.366587}
+      TangentDegrees: -46.21111
+      TangentLength: 0.030783
+  - NodeA: n43
+    NodeB: n49
+    ControlPoints:
+    - NormalizedPosition: {x: 0.527745, y: 0.41726}
+      TangentDegrees: -127.834274
+      TangentLength: 0.024612
+    - NormalizedPosition: {x: 0.507674, y: 0.399842}
+      TangentDegrees: -140.98079
+      TangentLength: 0.036483
+  - NodeA: n44
+    NodeB: n48
+    ControlPoints: []
+  - NodeA: n50
+    NodeB: n53
+    ControlPoints:
+    - NormalizedPosition: {x: 0.670602, y: 0.342835}
+      TangentDegrees: -159.8496
+      TangentLength: 0.033515
+  - NodeA: n50
+    NodeB: n46
+    ControlPoints: []
+  - NodeA: n50
+    NodeB: n58
+    ControlPoints:
+    - NormalizedPosition: {x: 0.766234, y: 0.319873}
+      TangentDegrees: -51.072063
+      TangentLength: 0.024444
+    - NormalizedPosition: {x: 0.782763, y: 0.300871}
+      TangentDegrees: -40.76899
+      TangentLength: 0.027519
+    - NormalizedPosition: {x: 0.807556, y: 0.284244}
+      TangentDegrees: -12.868653
+      TangentLength: 0.056438
+  - NodeA: n49
+    NodeB: n48
+    ControlPoints:
+    - NormalizedPosition: {x: 0.428571, y: 0.368171}
+      TangentDegrees: -173.54628
+      TangentLength: 0.049336
+  - NodeA: n49
+    NodeB: n53
+    ControlPoints:
+    - NormalizedPosition: {x: 0.519481, y: 0.350752}
+      TangentDegrees: -7.923887
+      TangentLength: 0.031607
+    - NormalizedPosition: {x: 0.551358, y: 0.34521}
+      TangentDegrees: -8.004168
+      TangentLength: 0.036975
+  - NodeA: n46
+    NodeB: n51
+    ControlPoints:
+    - NormalizedPosition: {x: 0.837072, y: 0.357878}
+      TangentDegrees: -12.283606
+      TangentLength: 0.04656
+  - NodeA: n48
+    NodeB: n52
+    ControlPoints: []
+  - NodeA: n51
+    NodeB: n58
+    ControlPoints: []
+  - NodeA: n53
+    NodeB: n45
+    ControlPoints: []
+  - NodeA: n53
+    NodeB: n61
+    ControlPoints:
+    - NormalizedPosition: {x: 0.64817, y: 0.307205}
+      TangentDegrees: -63.5704
+      TangentLength: 0.022549
+    - NormalizedPosition: {x: 0.658796, y: 0.286619}
+      TangentDegrees: -57.941868
+      TangentLength: 0.023435
+    - NormalizedPosition: {x: 0.672963, y: 0.267617}
+      TangentDegrees: -42.92966
+      TangentLength: 0.025356
+    - NormalizedPosition: {x: 0.695396, y: 0.252573}
+      TangentDegrees: -54.453926
+      TangentLength: 0.025226
+  - NodeA: n54
+    NodeB: n57
+    ControlPoints:
+    - NormalizedPosition: {x: 0.088548, y: 0.306413}
+      TangentDegrees: -114.64632
+      TangentLength: 0.023283
+  - NodeA: n57
+    NodeB: n56
+    ControlPoints:
+    - NormalizedPosition: {x: 0.0366, y: 0.290578}
+      TangentDegrees: 163.96477
+      TangentLength: 0.034684
+  - NodeA: n58
+    NodeB: n67
+    ControlPoints:
+    - NormalizedPosition: {x: 0.909091, y: 0.243864}
+      TangentDegrees: -90
+      TangentLength: 0.023357
+    - NormalizedPosition: {x: 0.909091, y: 0.220903}
+      TangentDegrees: -86.89626
+      TangentLength: 0.021841
+    - NormalizedPosition: {x: 0.911452, y: 0.200317}
+      TangentDegrees: -86.062996
+      TangentLength: 0.025811
+    - NormalizedPosition: {x: 0.912633, y: 0.169438}
+      TangentDegrees: -83.650276
+      TangentLength: 0.026784
+  - NodeA: n58
+    NodeB: n55
+    ControlPoints:
+    - NormalizedPosition: {x: 0.969303, y: 0.279493}
+      TangentDegrees: 25.87957
+      TangentLength: 0.030847
+  - NodeA: n58
+    NodeB: n60
+    ControlPoints: []
+  - NodeA: n59
+    NodeB: n63
+    ControlPoints:
+    - NormalizedPosition: {x: 0.533648, y: 0.230404}
+      TangentDegrees: -172.60445
+      TangentLength: 0.036919
+    - NormalizedPosition: {x: 0.495868, y: 0.226445}
+      TangentDegrees: -172.58624
+      TangentLength: 0.039896
+    - NormalizedPosition: {x: 0.454545, y: 0.220111}
+      TangentDegrees: -173.22247
+      TangentLength: 0.046985
+    - NormalizedPosition: {x: 0.402597, y: 0.21536}
+      TangentDegrees: -176.71013
+      TangentLength: 0.041431
+    - NormalizedPosition: {x: 0.371901, y: 0.21536}
+      TangentDegrees: -177.90508
+      TangentLength: 0.032509
+    - NormalizedPosition: {x: 0.337662, y: 0.212985}
+      TangentDegrees: -175.2082
+      TangentLength: 0.033177
+    - NormalizedPosition: {x: 0.305785, y: 0.209818}
+      TangentDegrees: -171.35672
+      TangentLength: 0.044816
+  - NodeA: n59
+    NodeB: n61
+    ControlPoints:
+    - NormalizedPosition: {x: 0.603306, y: 0.228029}
+      TangentDegrees: -10.552383
+      TangentLength: 0.032472
+    - NormalizedPosition: {x: 0.634002, y: 0.22407}
+      TangentDegrees: -6.951867
+      TangentLength: 0.032709
+    - NormalizedPosition: {x: 0.668241, y: 0.220111}
+      TangentDegrees: 4.109795
+      TangentLength: 0.033756
+  - NodeA: n61
+    NodeB: n65
+    ControlPoints:
+    - NormalizedPosition: {x: 0.724911, y: 0.21536}
+      TangentDegrees: -40.670452
+      TangentLength: 0.025441
+    - NormalizedPosition: {x: 0.739079, y: 0.196358}
+      TangentDegrees: -57.82695
+      TangentLength: 0.029994
+  - NodeA: n62
+    NodeB: n65
+    ControlPoints:
+    - NormalizedPosition: {x: 0.815821, y: 0.182898}
+      TangentDegrees: -125.2856
+      TangentLength: 0.028647
+  - NodeA: n63
+    NodeB: n64
+    ControlPoints: []
+  - NodeA: n64
+    NodeB: n73
+    ControlPoints:
+    - NormalizedPosition: {x: 0.201889, y: 0.137767}
+      TangentDegrees: -101.124405
+      TangentLength: 0.037074
+  - NodeA: n65
+    NodeB: n72
+    ControlPoints:
+    - NormalizedPosition: {x: 0.729634, y: 0.152811}
+      TangentDegrees: -159.9747
+      TangentLength: 0.028942
+    - NormalizedPosition: {x: 0.701299, y: 0.144101}
+      TangentDegrees: -164.6917
+      TangentLength: 0.030004
+    - NormalizedPosition: {x: 0.671783, y: 0.136975}
+      TangentDegrees: -166.4819
+      TangentLength: 0.032178
+    - NormalizedPosition: {x: 0.638725, y: 0.129058}
+      TangentDegrees: -164.15997
+      TangentLength: 0.031939
+    - NormalizedPosition: {x: 0.61039, y: 0.119557}
+      TangentDegrees: -156.4473
+      TangentLength: 0.038731
+  - NodeA: n65
+    NodeB: n71
+    ControlPoints:
+    - NormalizedPosition: {x: 0.805195, y: 0.133017}
+      TangentDegrees: -57.001526
+      TangentLength: 0.029319
+  - NodeA: n67
+    NodeB: n74
+    ControlPoints:
+    - NormalizedPosition: {x: 0.922078, y: 0.087094}
+      TangentDegrees: -138.19795
+      TangentLength: 0.03051
+    - NormalizedPosition: {x: 0.891381, y: 0.08076}
+      TangentDegrees: -168.04277
+      TangentLength: 0.034395
+  - NodeA: n67
+    NodeB: n68
+    ControlPoints: []
+  - NodeA: n69
+    NodeB: n66
+    ControlPoints:
+    - NormalizedPosition: {x: 0.285714, y: 0.140143}
+      TangentDegrees: 147.69467
+      TangentLength: 0.026905
+  - NodeA: n69
+    NodeB: n73
+    ControlPoints:
+    - NormalizedPosition: {x: 0.257379, y: 0.113222}
+      TangentDegrees: -170.02364
+      TangentLength: 0.036566
+    - NormalizedPosition: {x: 0.224321, y: 0.106888}
+      TangentDegrees: -166.75877
+      TangentLength: 0.034596
+  - NodeA: n69
+    NodeB: n72
+    ControlPoints:
+    - NormalizedPosition: {x: 0.357733, y: 0.117181}
+      TangentDegrees: -3.534563
+      TangentLength: 0.045073
+    - NormalizedPosition: {x: 0.394333, y: 0.111639}
+      TangentDegrees: -6.710206
+      TangentLength: 0.033903
+    - NormalizedPosition: {x: 0.42503, y: 0.109264}
+      TangentDegrees: -8.476286
+      TangentLength: 0.032303
+    - NormalizedPosition: {x: 0.458087, y: 0.102138}
+      TangentDegrees: -6.20653
+      TangentLength: 0.044089
+    - NormalizedPosition: {x: 0.512397, y: 0.099762}
+      TangentDegrees: -2.504318
+      TangentLength: 0.054361
+  - NodeA: n71
+    NodeB: n70
+    ControlPoints:
+    - NormalizedPosition: {x: 0.792208, y: 0.096595}
+      TangentDegrees: -175.0316
+      TangentLength: 0.032391
+    - NormalizedPosition: {x: 0.761511, y: 0.098971}
+      TangentDegrees: 164.85822
+      TangentLength: 0.035333
+  - NodeA: n71
+    NodeB: n74
+    ControlPoints: []
+  - NodeA: n72
+    NodeB: n75
+    ControlPoints:
+    - NormalizedPosition: {x: 0.59268, y: 0.083927}
+      TangentDegrees: -27.064886
+      TangentLength: 0.04177
+  - NodeA: n74
+    NodeB: n75
+    ControlPoints:
+    - NormalizedPosition: {x: 0.819362, y: 0.053048}
+      TangentDegrees: -174.22968
+      TangentLength: 0.04358
+    - NormalizedPosition: {x: 0.765053, y: 0.052257}
+      TangentDegrees: -177.4682
+      TangentLength: 0.053796
+  - NodeA: n74
+    NodeB: n77
+    ControlPoints:
+    - NormalizedPosition: {x: 0.861865, y: 0.04038}
+      TangentDegrees: -67.11917
+      TangentLength: 0.022784
+    - NormalizedPosition: {x: 0.87013, y: 0.019002}
+      TangentDegrees: -44.16444
+      TangentLength: 0.02574
+    - NormalizedPosition: {x: 0.896104, y: 0.007126}
+      TangentDegrees: -16.756899
+      TangentLength: 0.030458
+  - NodeA: n75
+    NodeB: n78
+    ControlPoints:
+    - NormalizedPosition: {x: 0.72255, y: 0.028504}
+      TangentDegrees: -77.18538
+      TangentLength: 0.025054
+  - NodeA: n0
+    NodeB: n2
+    ControlPoints:
+    - NormalizedPosition: {x: 0.041322, y: 0.993666}
+      TangentDegrees: -8.230449
+      TangentLength: 0.031281
+    - NormalizedPosition: {x: 0.067296, y: 0.982581}
+      TangentDegrees: -35.18447
+      TangentLength: 0.028782
+    - NormalizedPosition: {x: 0.087367, y: 0.961203}
+      TangentDegrees: -30.652924
+      TangentLength: 0.030616
+  - NodeA: n1
+    NodeB: n6
+    ControlPoints:
+    - NormalizedPosition: {x: 0.514758, y: 0.945368}
+      TangentDegrees: 14.271933
+      TangentLength: 0.035567
+    - NormalizedPosition: {x: 0.541913, y: 0.956453}
+      TangentDegrees: 17.814362
+      TangentLength: 0.029847
+    - NormalizedPosition: {x: 0.571429, y: 0.963579}
+      TangentDegrees: 7.878726
+      TangentLength: 0.03767
+    - NormalizedPosition: {x: 0.616293, y: 0.966746}
+      TangentDegrees: -38.944786
+      TangentLength: 0.042687
+    - NormalizedPosition: {x: 0.617473, y: 0.926366}
+      TangentDegrees: -88.12295
+      TangentLength: 0.036045
+    - NormalizedPosition: {x: 0.618654, y: 0.894695}
+      TangentDegrees: -65.71188
+      TangentLength: 0.035128
+  - NodeA: n7
+    NodeB: n13
+    ControlPoints:
+    - NormalizedPosition: {x: 0.122786, y: 0.827395}
+      TangentDegrees: -118.7125
+      TangentLength: 0.022953
+    - NormalizedPosition: {x: 0.118064, y: 0.806017}
+      TangentDegrees: -71.49219
+      TangentLength: 0.023367
+    - NormalizedPosition: {x: 0.135773, y: 0.788599}
+      TangentDegrees: -45.496998
+      TangentLength: 0.024427
+    - NormalizedPosition: {x: 0.152302, y: 0.77118}
+      TangentDegrees: -35.698277
+      TangentLength: 0.041007
+  - NodeA: n10
+    NodeB: n15
+    ControlPoints:
+    - NormalizedPosition: {x: 0.520661, y: 0.803642}
+      TangentDegrees: -143.5205
+      TangentLength: 0.028945
+    - NormalizedPosition: {x: 0.491145, y: 0.787015}
+      TangentDegrees: -88.25694
+      TangentLength: 0.035871
+    - NormalizedPosition: {x: 0.521842, y: 0.764846}
+      TangentDegrees: -42.54254
+      TangentLength: 0.030784
+    - NormalizedPosition: {x: 0.536009, y: 0.745843}
+      TangentDegrees: -49.416134
+      TangentLength: 0.024552
+  - NodeA: n13
+    NodeB: n20
+    ControlPoints:
+    - NormalizedPosition: {x: 0.177096, y: 0.720507}
+      TangentDegrees: -145.5268
+      TangentLength: 0.030162
+    - NormalizedPosition: {x: 0.152302, y: 0.706255}
+      TangentDegrees: -144.05786
+      TangentLength: 0.027147
+    - NormalizedPosition: {x: 0.11700732, y: 0.6888889}
+      TangentDegrees: -40.92222
+      TangentLength: 0.03255
+    - NormalizedPosition: {x: 0.181818, y: 0.646873}
+      TangentDegrees: -35.731174
+      TangentLength: 0.040075
+  - NodeA: n42
+    NodeB: n39
+    ControlPoints:
+    - NormalizedPosition: {x: 0.336482, y: 0.46635}
+      TangentDegrees: 17.022238
+      TangentLength: 0.02902
+    - NormalizedPosition: {x: 0.367178, y: 0.469517}
+      TangentDegrees: 1.39696
+      TangentLength: 0.032567
+    - NormalizedPosition: {x: 0.401417, y: 0.467933}
+      TangentDegrees: -0.674074
+      TangentLength: 0.033671
+  - NodeA: n35
+    NodeB: n51
+    ControlPoints:
+    - NormalizedPosition: {x: 0.918536, y: 0.477435}
+      TangentDegrees: -87.48878
+      TangentLength: 0.027082
+    - NormalizedPosition: {x: 0.922078, y: 0.456849}
+      TangentDegrees: -82.83215
+      TangentLength: 0.033133
+    - NormalizedPosition: {x: 0.9268, y: 0.411718}
+      TangentDegrees: -96.15237
+      TangentLength: 0.034554
+    - NormalizedPosition: {x: 0.914994, y: 0.391132}
+      TangentDegrees: -104.471275
+      TangentLength: 0.022175
+    - NormalizedPosition: {x: 0.916175, y: 0.370546}
+      TangentDegrees: -103.165085
+      TangentLength: 0.021543
+  - NodeA: n51
+    NodeB: n55
+    ControlPoints:
+    - NormalizedPosition: {x: 0.950413, y: 0.346793}
+      TangentDegrees: -3.654466
+      TangentLength: 0.037268
+    - NormalizedPosition: {x: 0.98111, y: 0.34521}
+      TangentDegrees: -35.698277
+      TangentLength: 0.034836
+  - NodeA: n49
+    NodeB: n59
+    ControlPoints:
+    - NormalizedPosition: {x: 0.492326, y: 0.33175}
+      TangentDegrees: -65.35368
+      TangentLength: 0.023118
+    - NormalizedPosition: {x: 0.506494, y: 0.311956}
+      TangentDegrees: -44.525837
+      TangentLength: 0.02519
+    - NormalizedPosition: {x: 0.527745, y: 0.296912}
+      TangentDegrees: -44.859905
+      TangentLength: 0.026177
+    - NormalizedPosition: {x: 0.543093, y: 0.275534}
+      TangentDegrees: -55.522163
+      TangentLength: 0.036503
+  - NodeA: n52
+    NodeB: n63
+    ControlPoints:
+    - NormalizedPosition: {x: 0.31405, y: 0.322249}
+      TangentDegrees: -123.11947
+      TangentLength: 0.022694
+    - NormalizedPosition: {x: 0.302243, y: 0.303246}
+      TangentDegrees: -115.21518
+      TangentLength: 0.025077
+    - NormalizedPosition: {x: 0.292798, y: 0.277118}
+      TangentDegrees: -127.14055
+      TangentLength: 0.032379
+    - NormalizedPosition: {x: 0.264463, y: 0.253365}
+      TangentDegrees: -134.3048
+      TangentLength: 0.030658
+    - NormalizedPosition: {x: 0.250295, y: 0.233571}
+      TangentDegrees: -107.30612
+      TangentLength: 0.02884
+  - NodeA: n57
+    NodeB: n64
+    ControlPoints:
+    - NormalizedPosition: {x: 0.086187, y: 0.265241}
+      TangentDegrees: -52.25123
+      TangentLength: 0.026071
+    - NormalizedPosition: {x: 0.105077, y: 0.243072}
+      TangentDegrees: -35.837273
+      TangentLength: 0.029228
+    - NormalizedPosition: {x: 0.132231, y: 0.231987}
+      TangentDegrees: -35.294006
+      TangentLength: 0.026878
+    - NormalizedPosition: {x: 0.14758, y: 0.212985}
+      TangentDegrees: -50.48116
+      TangentLength: 0.024121
+    - NormalizedPosition: {x: 0.162928, y: 0.194774}
+      TangentDegrees: -37.09793
+      TangentLength: 0.035229
+  - NodeA: n76
+    NodeB: n73
+    ControlPoints:
+    - NormalizedPosition: {x: 0.067296, y: 0.017419}
+      TangentDegrees: 23.396282
+      TangentLength: 0.043111
+    - NormalizedPosition: {x: 0.095632, y: 0.047506}
+      TangentDegrees: 35.89889
+      TangentLength: 0.04657
+    - NormalizedPosition: {x: 0.141677, y: 0.071259}
+      TangentDegrees: 28.44259
+      TangentLength: 0.052376
+  - NodeA: n2
+    NodeB: n3
+    ControlPoints:
+    - NormalizedPosition: {x: 0.152302, y: 0.950911}
+      TangentDegrees: -5.06166
+      TangentLength: 0.031434
+    - NormalizedPosition: {x: 0.182999, y: 0.946952}
+      TangentDegrees: -2.897453
+      TangentLength: 0.031419
+    - NormalizedPosition: {x: 0.214876, y: 0.947743}
+      TangentDegrees: -9.382022
+      TangentLength: 0.041741
+    - NormalizedPosition: {x: 0.264463, y: 0.933492}
+      TangentDegrees: -13.850239
+      TangentLength: 0.041394
+    - NormalizedPosition: {x: 0.29504713, y: 0.9236111}
+      TangentDegrees: -11.310545
+      TangentLength: 0.03432
+  - NodeA: n41
+    NodeB: n20
+    ControlPoints:
+    - NormalizedPosition: {x: 0.09009433, y: 0.56805557}
+      TangentDegrees: 44.078342
+      TangentLength: 0.09919728
+  _startNodeId: n41
+  _goalNodeId: n4
+  _minPathLength: 14
+  _maxPathLength: 18
+  _minTurns: 5
+  _maxTurns: 10
+  _livesPerRun: 2
+  _runsPerSession: 3
+  _previewKind: 0
+  _previewSeconds: 1.5

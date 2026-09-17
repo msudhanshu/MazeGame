@@ -21,7 +21,11 @@ To start with we can have one radiations where it will be like a dancing floor o
 Coming to the vfx as the game progress so you when user walks we can have a little Android like character which chance on the path when you get chooses a particular box if the boxes incorrect it should glow in redis or some VFX to indicate that he has taken the wrong path and the real Parshad really itself and the revealed path will be turn into white glowing white colour or configurable colour and as he walks for the in that particular Run always be visible when he starts the next Run because of the less health and again.
 
 
-## Economy : 
+## Economy :
+
+**Current 25-level ladder lives in README.md (Economy) and `LevelCatalog.cs`.** The notes below are the original brief. Do not retune from this section; the radar loop replaced the 3x3 / 50-level / 5×3 health plan.
+
+
 
 #### Agent definition:
 

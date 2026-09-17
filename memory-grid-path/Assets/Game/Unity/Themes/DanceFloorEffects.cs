@@ -22,10 +22,13 @@ namespace Game.Unity.Themes
             return go.AddComponent<DanceFloorEffects>();
         }
 
-        public void PlayCorrect(ITileView tile)
+        public void PlayCorrect(ITileView tile) => PlayCorrect(tile, 0);
+
+        public void PlayCorrect(ITileView tile, int stepIndex)
         {
             tile?.SetState(TileVisualState.Walked);
-            MemoryPathAudio.Play(MemoryPathCue.CorrectStep);
+            tile?.Flash(TileVisualState.Walked, 0.18f);
+            MemoryPathAudio.PlayCorrectStep(stepIndex);
         }
 
         public void PlayMistake(ITileView wrong, ITileView revealed, bool intense = false)

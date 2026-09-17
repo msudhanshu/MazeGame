@@ -14,7 +14,7 @@ namespace Game.Unity.Editor
     {
         const string ColorEmojiPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/ColorEmoji.asset";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Import TMP Essentials & Emoji")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Import TMP Essentials & Emoji", false, 80)]
         public static void ImportMenu()
         {
             ImportEssentials();

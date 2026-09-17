@@ -8,12 +8,16 @@ namespace Game.Core.Tests
     public class LevelOneFueSessionTests
     {
         [Test]
-        public void StartsOnlyForFirstTileArenaLevelWhenUnseen()
+        public void StartsOnEarlyTileArenaLevelsWhenUnseen()
         {
             Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 1, alreadySeen: false), Is.Not.Null);
+            Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 2, alreadySeen: false), Is.Not.Null);
             Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 1, alreadySeen: true), Is.Null);
-            Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 2, alreadySeen: false), Is.Null);
+            Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 3, alreadySeen: false), Is.Null);
+            Assert.That(LevelOneFueSession.TryStart(GameModeId.TileArena, 5, alreadySeen: false), Is.Null);
             Assert.That(LevelOneFueSession.TryStart(GameModeId.GraphArena, 1, alreadySeen: false), Is.Null);
+            Assert.That(LevelOneFueSpec.LessonIdFor(2), Is.EqualTo("memory-path.tile-early.2"));
+            Assert.That(LevelOneFueSpec.MaxLevel, Is.EqualTo(OpeningCardSpec.MaxLevel));
         }
 
         [Test]

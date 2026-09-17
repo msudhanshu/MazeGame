@@ -72,8 +72,9 @@ namespace Game.Unity.Themes
                 return;
             }
 
-            // Idle and unused pickups keep pulsing so they stay readable without a VFX pass.
+            // Idle, candidates, and unused pickups keep pulsing so they stay readable without a VFX pass.
             if (State == TileVisualState.Idle
+                || State == TileVisualState.Candidate
                 || State == TileVisualState.Pickup
                 || State == TileVisualState.Wrong
                 || State == TileVisualState.WrongIntense)
@@ -101,8 +102,10 @@ namespace Game.Unity.Themes
                     break;
 
                 case TileVisualState.Candidate:
-                    glow = Color.Lerp(_baseColor, Color.white, 0.18f);
-                    intensity = 1.22f;
+                    glow = Color.Lerp(_baseColor, DanceFloorPalette.Candidate, 0.22f);
+                    intensity = 1.28f + 0.18f * Mathf.Abs(Mathf.Sin(Time.time * 4.2f));
+                    border = 0.078f + 0.018f * Mathf.Abs(Mathf.Sin(Time.time * 5.5f));
+                    edge = Color.Lerp(DanceFloorPalette.Grout, DanceFloorPalette.CandidateEdge, 0.92f);
                     break;
 
                 case TileVisualState.Walked:
@@ -111,6 +114,13 @@ namespace Game.Unity.Themes
                     break;
 
                 case TileVisualState.Revealed:
+                    glow = Color.Lerp(DanceFloorPalette.Walked, DanceFloorPalette.Goal, 0.62f);
+                    intensity = 1.62f;
+                    border = 0.07f;
+                    edge = DanceFloorPalette.Goal;
+                    scale = 1.16f;
+                    break;
+
                 case TileVisualState.Lighthouse:
                     glow = DanceFloorPalette.Walked;
                     intensity = 1.18f;

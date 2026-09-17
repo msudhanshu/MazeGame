@@ -8,7 +8,7 @@ namespace Game.Unity.Editor
     {
         const string ScenePath = "Assets/Scenes/GraphPathPlay.unity";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Open Graph Path Play")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Open Graph Path Play", false, 80)]
         public static void OpenGraphPathPlay()
         {
             EnsureSceneExists();

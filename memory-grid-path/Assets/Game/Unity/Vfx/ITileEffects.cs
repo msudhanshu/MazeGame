@@ -11,6 +11,8 @@ namespace Game.Unity.Vfx
     {
         void PlayCorrect(ITileView tile);
 
+        void PlayCorrect(ITileView tile, int stepIndex);
+
         /// <param name="wrong">The tile the player picked.</param>
         /// <param name="revealed">The tile that was actually on the path.</param>
         /// <param name="intense">Harder failure flash when the player forgot a previously walked turn.</param>

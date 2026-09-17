@@ -21,6 +21,7 @@ namespace Game.Unity.View
         public const string HomeName = "Home";
         public const string TrailName = "Trail";
         public const float Lift = 0.045f;
+        public const float ChoiceOriginClearance = 0.10f;
         public const float CelebrateTraceSeconds = 2.2f;
         public const float CelebrateZoomSeconds = 1.8f;
         public const float CelebratePopupBeatSeconds = 0.55f;
@@ -36,6 +37,8 @@ namespace Game.Unity.View
         public static readonly Color FocusArrowTint = new Color(1f, 0.92f, 0.4f, 0.24f);
         public static readonly Color WrongTurnTint = new Color(1f, 0.22f, 0.22f, 0.92f);
         public static readonly Color ChoiceTint = new Color(0.84f, 0.9f, 1f, 0.62f);
+        public static readonly Color RadarTrailTint = new Color(0.35f, 0.95f, 0.45f, 0.85f);
+        public static readonly Color RadarArrowTint = new Color(0.55f, 1f, 0.62f, 0.95f);
 
         public static float CompletionHoldSeconds => CelebrateTraceSeconds + CelebratePopupBeatSeconds;
 
@@ -64,12 +67,17 @@ namespace Game.Unity.View
         float _arrowSpeed;
         float _dotScale;
         bool _focusedStyle = true;
+        bool _radarPreview;
+        int _radarArrowSegments = -1;
         Vector3[] _wrongTurnPoints;
         float _wrongTurnLength;
         float _wrongTurnEndsAt = -1f;
+        float _choiceWidth = 0.09f;
+        float _fade = 1f;
         readonly List<Vector3> _visiblePoints = new List<Vector3>(16);
 
         public bool IsCelebrating { get; private set; }
+        public bool IsRadarPreview => _radarPreview;
         public LineRenderer Trail => _trail;
 
         public static GridPathOverlay Ensure(Transform parent)
@@ -130,6 +138,8 @@ namespace Game.Unity.View
         {
             IsCelebrating = false;
             _focusedStyle = true;
+            _radarPreview = false;
+            _radarArrowSegments = -1;
             _points = null;
             _dotPoints = null;
             _wrongTurnPoints = null;
@@ -138,6 +148,7 @@ namespace Game.Unity.View
             _length = 0f;
             _visibleLength = 0f;
             _phase = 0f;
+            _fade = 1f;
             if (_trail != null)
             {
                 _trail.positionCount = 0;
@@ -154,6 +165,8 @@ namespace Game.Unity.View
 
         public void SetFocusedStyle(bool focused)
         {
+            if (_focusedStyle == focused)
+                return;
             _focusedStyle = focused;
             ApplyVisibleTrail();
             RebuildArrows();
@@ -178,6 +191,7 @@ namespace Game.Unity.View
                 return;
 
             var lineWidth = Mathf.Max(0.03f, width);
+            _choiceWidth = lineWidth;
             for (var i = 0; i < options.Count; i++)
             {
                 var go = new GameObject("Choice " + i);
@@ -196,12 +210,33 @@ namespace Game.Unity.View
                 line.endWidth = lineWidth;
                 line.startColor = Color.white;
                 line.endColor = Color.white;
-                line.SetPosition(0, current);
+                var delta = options[i] - current;
+                delta.y = 0f;
+                var span = delta.magnitude;
+                var start = current;
+                if (span > 0.0001f)
+                {
+                    var inset = Mathf.Min(ChoiceOriginClearance, span * 0.12f);
+                    start = current + delta * (inset / span);
+                }
+
+                line.SetPosition(0, start);
                 line.SetPosition(1, options[i]);
             }
         }
 
         public void ClearChoices() => Wipe(_choicesRoot);
+
+        public void SetFade(float alpha)
+        {
+            _fade = Mathf.Clamp01(alpha);
+            ApplyVisibleTrail();
+            FadeRoot(_dotsRoot);
+            FadeRoot(_arrowsRoot);
+            FadeRoot(_choicesRoot);
+            if (_home != null)
+                FadeRenderer(_home.GetComponent<Renderer>());
+        }
 
         public void ShowHomeAt(Vector3 world, float tileSize)
         {
@@ -209,7 +244,7 @@ namespace Game.Unity.View
             PlaceHome(world, tileSize);
         }
 
-        public void Refresh(GridWalkRun run, BoardLayout layout, bool showPath = false)
+        public void Refresh(GridWalkRun run, BoardLayout layout, bool showPath = false, float trailWidthScale = 1f)
         {
             if (run == null)
             {
@@ -219,11 +254,12 @@ namespace Game.Unity.View
 
             BuildParts();
             var celebrating = run.IsLevelCompleted;
-            _baseWidth = Mathf.Max(0.04f, layout.TileSize * 0.07f);
+            var scale = Mathf.Max(0.15f, trailWidthScale);
+            _baseWidth = Mathf.Max(0.018f, layout.TileSize * 0.07f * scale);
             _arrowSpeed = layout.Pitch * (celebrating ? CelebrateArrowSpeedFactor : WalkArrowSpeedFactor);
 
             var trailCells = showPath || run.IsLevelCompleted ? run.Path.Cells : run.WalkedCells;
-            ShowPolyline(WorldPoints(trailCells, layout), layout.TileSize * 0.14f, celebrating);
+            ShowPolyline(WorldPoints(trailCells, layout), layout.TileSize * 0.14f * scale, celebrating);
             PlaceHome(layout.WorldPosition(run.Path.Goal), layout.TileSize);
             RebuildBlocked(run.BlockedCells, layout);
             ClearChoices();
@@ -248,8 +284,57 @@ namespace Game.Unity.View
             ClearChoices();
         }
 
+        public void BeginRadarReveal(IReadOnlyList<Vector3> points, float tileSize)
+        {
+            BuildParts();
+            IsCelebrating = false;
+            _focusedStyle = false;
+            _radarPreview = true;
+            _wrongTurnPoints = null;
+            _wrongTurnLength = 0f;
+            _wrongTurnEndsAt = -1f;
+            _baseWidth = Mathf.Max(0.04f, tileSize * 0.1f);
+            _arrowSpeed = 0f;
+            _dotScale = tileSize * 0.14f;
+            SetPoints(CopyPoints(points));
+            _dotPoints = null;
+            _visibleLength = 0f;
+            _radarArrowSegments = -1;
+            Wipe(_dotsRoot);
+            Wipe(_blockedRoot);
+            ClearChoices();
+            if (_points != null && _points.Length > 0)
+                PlaceHome(_points[_points.Length - 1], tileSize);
+            ApplyVisibleTrail();
+            RebuildRadarArrows(0);
+        }
+
+        public void SetRadarReveal(float t)
+        {
+            if (!_radarPreview)
+                return;
+
+            _visibleLength = _length * Mathf.Clamp01(t);
+            ApplyVisibleTrail();
+            var segments = CountFullyRevealedSegments();
+            if (segments == _radarArrowSegments)
+                return;
+
+            _radarArrowSegments = segments;
+            RebuildRadarArrows(segments);
+        }
+
+        public void EndRadarReveal()
+        {
+            _radarPreview = false;
+            _radarArrowSegments = -1;
+            ResetVisuals();
+        }
+
         void Update()
         {
+            PulseChoices();
+
             if (_wrongTurnPoints != null && Time.time >= _wrongTurnEndsAt)
             {
                 _wrongTurnPoints = null;
@@ -260,6 +345,9 @@ namespace Game.Unity.View
             }
 
             if ((_points == null || _points.Length < 2 || _length < 0.001f) && _wrongTurnPoints == null)
+                return;
+
+            if (_radarPreview)
                 return;
 
             if (IsCelebrating && _visibleLength < _length)
@@ -330,6 +418,8 @@ namespace Game.Unity.View
             _dotScale = markerScale;
             var wasCelebrating = IsCelebrating;
             IsCelebrating = celebrating;
+            _radarPreview = false;
+            _radarArrowSegments = -1;
             SetPoints(points);
             _dotPoints = markers;
             if (IsCelebrating && !wasCelebrating)
@@ -378,7 +468,7 @@ namespace Game.Unity.View
 
             var visible = _wrongTurnPoints != null
                 ? displayLength
-                : IsCelebrating ? Mathf.Clamp(_visibleLength, 0f, _length) : _length;
+                : _radarPreview || IsCelebrating ? Mathf.Clamp(_visibleLength, 0f, _length) : _length;
             _visiblePoints.Clear();
             _visiblePoints.Add(points[0]);
             var remaining = visible;
@@ -429,7 +519,8 @@ namespace Game.Unity.View
                 return;
 
             var scale = Mathf.Max(0.06f, _dotScale);
-            for (var i = 0; i < dots.Length; i++)
+            var count = IsCelebrating ? dots.Length : Mathf.Max(0, dots.Length - 1);
+            for (var i = 0; i < count; i++)
             {
                 var dot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 dot.name = "Dot " + i;
@@ -466,6 +557,52 @@ namespace Game.Unity.View
             AnimateArrows();
         }
 
+        void RebuildRadarArrows(int segments)
+        {
+            Wipe(_arrowsRoot);
+            if (_points == null || segments <= 0)
+                return;
+
+            var count = Mathf.Min(Mathf.Min(segments, _points.Length - 1), 14);
+            for (var i = 0; i < count; i++)
+            {
+                var from = _points[i];
+                var to = _points[i + 1];
+                var delta = to - from;
+                if (delta.sqrMagnitude < 0.0001f)
+                    continue;
+
+                var arrow = MakeQuad("Arrow " + i, _arrowsRoot, ArrowTexture(), ArrowMaterial(), 1f);
+                arrow.transform.position = (from + to) * 0.5f + Vector3.up * 0.008f;
+                arrow.transform.rotation = FlatFacing(delta);
+                arrow.transform.localScale = new Vector3(_baseWidth * 3.8f, _baseWidth * 2.6f, 1f);
+                var renderer = arrow.GetComponent<Renderer>();
+                if (renderer != null && renderer.sharedMaterial != null)
+                    Tint(renderer.sharedMaterial, RadarArrowTint);
+            }
+        }
+
+        int CountFullyRevealedSegments()
+        {
+            if (_points == null || _points.Length < 2 || _visibleLength < 0.0001f)
+                return 0;
+
+            var remaining = _visibleLength;
+            var count = 0;
+            for (var i = 0; i < _points.Length - 1; i++)
+            {
+                var span = Vector3.Distance(_points[i], _points[i + 1]);
+                if (span < 0.0001f)
+                    continue;
+                if (remaining + 0.0001f < span)
+                    break;
+                remaining -= span;
+                count++;
+            }
+
+            return count;
+        }
+
         void AnimateArrows()
         {
             var points = DisplayPoints;
@@ -496,7 +633,7 @@ namespace Game.Unity.View
 
         float VisiblePathLength => _wrongTurnPoints != null
             ? _wrongTurnLength
-            : IsCelebrating ? Mathf.Max(0f, _visibleLength) : _length;
+            : _radarPreview || IsCelebrating ? Mathf.Max(0f, _visibleLength) : _length;
 
         Vector3[] DisplayPoints => _wrongTurnPoints ?? _points;
 
@@ -580,6 +717,28 @@ namespace Game.Unity.View
             return go;
         }
 
+        void PulseChoices()
+        {
+            if (_choicesRoot == null || _choicesRoot.childCount == 0)
+                return;
+
+            var wave = Mathf.Abs(Mathf.Sin(Time.time * 5.5f));
+            var width = _choiceWidth * (1f + 0.28f * wave);
+            var tint = Color.Lerp(ChoiceTint, DanceFloorPalette.CandidateEdge, 0.4f + 0.55f * wave);
+            tint.a = 0.55f + 0.4f * wave;
+            if (_choiceMaterial != null)
+                Tint(_choiceMaterial, tint);
+
+            for (var i = 0; i < _choicesRoot.childCount; i++)
+            {
+                var line = _choicesRoot.GetChild(i).GetComponent<LineRenderer>();
+                if (line == null)
+                    continue;
+                line.startWidth = width;
+                line.endWidth = width * 0.85f;
+            }
+        }
+
         Material DotMaterial() =>
             _dotMaterial != null ? _dotMaterial : _dotMaterial = ArenaMaterials.Overlay("PathDot", DotTint);
 
@@ -599,7 +758,7 @@ namespace Game.Unity.View
                 ? _crossMaterial
                 : _crossMaterial = ArenaMaterials.Overlay("PathCross", Color.white, CrossTexture());
 
-        static Quaternion FlatFacing(Vector3 direction)
+        public static Quaternion FlatFacing(Vector3 direction)
         {
             direction.y = 0f;
             if (direction.sqrMagnitude < 0.0001f)
@@ -622,21 +781,52 @@ namespace Game.Unity.View
                 material.SetColor("_Color", color);
         }
 
+        Color FadeTint(Color color)
+        {
+            color.a *= _fade;
+            return color;
+        }
+
+        void FadeRoot(Transform root)
+        {
+            if (root == null)
+                return;
+            for (var i = 0; i < root.childCount; i++)
+                FadeRenderer(root.GetChild(i).GetComponent<Renderer>());
+        }
+
+        void FadeRenderer(Renderer renderer)
+        {
+            if (renderer == null)
+                return;
+            var material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
+            if (material == null)
+                return;
+            var color = material.HasProperty("_BaseColor")
+                ? material.GetColor("_BaseColor")
+                : material.color;
+            color.a = Mathf.Clamp01(_fade);
+            Tint(material, color);
+        }
+
         Color CurrentTrailTint()
         {
             if (_wrongTurnPoints != null)
             {
                 var pulse = 0.5f + 0.5f * Mathf.Abs(Mathf.Sin(Time.time * 10f));
-                return Color.Lerp(
+                return FadeTint(Color.Lerp(
                     new Color(WrongTurnTint.r, WrongTurnTint.g, WrongTurnTint.b, 0.35f),
                     WrongTurnTint,
-                    pulse);
+                    pulse));
             }
 
             if (IsCelebrating)
-                return CelebrateTint;
+                return FadeTint(CelebrateTint);
 
-            return _focusedStyle ? FocusTrailTint : TrailTint;
+            if (_radarPreview)
+                return FadeTint(RadarTrailTint);
+
+            return FadeTint(_focusedStyle ? FocusTrailTint : TrailTint);
         }
 
         Color CurrentArrowTint()
@@ -644,13 +834,16 @@ namespace Game.Unity.View
             if (_wrongTurnPoints != null)
             {
                 var pulse = 0.5f + 0.5f * Mathf.Abs(Mathf.Sin(Time.time * 10f));
-                return Color.Lerp(
+                return FadeTint(Color.Lerp(
                     new Color(WrongTurnTint.r, WrongTurnTint.g, WrongTurnTint.b, 0.4f),
                     WrongTurnTint,
-                    pulse);
+                    pulse));
             }
 
-            return _focusedStyle ? FocusArrowTint : ArrowTint;
+            if (_radarPreview)
+                return FadeTint(RadarArrowTint);
+
+            return FadeTint(_focusedStyle ? FocusArrowTint : ArrowTint);
         }
 
         float CurrentTrailWidth() => _wrongTurnPoints != null ? _baseWidth * 0.95f : BaseTrailWidth;
@@ -684,6 +877,8 @@ namespace Game.Unity.View
             else
                 Object.DestroyImmediate(target);
         }
+
+        public static Texture2D SharedArrowTexture() => ArrowTexture();
 
         static Texture2D ArrowTexture() => _arrowTexture != null ? _arrowTexture : _arrowTexture = BuildArrowTexture();
 

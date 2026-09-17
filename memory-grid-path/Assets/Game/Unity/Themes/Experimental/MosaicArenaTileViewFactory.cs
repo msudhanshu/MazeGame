@@ -33,7 +33,7 @@ namespace Game.Unity.Themes.Experimental
             go.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             go.transform.localScale = new Vector3(tileSize, tileSize, 1f);
 
-            Object.Destroy(go.GetComponent<Collider>());
+            ArenaEnvironment.DestroyNow(go.GetComponent<Collider>());
 
             var tileRenderer = go.GetComponent<Renderer>();
             tileRenderer.sharedMaterial = SharedMaterial();

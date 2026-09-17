@@ -50,7 +50,7 @@ namespace Game.Unity.Data
     }
 
     /// <summary>
-    /// Designer-facing copy of scoring, skip, and the 50-level table. Duplicate the asset to
+    /// Designer-facing copy of scoring, skip, and the 25-level table. Duplicate the asset to
     /// try a tuning without touching Core defaults.
     /// </summary>
     [CreateAssetMenu(fileName = "GridPathTuning", menuName = "Nixin Studio/Memory Grid Path/Tuning")]

@@ -9,7 +9,7 @@ namespace Game.Unity.Editor
     {
         const string ScenePath = "Assets/Scenes/ArenaTestLab.unity";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Open Arena Test Lab")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Open Arena Test Lab", false, 80)]
         static void OpenArenaTestLab()
         {
             EnsureSceneExists();
@@ -17,7 +17,7 @@ namespace Game.Unity.Editor
                 EditorSceneManager.OpenScene(ScenePath);
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Arena Test Lab Scene")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Create Arena Test Lab Scene", false, 80)]
         public static void CreateArenaTestLabScene()
         {
             EnsureSceneExists();

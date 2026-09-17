@@ -53,14 +53,14 @@ namespace Game.Unity.Tests
         }
 
         [Test]
-        public void StartOfAWalkShowsADotHomeAndNoTrailYet()
+        public void StartOfAWalkShowsHomeAndNoStandingDot()
         {
             _board.Build(Size, _factory);
             var run = new GridWalkRun(TestPath());
             GridBoardPresenter.Refresh(_board, run);
 
             var overlay = _board.Overlay;
-            Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(1));
+            Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(0));
             Assert.That(overlay.Trail.enabled, Is.False);
             Assert.That(overlay.transform.Find(GridPathOverlay.HomeName).gameObject.activeSelf, Is.True);
             Assert.That(overlay.IsCelebrating, Is.False);
@@ -79,7 +79,7 @@ namespace Game.Unity.Tests
             GridBoardPresenter.Refresh(_board, run);
 
             var overlay = _board.Overlay;
-            Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(3));
+            Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(2));
             Assert.That(overlay.Trail.enabled, Is.True);
             Assert.That(overlay.Trail.positionCount, Is.EqualTo(3));
             Assert.That(overlay.Trail.GetPosition(0), Is.EqualTo(_board.WorldPosition(run.Path.Cells[0]) + Vector3.up * GridPathOverlay.Lift));
@@ -143,9 +143,47 @@ namespace Game.Unity.Tests
             var overviewAlpha = overlay.Trail.sharedMaterial.color.a;
 
             overlay.SetFocusedStyle(true);
+            var focusedWidth = overlay.Trail.startWidth;
+            overlay.SetFocusedStyle(true);
+            Assert.That(overlay.Trail.startWidth, Is.EqualTo(focusedWidth));
 
             Assert.That(overlay.Trail.startWidth, Is.LessThan(overviewWidth));
             Assert.That(overlay.Trail.sharedMaterial.color.a, Is.LessThan(overviewAlpha));
+        }
+
+        [Test]
+        public void ASmallerTrailWidthScaleMakesTheYellowPathThinner()
+        {
+            _board.Build(Size, _factory);
+            var run = new GridWalkRun(TestPath());
+            run.Choose(run.Path.Cells[1]);
+            run.Choose(run.Path.Cells[2]);
+
+            GridBoardPresenter.Refresh(_board, run, trailWidthScale: 1f);
+            var fullWidth = _board.Overlay.Trail.startWidth;
+
+            GridBoardPresenter.Refresh(_board, run, trailWidthScale: ScoutRotationMove.TrailWidthScale);
+            Assert.That(_board.Overlay.Trail.startWidth, Is.LessThan(fullWidth));
+        }
+
+        [Test]
+        public void ChoiceLineStartsJustOffTheWalker()
+        {
+            _board.Build(Size, _factory);
+            var current = _board.WorldPosition(new GridCoord(2, 2)) + Vector3.up * GridPathOverlay.Lift;
+            var option = _board.WorldPosition(new GridCoord(3, 2)) + Vector3.up * GridPathOverlay.Lift;
+            _board.Overlay.ShowChoices(current, new[] { option }, 0.09f);
+
+            var line = _board.Overlay.transform.Find(GridPathOverlay.ChoicesName)
+                .GetChild(0)
+                .GetComponent<LineRenderer>();
+            var start = line.GetPosition(0);
+            var end = line.GetPosition(1);
+            var gap = Vector3.Distance(new Vector3(current.x, start.y, current.z), start);
+
+            Assert.That(gap, Is.EqualTo(GridPathOverlay.ChoiceOriginClearance).Within(0.02f));
+            Assert.That(gap, Is.LessThanOrEqualTo(0.12f));
+            Assert.That(end, Is.EqualTo(option).Within(0.001f));
         }
 
         [Test]
@@ -187,7 +225,7 @@ namespace Game.Unity.Tests
 
             Assert.That(_board.Overlay.Trail.enabled, Is.True);
             Assert.That(_board.Overlay.Trail.positionCount, Is.EqualTo(3));
-            Assert.That(_board.Overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(3));
+            Assert.That(_board.Overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(2));
             Assert.That(_board.Overlay.transform.Find(GridPathOverlay.HomeName).gameObject.activeSelf, Is.False);
         }
 
@@ -209,6 +247,29 @@ namespace Game.Unity.Tests
 
             var end = GridPathOverlay.PointAlong(points, 99f, out _);
             Assert.That(end, Is.EqualTo(new Vector3(2f, 0f, 2f)));
+        }
+
+        [Test]
+        public void RadarScanClipsThePathAtTheSweepLine()
+        {
+            var from = new Vector3(0f, 0f, 0f);
+            var to = new Vector3(0f, 0f, 2f);
+
+            Assert.That(RadarPathPreview.TryClipSegment(from, to, -0.1f, out _, out _), Is.False);
+            Assert.That(RadarPathPreview.TryClipSegment(from, to, 2.1f, out var fullA, out var fullB), Is.True);
+            Assert.That(fullA, Is.EqualTo(from));
+            Assert.That(fullB, Is.EqualTo(to));
+
+            Assert.That(RadarPathPreview.TryClipSegment(from, to, 1f, out var midA, out var midB), Is.True);
+            Assert.That(midA, Is.EqualTo(from));
+            Assert.That(midB.z, Is.EqualTo(1f).Within(0.0001f));
+        }
+
+        [Test]
+        public void RadarScanClockDoesNotAdvanceWhilePaused()
+        {
+            Assert.That(RadarPathPreview.TickElapsed(0.4f, 0.1f, paused: false), Is.EqualTo(0.5f).Within(0.0001f));
+            Assert.That(RadarPathPreview.TickElapsed(0.4f, 0.1f, paused: true), Is.EqualTo(0.4f).Within(0.0001f));
         }
 
         [Test]

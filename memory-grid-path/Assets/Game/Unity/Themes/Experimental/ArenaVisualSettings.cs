@@ -14,8 +14,10 @@ namespace Game.Unity.Themes.Experimental
 
         [Header("Camera")]
         [SerializeField] ArenaCameraMode _cameraMode = ArenaCameraMode.StaticTopDown;
-        [Tooltip("Follow-camera zoom. Smaller is closer. 1.6 frames a few tiles around the walker; 3.2 is wide.")]
-        [Range(0.8f, 6f)]
+        [Tooltip("Scout Arena only. PanMoveMode keeps north-up follow. RotationMoveMode yaws with the path.")]
+        [SerializeField] ScoutMoveMode _scoutMoveMode = ScoutMoveMode.PanMoveMode;
+        [Tooltip("Follow-camera zoom. Smaller is closer. 0.65 fills a phone with one tile; 1.6 frames a few tiles.")]
+        [Range(0.45f, 6f)]
         [SerializeField] float _followOrthographicSize = 1.8f;
         [SerializeField] float _followSmoothing = 10f;
         [Tooltip("When on, Follow Orthographic Size is used even if Camera Mode is Static Top Down.")]
@@ -52,7 +54,8 @@ namespace Game.Unity.Themes.Experimental
 
         public ArenaVisualType VisualType => _visualType;
         public ArenaCameraMode CameraMode => _cameraMode;
-        public float FollowOrthographicSize => Mathf.Max(0.8f, _followOrthographicSize);
+        public ScoutMoveMode ScoutMoveMode => _scoutMoveMode;
+        public float FollowOrthographicSize => Mathf.Max(0.45f, _followOrthographicSize);
         public float FollowSmoothing => _followSmoothing;
         public bool LockOrthographicSize => _lockOrthographicSize;
 
@@ -117,11 +120,13 @@ namespace Game.Unity.Themes.Experimental
             ArenaCameraMode cameraMode = ArenaCameraMode.StaticTopDown,
             float followSize = 1.8f,
             float smoothing = 10f,
-            bool lockOrthographicSize = false)
+            bool lockOrthographicSize = false,
+            ScoutMoveMode scoutMoveMode = ScoutMoveMode.PanMoveMode)
         {
             var settings = CreateInstance<ArenaVisualSettings>();
             settings._visualType = ArenaVisualType.ClassicDanceFloor;
             settings.ApplyCamera(cameraMode, followSize, smoothing, lockOrthographicSize);
+            settings.ApplyScoutMoveMode(scoutMoveMode);
             return settings;
         }
 
@@ -147,10 +152,13 @@ namespace Game.Unity.Themes.Experimental
             bool lockOrthographicSize = false)
         {
             _cameraMode = cameraMode;
-            _followOrthographicSize = Mathf.Max(0.8f, followSize);
+            _followOrthographicSize = Mathf.Max(0.45f, followSize);
             _followSmoothing = Mathf.Max(0.1f, smoothing);
             _lockOrthographicSize = lockOrthographicSize;
         }
+
+        public void ApplyScoutMoveMode(ScoutMoveMode scoutMoveMode) =>
+            _scoutMoveMode = scoutMoveMode;
 
         public float TileSize =>
             _visualType == ArenaVisualType.ClassicDanceFloor ? _classicTileSize : _seamlessTileSize;

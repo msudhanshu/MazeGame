@@ -68,8 +68,8 @@ namespace Game.Core.Domain
         }
 
         /// <summary>
-        /// Junction spheres for the current node and legal next moves. Covered nodes
-        /// are drawn as overlay dots, not full circles.
+        /// Junction spheres for legal next moves only. The walker already marks the
+        /// current node, so that circle stays hidden.
         /// </summary>
         public static bool IsCircleVisible(
             GraphNodeId node,
@@ -77,7 +77,7 @@ namespace Game.Core.Domain
             IReadOnlyList<GraphNodeId> options)
         {
             if (node == current)
-                return true;
+                return false;
 
             return Contains(options, node);
         }

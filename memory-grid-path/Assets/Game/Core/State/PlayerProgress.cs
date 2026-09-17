@@ -5,12 +5,13 @@ using Game.Core.Domain;
 namespace Game.Core.State
 {
     /// <summary>
-    /// What carries over between sessions: unlocks, per-level bests, career score, and skip charges.
+    /// What carries over between sessions: unlocks, per-level bests, last-run stars, career score, and skip charges.
     /// Local save stands in for a login until a backend exists.
     /// </summary>
     public sealed class PlayerProgress
     {
         readonly Dictionary<int, int> _bestScores = new Dictionary<int, int>();
+        readonly Dictionary<int, int> _lastStars = new Dictionary<int, int>();
         bool _skipGrantNotice;
 
         public PlayerProgress(
@@ -19,7 +20,8 @@ namespace Game.Core.State
             int careerScore = 0,
             int skipCharges = 0,
             int highGradeStreak = 0,
-            int highestClearedLevel = -1)
+            int highestClearedLevel = -1,
+            IReadOnlyDictionary<int, int> lastStars = null)
         {
             if (highestUnlockedLevel < 1)
                 throw new ArgumentOutOfRangeException(nameof(highestUnlockedLevel), "Level 1 is always unlocked.");
@@ -38,11 +40,17 @@ namespace Game.Core.State
                 ? highestClearedLevel
                 : Math.Max(0, highestUnlockedLevel - 1);
 
-            if (bestScores == null)
+            if (bestScores != null)
+            {
+                foreach (var entry in bestScores)
+                    _bestScores[entry.Key] = entry.Value;
+            }
+
+            if (lastStars == null)
                 return;
 
-            foreach (var entry in bestScores)
-                _bestScores[entry.Key] = entry.Value;
+            foreach (var entry in lastStars)
+                _lastStars[entry.Key] = ClampStars(entry.Value);
         }
 
         public void Reset()
@@ -54,6 +62,7 @@ namespace Game.Core.State
             HighGradeStreak = 0;
             _skipGrantNotice = false;
             _bestScores.Clear();
+            _lastStars.Clear();
         }
 
         public int HighestUnlockedLevel { get; private set; }
@@ -63,11 +72,21 @@ namespace Game.Core.State
         public int HighGradeStreak { get; private set; }
 
         public IReadOnlyDictionary<int, int> BestScores => _bestScores;
+        public IReadOnlyDictionary<int, int> LastStars => _lastStars;
 
         public bool IsUnlocked(int levelNumber) => levelNumber >= 1 && levelNumber <= HighestUnlockedLevel;
 
         public int BestScoreFor(int levelNumber) =>
             _bestScores.TryGetValue(levelNumber, out var score) ? score : 0;
+
+        public int LastStarsFor(int levelNumber)
+        {
+            if (_lastStars.TryGetValue(levelNumber, out var stars))
+                return ClampStars(stars);
+            if (levelNumber >= 1 && levelNumber <= HighestClearedLevel)
+                return LevelAccess.StarsPerClear;
+            return 0;
+        }
 
         /// <summary>True once after a skip window is granted, then clears.</summary>
         public bool ConsumeSkipGrantNotice()
@@ -83,7 +102,8 @@ namespace Game.Core.State
             bool completed,
             int levelCount,
             int grade = 0,
-            GameConfig config = null)
+            GameConfig config = null,
+            int mistakes = 0)
         {
             if (levelNumber < 1)
                 throw new ArgumentOutOfRangeException(nameof(levelNumber));
@@ -100,7 +120,10 @@ namespace Game.Core.State
                 _bestScores[levelNumber] = score;
 
             if (completed)
+            {
                 HighestClearedLevel = Math.Max(HighestClearedLevel, levelNumber);
+                _lastStars[levelNumber] = LevelAccess.StarsFromMistakes(mistakes);
+            }
 
             if (completed && levelNumber >= HighestUnlockedLevel && levelNumber < levelCount)
                 HighestUnlockedLevel = levelNumber + 1;
@@ -123,6 +146,7 @@ namespace Game.Core.State
             HighGradeStreak = 0;
             CareerScore += reward;
             HighestClearedLevel = Math.Max(HighestClearedLevel, levelNumber);
+            _lastStars[levelNumber] = 0;
 
             if (reward > BestScoreFor(levelNumber))
                 _bestScores[levelNumber] = reward;
@@ -155,6 +179,15 @@ namespace Game.Core.State
             SkipCharges = config.SkipWindow;
             HighGradeStreak = 0;
             _skipGrantNotice = true;
+        }
+
+        static int ClampStars(int value)
+        {
+            if (value < 0)
+                return 0;
+            if (value > LevelAccess.StarsPerClear)
+                return LevelAccess.StarsPerClear;
+            return value;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Game.Unity.Data
         public PatchworkTextureSet PatchworkSet;
         public Sprite Thumbnail;
         public Texture2D ThumbnailTexture;
-        [Tooltip("0 = use the mode Follow Orthographic Size. Set 0.8–6 to override this level. Smaller is closer.")]
+        [Tooltip("0 = use the mode Follow Orthographic Size. Set 0.45–6 to override this level. Smaller is closer.")]
         public float FollowOrthographicSize;
         [Tooltip("0 = use the mode Walker Scale. Set above 0 to override this level. 1 is full size.")]
         public float WalkerScale;
@@ -61,8 +61,10 @@ namespace Game.Unity.Data
         public string DisplayName = "Arena";
         public Sprite Icon;
         public ArenaCameraMode CameraMode = ArenaCameraMode.StaticTopDown;
+        [Tooltip("Scout Arena only. PanMoveMode is the existing north-up follow camera. RotationMoveMode yaws the camera and avatar with the path.")]
+        public ScoutMoveMode ScoutMoveMode = ScoutMoveMode.PanMoveMode;
         [Tooltip("Follow-camera zoom when Camera Mode is Follow Walker. Smaller is closer.")]
-        [Range(0.8f, 6f)]
+        [Range(0.45f, 6f)]
         public float FollowOrthographicSize = 1.8f;
         [Tooltip("How quickly the follow camera catches the walker.")]
         public float FollowSmoothing = 10f;
@@ -73,7 +75,7 @@ namespace Game.Unity.Data
         public int Count => Levels != null ? Levels.Length : 0;
 
         public float ResolvedFollowOrthographicSize =>
-            FollowOrthographicSize >= 0.8f ? FollowOrthographicSize : 1.8f;
+            FollowOrthographicSize >= 0.45f ? FollowOrthographicSize : 1.8f;
 
         public float ResolvedFollowSmoothing =>
             FollowSmoothing > 0f ? FollowSmoothing : 10f;
@@ -82,12 +84,12 @@ namespace Game.Unity.Data
             WalkerScale > 0.05f ? WalkerScale : 1f;
 
         public float FollowSizeFor(JourneyLevelEntry entry) =>
-            entry != null && entry.FollowOrthographicSize >= 0.8f
+            entry != null && entry.FollowOrthographicSize >= 0.45f
                 ? entry.FollowOrthographicSize
                 : ResolvedFollowOrthographicSize;
 
         public bool LocksOrthographicSize(JourneyLevelEntry entry) =>
-            entry != null && entry.FollowOrthographicSize >= 0.8f;
+            entry != null && entry.FollowOrthographicSize >= 0.45f;
 
         public float WalkerScaleFor(JourneyLevelEntry entry) =>
             entry != null && entry.WalkerScale > 0.05f

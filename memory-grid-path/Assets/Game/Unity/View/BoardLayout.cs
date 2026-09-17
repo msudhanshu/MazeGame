@@ -27,6 +27,12 @@ namespace Game.Unity.View
         /// <summary>Distance between the centres of two neighbouring tiles.</summary>
         public float Pitch => TileSize + Gap;
 
+        /// <summary>
+        /// Dead zone on the standing cell. Smaller than a tile so the outgoing choice
+        /// line stays clickable right next to the walker.
+        /// </summary>
+        public const float StandingPickRadius = 0.05f;
+
         public float Width => Size.Width * Pitch;
         public float Depth => Size.Height * Pitch;
 
@@ -85,6 +91,8 @@ namespace Game.Unity.View
             var bestDistance = float.MaxValue;
             var found = false;
             var currentWorld = WorldPosition(current);
+            if (Vector3.Distance(world, currentWorld) <= StandingPickRadius)
+                return false;
 
             for (var i = 0; i < options.Count; i++)
             {

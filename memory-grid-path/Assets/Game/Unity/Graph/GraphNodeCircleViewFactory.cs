@@ -12,7 +12,10 @@ namespace Game.Unity.Graph
         const float NodeRadius = 0.22f;
 
         public string ThemeId => "graph_node_circle";
+        /// <summary>Scout graph: cloudy fog around the photo instead of a hard edge.</summary>
         public bool OceanBackdrop { get; set; }
+        /// <summary>Graph Arena: cloudy fog, contain-fit, bottom-aligned when the photo is short.</summary>
+        public bool FogOfWar { get; set; }
 
         public IGraphNodeView CreateNode(GraphNodeId nodeId, Vector3 worldPosition, Transform parent)
         {
@@ -37,22 +40,23 @@ namespace Game.Unity.Graph
         {
             ArenaEnvironment.Clear(parent);
 
-            if (OceanBackdrop)
-                PatchworkOceanBackdrop.Build(layout.Origin, layout.WorldWidth, layout.WorldDepth, parent);
+            if (FogOfWar || OceanBackdrop)
+                ScoutFogOfWar.Build(layout.Origin, layout.WorldWidth, layout.WorldDepth, parent);
 
             if (camera == null)
                 return;
 
             camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = OceanBackdrop
-                ? PatchworkOceanBackdrop.Background
+            camera.backgroundColor = FogOfWar || OceanBackdrop
+                ? ScoutFogOfWar.Background
                 : DanceFloorPalette.Background;
             BoardCamera.FrameTopDownForBounds(
                 camera,
                 layout.Origin,
                 layout.WorldWidth,
                 layout.WorldDepth,
-                camera.aspect);
+                camera.aspect,
+                bottomAlign: FogOfWar);
         }
     }
 }

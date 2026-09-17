@@ -17,7 +17,7 @@ namespace Game.Unity.Input
     public sealed class BoardInput
     {
         public const float CandidateTilePickRadius = 0.42f;
-        public const float CandidateEdgePickRadius = 0.26f;
+        public const float CandidateEdgePickRadius = 0.40f;
 
         readonly PointerStrokeTracker _stroke = new PointerStrokeTracker();
         readonly PathDragTracker _pathDrag = new PathDragTracker();
@@ -78,7 +78,8 @@ namespace Game.Unity.Input
             IReadOnlyList<GridCoord> visibleOptions,
             bool allowPathDrag,
             Func<GridCoord, bool> isOption,
-            out GridCoord target)
+            out GridCoord target,
+            float headingYaw = 0f)
         {
             var strokeReady = _stroke.TryPoll(out var stroke, out var screenPosition, out var contacting, out var overUI);
             var isVisibleOption = visibleOptions != null
@@ -120,18 +121,18 @@ namespace Game.Unity.Input
 
             if (!(allowPathDrag && _pathDrag.IgnoreStroke) &&
                 strokeReady &&
-                BoardMove.TryResolve(stroke, screenPosition, camera, board.Layout, current, out target))
+                BoardMove.TryResolve(stroke, screenPosition, camera, board.Layout, current, headingYaw, out target))
             {
                 return isVisibleOption == null || isVisibleOption(target);
             }
 
-            if (!TryReadKeyboard(board.Layout.Size, current, out target))
+            if (!TryReadKeyboard(board.Layout.Size, current, headingYaw, out target))
                 return false;
 
             return isVisibleOption == null || isVisibleOption(target);
         }
 
-        static bool TryReadKeyboard(GridSize size, GridCoord current, out GridCoord target)
+        static bool TryReadKeyboard(GridSize size, GridCoord current, float headingYaw, out GridCoord target)
         {
             target = default;
 
@@ -153,7 +154,8 @@ namespace Game.Unity.Input
             else
                 return false;
 
-            var candidate = current.Offset(dx, dy);
+            var offset = ScoutRotationMove.RotateSwipe(new GridCoord(dx, dy), headingYaw);
+            var candidate = current.Offset(offset.X, offset.Y);
             if (!size.Contains(candidate))
                 return false;
 

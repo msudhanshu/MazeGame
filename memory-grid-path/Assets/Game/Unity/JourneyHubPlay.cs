@@ -68,6 +68,7 @@ namespace Game.Unity
         bool _completionOverview;
         bool _zoomingOverview;
         bool _suppressScoutIntroHighlights;
+        bool _followReturnPan;
 
         TutorialSession _tutorial;
         readonly MemoryPathTutorialChrome _tutorialChrome = new MemoryPathTutorialChrome();
@@ -80,9 +81,13 @@ namespace Game.Unity
         GraphLevelOneFueSession _graphLevelOneFue;
         MemoryPathStepCallout _stepCallout;
         readonly MemoryPathGraphLevelOneChrome _graphLevelOneChrome = new MemoryPathGraphLevelOneChrome();
+        ScoutScanFueSession _scoutScanFue;
+        readonly MemoryPathScoutScanChrome _scoutScanChrome = new MemoryPathScoutScanChrome();
         IFueSeenStore _fueStore;
         FueDirector _fueDirector;
         bool _tutorialReplay;
+        bool _radarPlaying;
+        bool _ownsGraphLevel;
 
         const float RevealHoldSeconds = 1.25f;
         const float ScoutIntroHoldSeconds = 0.55f;
@@ -151,33 +156,40 @@ namespace Game.Unity
 
         void LateUpdate()
         {
-            UpdateOverlayFocusState();
-
-            if (_zoomingOverview)
-                return;
-
-            if (_completionOverview)
+            try
             {
-                ApplyOverviewFraming();
-                return;
-            }
+                UpdateOverlayFocusState();
 
-            if (_arenaSettings != null && _arenaSettings.CameraMode == ArenaCameraMode.FollowWalker)
+                if (_zoomingOverview || _followReturnPan)
+                    return;
+
+                if (_completionOverview)
+                {
+                    ApplyOverviewFraming();
+                    return;
+                }
+
+                if (_arenaSettings != null && _arenaSettings.CameraMode == ArenaCameraMode.FollowWalker)
+                {
+                    UpdateFollowCamera();
+                    return;
+                }
+
+                if (_graphBoard != null && _graphBoard.IsBuilt && _graphViewport.IsActive)
+                {
+                    _graphViewport.Apply(_camera);
+                    return;
+                }
+
+                if (_graphBoard != null && _graphBoard.IsBuilt)
+                    ApplyCameraFraming();
+                else if (_board != null && _board.IsBuilt)
+                    ApplyCameraFraming();
+            }
+            finally
             {
-                UpdateFollowCamera();
-                return;
+                CameraFeel.Apply(_camera);
             }
-
-            if (_graphBoard != null && _graphBoard.IsBuilt && _graphViewport.IsActive)
-            {
-                _graphViewport.Apply(_camera);
-                return;
-            }
-
-            if (_graphBoard != null && _graphBoard.IsBuilt)
-                ApplyCameraFraming();
-            else if (_board != null && _board.IsBuilt)
-                ApplyCameraFraming();
         }
 
         void UpdateFollowCamera()
@@ -207,7 +219,57 @@ namespace Game.Unity
                 _camera,
                 focus,
                 _arenaSettings.FollowOrthographicSize,
-                _arenaSettings.FollowSmoothing);
+                _arenaSettings.FollowSmoothing,
+                FollowHeadingYaw(),
+                yawSmoothing: 0f);
+        }
+
+        bool UsesScoutRotation => ScoutRotationMove.UsesRotation(_arenaSettings);
+
+        float FollowHeadingYaw() =>
+            UsesScoutRotation && _walker != null ? _walker.YawDegrees : 0f;
+
+        void ApplyWalkerFacing(bool instant)
+        {
+            if (_walker == null)
+                return;
+
+            _walker.FaceTravel = UsesScoutRotation;
+            if (!UsesScoutRotation)
+                return;
+            _walker.YawDegreesPerSecond = ScoutRotationMove.PlayYawDegreesPerSecond;
+            if (TryFirstPathDelta(out var delta))
+                _walker.FaceToward(delta, instant);
+        }
+
+        bool TryFirstPathDelta(out Vector3 delta)
+        {
+            delta = Vector3.forward;
+            if (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+            {
+                var cells = _gridGame.Run.Path.Cells;
+                if (cells == null || cells.Count < 2)
+                    return false;
+                delta = _board.WorldPosition(cells[1]) - _board.WorldPosition(cells[0]);
+                delta.y = 0f;
+                return delta.sqrMagnitude > 0.0001f;
+            }
+
+            if (_graphBoard != null && _graphBoard.IsBuilt && _graphRun != null)
+            {
+                var nodes = _graphRun.Path.Nodes;
+                if (nodes == null || nodes.Count < 2)
+                    return false;
+                var points = _graphBoard.EdgeWorldPoints(nodes[0], nodes[1]);
+                if (points != null && points.Length >= 2)
+                    delta = points[1] - points[0];
+                else
+                    delta = _graphBoard.WorldPosition(nodes[1]) - _graphBoard.WorldPosition(nodes[0]);
+                delta.y = 0f;
+                return delta.sqrMagnitude > 0.0001f;
+            }
+
+            return false;
         }
 
         void Update()
@@ -240,7 +302,8 @@ namespace Game.Unity
                 visibleOptions,
                 PlayerSettingsStore.PathDrag,
                 IsGridPlayOption,
-                out var target);
+                out var target,
+                UsesScoutRotation ? ScoutRotationMove.HeadingYaw(_camera) : 0f);
 
             if (_hud == null || !_hud.IsShown || InputLocked)
                 return;
@@ -259,6 +322,7 @@ namespace Game.Unity
             _arenaIntroPlaying
             || _openingCardBlocking
             || _holdingReveal
+            || _radarPlaying
             || (_walker != null && _walker.IsHopping);
 
         void EnsureFue()
@@ -284,12 +348,14 @@ namespace Game.Unity
             {
                 Id = LevelOneFueSpec.LessonId,
                 TriggerKind = FueTriggerKind.Lesson,
-                ShowOnce = true,
+                ShowOnce = false,
                 Ensure = true,
                 Replayable = false,
                 Compulsory = false,
                 Priority = 50,
-                Eligible = () => _gridGame != null && _playingMode == GameModeId.TileArena && _playingLevel == LevelOneFueSpec.LevelNumber,
+                Eligible = () => _gridGame != null
+                    && _playingMode == GameModeId.TileArena
+                    && OpeningCardSpec.ShouldShow(_playingLevel),
                 WantsToShow = () => _levelOneFue != null && _levelOneFue.IsActive,
                 Satisfied = () => _levelOneFue != null && _levelOneFue.IsComplete
             });
@@ -300,11 +366,24 @@ namespace Game.Unity
                 ShowOnce = true,
                 Ensure = true,
                 Replayable = false,
-                Compulsory = true,
+                Compulsory = false,
                 Priority = 50,
                 Eligible = () => _graphRun != null && _playingMode == GameModeId.GraphArena && _playingLevel == GraphLevelOneFueSpec.LevelNumber,
                 WantsToShow = () => _graphLevelOneFue != null && _graphLevelOneFue.IsActive,
                 Satisfied = () => _graphLevelOneFue != null && _graphLevelOneFue.IsComplete
+            });
+            _fueDirector.Register(new FueCue
+            {
+                Id = ScoutScanFueSpec.LessonId,
+                TriggerKind = FueTriggerKind.Lesson,
+                ShowOnce = true,
+                Ensure = true,
+                Replayable = false,
+                Compulsory = true,
+                Priority = 55,
+                Eligible = () => _playingMode == GameModeId.ScoutArena && _playingLevel == ScoutScanFueSpec.LevelNumber,
+                WantsToShow = () => _scoutScanFue != null && _scoutScanFue.IsActive,
+                Satisfied = () => _scoutScanFue != null && _scoutScanFue.IsComplete
             });
         }
 
@@ -377,9 +456,6 @@ namespace Game.Unity
         void StepTutorial(GridCoord target)
         {
             _tutorialChrome.ClearTileHighlights(_board);
-            var from = _board.WorldPosition(_tutorial.CurrentCell);
-            var wrongTo = _board.WorldPosition(target);
-            var wrongTile = _board.TileAt(target);
             var outcome = _tutorial.Choose(target);
             var destination = _board.WorldPosition(_tutorial.CurrentCell);
             if (outcome != WalkOutcome.Advanced && outcome != WalkOutcome.LevelCompleted)
@@ -392,94 +468,12 @@ namespace Game.Unity
                     _walker.HopTo(destination);
                     RefreshTutorial();
                     break;
-                case WalkOutcome.WrongRevealed:
-                    BeginTutorialMistake(wrongTile, from, wrongTo, null);
-                    break;
-                case WalkOutcome.RunFailed:
-                    BeginTutorialMistake(wrongTile, from, wrongTo, () =>
-                    {
-                        ShowRetryFromMemory();
-                        BeginTutorialMemoryWalk();
-                    }, runFailed: true);
-                    break;
                 case WalkOutcome.LevelCompleted:
                     _effects.PlayLevelCompleted();
                     _walker.HopTo(destination);
                     RefreshTutorial();
                     break;
-                case WalkOutcome.SessionOver:
-                    BeginTutorialMistake(
-                        wrongTile,
-                        from,
-                        wrongTo,
-                        () => HoldRevealThen(() => ShowTutorialGameOver()),
-                        sessionFailed: true);
-                    break;
             }
-        }
-
-        void BeginTutorialMistake(
-            ITileView wrong,
-            Vector3 wrongFrom,
-            Vector3 wrongTo,
-            Action afterPainted,
-            bool runFailed = false,
-            bool sessionFailed = false)
-        {
-            StopRevealHold();
-            _holdingReveal = true;
-            if (sessionFailed)
-            {
-                wrong?.SetState(TileVisualState.Wrong);
-                _effects.PlaySessionFailed();
-            }
-            else if (runFailed)
-            {
-                wrong?.SetState(TileVisualState.Wrong);
-                _effects.PlayRunFailed();
-            }
-            else
-            {
-                var revealed = _tutorial.LastRevealed.HasValue ? _board.TileAt(_tutorial.LastRevealed.Value) : null;
-                _effects.PlayMistake(wrong, revealed);
-                PlayTutorialMistakeExtras();
-            }
-
-            _revealHold = StartCoroutine(TutorialMistakeRoutine(wrongFrom, wrongTo, afterPainted));
-        }
-
-        void PlayTutorialMistakeExtras()
-        {
-            if (_tutorial == null)
-                return;
-
-            if (_tutorial.Beat == TutorialBeat.RepeatedMistake)
-                MemoryPathAudio.PlayLongFail();
-            else if (_tutorial.Beat == TutorialBeat.UnluckyPartial)
-                MemoryPathAudio.PlayWalkFail();
-        }
-
-        IEnumerator TutorialMistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, Action afterPainted)
-        {
-            var destination = _board.WorldPosition(_tutorial.CurrentCell);
-            yield return BoardStepFeedback.FlashWrongTurnThenTravel(
-                _walker,
-                _board != null ? _board.Overlay : null,
-                wrongFrom + Vector3.up * GridPathOverlay.Lift,
-                wrongTo + Vector3.up * GridPathOverlay.Lift,
-                destination);
-            RefreshTutorial();
-            _holdingReveal = false;
-            _revealHold = null;
-            afterPainted?.Invoke();
-        }
-
-        void BeginTutorialMemoryWalk()
-        {
-            _tutorial.BeginMemoryWalk(Environment.TickCount);
-            _walker.SnapTo(_board.WorldPosition(_tutorial.Start));
-            ApplyCameraFraming();
-            RefreshTutorial();
         }
 
         void FinishTutorialSuccess()
@@ -494,6 +488,17 @@ namespace Game.Unity
                 return;
             _tutorial.DismissIntro();
             RefreshTutorial();
+            StopRevealHold();
+            _revealHold = StartCoroutine(RadarThenPlay(
+                _tutorial.Run.Path.Cells,
+                TutorialSpec.RadarSweepSeconds,
+                TutorialSpec.RadarHoldSeconds,
+                RefreshTutorial,
+                () =>
+                {
+                    _tutorial?.BeginWalk();
+                    RefreshTutorial();
+                }));
         }
 
         void SkipTutorial()
@@ -507,14 +512,6 @@ namespace Game.Unity
                 replacePopups: true);
         }
 
-        void ShowTutorialGameOver()
-        {
-            JourneyUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
-                MemoryPathPopups.GameOver(ShowHome, () => StartTutorial(_tutorialReplay)),
-                replacePopups: true);
-            RefreshTutorial();
-        }
-
         void RefreshTutorial()
         {
             if (_tutorial == null || _hud == null)
@@ -526,7 +523,18 @@ namespace Game.Unity
                 _tutorial.LivesLeft,
                 _tutorial.LivesPerRun,
                 _tutorial.RunsPerSession);
-            _hud.SetMessage(TutorialCopy.Prompt);
+            _hud.SetMessage(_tutorial.Beat switch
+            {
+                TutorialBeat.Watching => TutorialCopy.Watch,
+                TutorialBeat.Completed => TutorialCopy.Ready,
+                _ => TutorialCopy.Prompt
+            });
+            if (_radarPlaying)
+            {
+                _tutorialChrome.ClearTileHighlights(_board);
+                return;
+            }
+
             _tutorialChrome.Present(_tutorial, _board, _camera);
         }
 
@@ -554,7 +562,11 @@ namespace Game.Unity
                 && !InputLocked
                 && (UiNavigator.Current == null || !UiNavigator.Current.IsBlocking);
             if (_graphViewport.IsActive)
+            {
+                if (_graphBoard != null && _graphBoard.IsBuilt && _camera != null)
+                    _graphViewport.RefreshLimits(_graphBoard.Layout, _camera.aspect, TileHudViewportInset());
                 _graphViewport.UpdateInput(_camera, _graphBoard != null ? _graphBoard.Layout : null, graphInputAllowed);
+            }
 
             RefreshGraphLevelOneFue();
 
@@ -587,7 +599,6 @@ namespace Game.Unity
             TearDownViews();
             _gridGame = null;
             _graphRun = null;
-            _graphLevel = null;
             _sharedGridProgress = false;
 
             if (!EnsureModeUnlocked(mode, out var reason))
@@ -597,7 +608,7 @@ namespace Game.Unity
             }
 
             var modeDef = _catalog.Mode(mode);
-            if (modeDef.Count < 1)
+            if (ArenaLevelCount(mode) < 1)
             {
                 ShowNotice("No levels in this arena yet.", "OK", ShowHome);
                 return;
@@ -615,11 +626,11 @@ namespace Game.Unity
             _journey.RememberPlayed(mode, levelNumber);
             _repository.Save(_journey);
 
-            var entry = modeDef.Get(levelNumber);
+            var entry = _catalog.PlayableEntry(mode, levelNumber);
             JourneyUi.HideScreens();
             _hud.SetVisible(true);
 
-            if (entry.IsGraph)
+            if ((entry.IsGraph || mode == GameModeId.GraphArena) && mode != GameModeId.ScoutArena)
             {
                 StartGraphLevel(modeDef, entry);
                 return;
@@ -638,7 +649,10 @@ namespace Game.Unity
             }
             else
             {
-                _gridGame = new GridPathGame(_catalog.CreateSingleGridCatalog(entry), config, new PlayerProgress());
+                _gridGame = new GridPathGame(
+                    _catalog.CreateSingleGridCatalog(mode, _playingLevel, entry),
+                    config,
+                    new PlayerProgress());
             }
 
             try
@@ -674,40 +688,43 @@ namespace Game.Unity
             _levelOneFue = LevelOneFueSession.TryStart(
                 _playingMode,
                 _playingLevel,
-                _fueStore != null && _fueStore.HasSeen(LevelOneFueSpec.LessonId));
+                _fueStore != null && _fueStore.HasSeen(LevelOneFueSpec.LessonIdFor(_playingLevel)));
             _hud.SetVisible(true);
             _hud.SetMessage("On the path. Keep going!");
             MemoryPathAudio.Play(MemoryPathCue.GameStart);
             _arenaIntroPlaying = true;
             RefreshBoard();
             RefreshHud();
-            PlayArenaIntro(() =>
-            {
-                MaybeStartScoutIntro("On the path. Keep going!");
-                MaybeShowOpeningCard();
-            });
+            PlayArenaIntro(() => ContinueAfterArenaIntro("On the path. Keep going!"));
         }
 
         void StartGraphLevel(JourneyModeDefinition modeDef, JourneyLevelEntry entry)
         {
             _gridGame = null;
             _sharedGridProgress = false;
-            _graphLevel = entry.GraphLevel != null ? entry.GraphLevel : GraphLevelDefinition.CreateSampleRuntime();
+            _graphLevel = GraphLevelDefinition.CreatePlayable(
+                _playingLevel,
+                _catalog.PlayableGraphSource(1)
+                    ?? _catalog.PlayableGraphSource(_playingLevel)
+                    ?? entry.GraphLevel);
+            _ownsGraphLevel = true;
             _arenaSettings = ArenaVisualSettings.CreateClassicOverride(
                 modeDef.CameraMode,
-                modeDef.FollowSizeFor(entry),
+                ScoutFollowSize(modeDef, entry),
                 modeDef.ResolvedFollowSmoothing,
-                modeDef.LocksOrthographicSize(entry));
+                modeDef.LocksOrthographicSize(entry),
+                modeDef.ScoutMoveMode);
             _graphRun = GraphBoardPresenter.CreateRun(_graphLevel, Environment.TickCount);
 
             var boardGo = new GameObject("GraphBoard");
             boardGo.transform.SetParent(transform, false);
             _graphBoard = boardGo.AddComponent<GraphBoardView>();
             _graphFactory.OceanBackdrop = modeDef.ModeId == GameModeId.ScoutArena;
+            _graphFactory.FogOfWar = modeDef.ModeId == GameModeId.GraphArena;
             _graphBoard.Build(_graphLevel, _graphFactory);
             _graphFactory.ApplyEnvironment(_camera, _graphBoard.Layout, transform);
             if (_playingMode == GameModeId.GraphArena)
-                _graphViewport.Reset(_graphBoard.Layout, _camera.aspect);
+                _graphViewport.Reset(_graphBoard.Layout, _camera.aspect, TileHudViewportInset());
             else
                 _graphViewport.Clear();
             _walker = WalkerView.Create(
@@ -715,6 +732,7 @@ namespace Game.Unity
                 _graphBoard.WorldPosition(_graphRun.CurrentNode),
                 DanceFloorPalette.Start,
                 modeDef.WalkerScaleFor(entry));
+            ApplyWalkerFacing(instant: true);
             _suppressScoutIntroHighlights = ShouldPlayScoutIntro();
             _graphLevelOneFue = GraphLevelOneFueSession.TryStart(
                 _playingMode,
@@ -729,26 +747,23 @@ namespace Game.Unity
             MemoryPathAudio.Play(MemoryPathCue.GameStart);
             _arenaIntroPlaying = true;
             RefreshHud();
-            PlayArenaIntro(() =>
-            {
-                MaybeStartScoutIntro("Tap the next node on the path.");
-                MaybeShowOpeningCard();
-            });
+            PlayArenaIntro(() => ContinueAfterArenaIntro("Tap the next node on the path."));
         }
 
         void BuildGridBoard()
         {
             TearDownViews();
             var modeDef = _catalog.Mode(_playingMode);
-            var entry = modeDef.Get(_playingLevel);
+            var entry = _catalog.PlayableEntry(_playingMode, _playingLevel);
             EnsureProceduralMosaic(entry);
             _arenaSettings = JourneyVisualResolver.Resolve(
                 entry,
                 modeDef.CameraMode,
                 _proceduralMosaic,
-                modeDef.FollowSizeFor(entry),
+                ScoutFollowSize(modeDef, entry),
                 modeDef.ResolvedFollowSmoothing,
-                modeDef.LocksOrthographicSize(entry));
+                modeDef.LocksOrthographicSize(entry),
+                modeDef.ScoutMoveMode);
             _theme = ArenaThemeResolver.Resolve(_arenaSettings);
 
             var boardGo = new GameObject("Board");
@@ -757,11 +772,15 @@ namespace Game.Unity
             _board.Build(_gridGame.CurrentLevel.Size, _theme, _arenaSettings.TileSize, _arenaSettings.TileGap);
             _theme.ApplyEnvironment(_camera, _board.Layout, transform);
             _graphViewport.Clear();
+            var walkerScale = _playingMode == GameModeId.ScoutArena
+                ? ScoutRotationMove.WalkerScale
+                : modeDef.WalkerScaleFor(entry);
             _walker = WalkerView.Create(
                 transform,
                 _board.WorldPosition(_gridGame.Run.Path.Start),
                 DanceFloorPalette.Start,
-                modeDef.WalkerScaleFor(entry));
+                walkerScale);
+            ApplyWalkerFacing(instant: true);
             ApplyCameraFraming();
         }
 
@@ -805,7 +824,7 @@ namespace Game.Unity
                     focus.y = _graphBoard.Layout.Origin.y;
 
                 if (_arenaSettings.CameraMode == ArenaCameraMode.FollowWalker)
-                    BoardCamera.FrameFollow(_camera, focus, _arenaSettings.FollowOrthographicSize);
+                    BoardCamera.FrameFollow(_camera, focus, _arenaSettings.FollowOrthographicSize, FollowHeadingYaw());
                 else
                 {
                     Vector3 origin;
@@ -829,7 +848,18 @@ namespace Game.Unity
                     _graphBoard.Layout.Origin,
                     _graphBoard.Layout.WorldWidth,
                     _graphBoard.Layout.WorldDepth,
-                    _camera.aspect);
+                    _camera.aspect,
+                    bottomAlign: false,
+                    topViewportInset: _playingMode == GameModeId.GraphArena ? TileHudViewportInset() : 0f);
+        }
+
+        float ScoutFollowSize(JourneyModeDefinition modeDef, JourneyLevelEntry entry)
+        {
+            if (_playingMode != GameModeId.ScoutArena)
+                return modeDef.FollowSizeFor(entry);
+            if (_gridGame?.CurrentLevel != null)
+                return ScoutRotationMove.FollowOrthographicSizeFor(_gridGame.CurrentLevel.Size);
+            return ScoutRotationMove.FollowSizeTwo;
         }
 
         float TileHudViewportInset()
@@ -854,7 +884,7 @@ namespace Game.Unity
             switch (outcome)
             {
                 case WalkOutcome.Advanced:
-                    _effects.PlayCorrect(_board.TileAt(target));
+                    _effects.PlayCorrect(_board.TileAt(target), run.Step);
                     _walker.HopTo(destination);
                     _levelOneFue?.OnCorrectStep();
                     CompleteLevelOneFueIfNeeded();
@@ -862,10 +892,11 @@ namespace Game.Unity
                         ShowStepCallout(MemoryPathStepCueCopy.RandomRecovered(), recover: true);
                     _hud.SetMessage("On the path. Keep going!");
                     RefreshBoard();
+                    RefreshHud();
                     break;
                 case WalkOutcome.WrongRevealed:
                     _levelOneFue?.OnWrongStep();
-                    _hud.SetMessage($"Off the path — {run.LivesLeft} health left.");
+                    _hud.SetMessage($"Off the path — {run.LivesLeft} heart slices left.");
                     BeginGridMistake(
                         wrongTile,
                         wrongFrom,
@@ -875,12 +906,7 @@ namespace Game.Unity
                             && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
                     break;
                 case WalkOutcome.RunFailed:
-                    BeginGridMistake(wrongTile, wrongFrom, wrongTo, () =>
-                    {
-                        ShowRetryFromMemory();
-                        _revealHold = StartCoroutine(RewindAfterFailedWalk());
-                    }, runFailed: true, forgotPriorWalk: run.LastRevealed.HasValue
-                        && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
+                    BeginWalkFailRestart();
                     break;
                 case WalkOutcome.LevelCompleted:
                     _levelOneFue?.OnCorrectStep();
@@ -903,17 +929,31 @@ namespace Game.Unity
 
                     break;
                 case WalkOutcome.SessionOver:
-                    _hud.SetMessage("Out of lives.");
-                    BeginGridMistake(
-                        wrongTile,
-                        wrongFrom,
-                        wrongTo,
-                        () => HoldRevealThen(() => FinishSession(false, run.Score)),
-                        sessionFailed: true);
+                    BeginLevelFail(run.Score);
                     break;
             }
 
+            if (!_holdingReveal)
+                RefreshHud();
+        }
+
+        void BeginWalkFailRestart()
+        {
+            StopRevealHold();
+            _holdingReveal = true;
+            _effects.PlayRunFailed();
             RefreshHud();
+            _revealHold = StartCoroutine(CrashRestartGrid());
+        }
+
+        void BeginLevelFail(int score)
+        {
+            StopRevealHold();
+            _holdingReveal = true;
+            _effects.PlaySessionFailed();
+            _hud.SetMessage("Out of lives.");
+            RefreshHud();
+            FinishSession(false, score);
         }
 
         void BeginGridMistake(
@@ -929,32 +969,206 @@ namespace Game.Unity
             _holdingReveal = true;
             var run = _gridGame.Run;
             if (sessionFailed)
-            {
-                wrong?.SetState(TileVisualState.WrongIntense);
-                wrong?.Flash(TileVisualState.WrongIntense, DanceFloorEffects.WrongIntenseFlashSeconds);
                 _effects.PlaySessionFailed();
-            }
             else if (runFailed)
-            {
-                wrong?.SetState(forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong);
-                wrong?.Flash(
-                    forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong,
-                    forgotPriorWalk
-                        ? DanceFloorEffects.WrongIntenseFlashSeconds
-                        : DanceFloorEffects.WrongFlashSeconds);
                 _effects.PlayRunFailed();
-                if (forgotPriorWalk)
-                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
-            }
-            else
+            if (forgotPriorWalk)
+                ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
+
+            var revealed = _board.TileAt(run.CurrentCell);
+            _revealHold = StartCoroutine(GridMissRoutine(wrong, revealed, wrongFrom, wrongTo, afterPainted, magnetPull: !runFailed));
+        }
+
+        IEnumerator GridMissRoutine(
+            ITileView wrong,
+            ITileView revealed,
+            Vector3 wrongFrom,
+            Vector3 wrongTo,
+            Action afterPainted,
+            bool magnetPull)
+        {
+            var run = _gridGame.Run;
+            var destination = _board.WorldPosition(run.CurrentCell);
+            var tileSize = _board.Layout.TileSize;
+            yield return MissBeat.Play(
+                this,
+                _walker,
+                _board.Overlay,
+                _camera,
+                _hud,
+                wrong,
+                revealed,
+                wrongFrom + Vector3.up * GridPathOverlay.Lift,
+                wrongTo + Vector3.up * GridPathOverlay.Lift,
+                destination,
+                run.RunNumber,
+                tileSize,
+                intense: false,
+                onSpark: RefreshHud,
+                afterFlash: () =>
+                {
+                    RefreshBoard();
+                    RefreshHud();
+                },
+                after: () =>
+                {
+                    _holdingReveal = afterPainted != null;
+                    _revealHold = null;
+                    afterPainted?.Invoke();
+                    if (afterPainted == null)
+                        _holdingReveal = false;
+                },
+                magnetPull: magnetPull,
+                walkWrongPath: _playingMode != GameModeId.ScoutArena);
+        }
+
+        IEnumerator CrashRestartGrid()
+        {
+            _holdingReveal = true;
+            var panHome = ShouldPlayScoutIntro();
+            _followReturnPan = panHome;
+            var run = _gridGame.Run;
+            var walked = CopyCells(run.WalkedCells);
+            yield return WalkedTrailFade.CrashOut(
+                _walker,
+                _board,
+                _board != null ? _board.Overlay : null,
+                walked,
+                WalkedTrailFade.FadeSeconds);
+            RestoreWalkedTiles(walked);
+            _gridGame.BeginNextWalk();
+            run = _gridGame.Run;
+            var origin = _board.WorldPosition(run.Path.Start);
+            if (panHome)
+                yield return PanArenaTo(origin);
+            _walker.SnapTo(origin, restoreAlpha: false);
+            ApplyWalkerFacing(instant: true);
+            if (!panHome || UsesScoutRotation)
+                ApplyCameraFraming();
+            if (_walker != null)
+                yield return _walker.Rematerialize(WalkerView.CrashInSeconds);
+            _hud.SetMessage("On the path. Keep going!");
+            RefreshBoard();
+            RefreshHud();
+            _followReturnPan = false;
+            _holdingReveal = false;
+            _revealHold = null;
+        }
+
+        static GridCoord[] CopyCells(IReadOnlyList<GridCoord> cells)
+        {
+            if (cells == null || cells.Count == 0)
+                return Array.Empty<GridCoord>();
+            var copy = new GridCoord[cells.Count];
+            for (var i = 0; i < cells.Count; i++)
+                copy[i] = cells[i];
+            return copy;
+        }
+
+        void RestoreWalkedTiles(IReadOnlyList<GridCoord> walked)
+        {
+            if (_board == null || walked == null)
+                return;
+            for (var i = 0; i < walked.Count; i++)
             {
-                _effects.PlayMistake(wrong, _board.TileAt(run.CurrentCell), forgotPriorWalk);
-                if (forgotPriorWalk)
-                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
+                var tile = _board.TileAt(walked[i]);
+                tile?.SetState(TileVisualState.Idle);
+            }
+        }
+
+        IEnumerator RadarThenPlay(
+            IReadOnlyList<GridCoord> path,
+            float sweepSeconds,
+            float holdSeconds,
+            Action refresh,
+            Action after)
+        {
+            _holdingReveal = true;
+            _radarPlaying = true;
+            refresh?.Invoke();
+            var radar = RadarPathPreview.Ensure(transform);
+            ShowRadarMemorizeCue();
+            yield return radar.Play(_board, path, sweepSeconds, holdSeconds);
+            HideScoutScanPlayer();
+            HideRadarMemorizeCue();
+            _radarPlaying = false;
+            refresh?.Invoke();
+            RefreshHud();
+            _holdingReveal = false;
+            _revealHold = null;
+            after?.Invoke();
+        }
+
+        IEnumerator RadarThenPlayAfterIntro(Action after)
+        {
+            _holdingReveal = true;
+            yield return PlayRadarSweep();
+            RefreshHud();
+            _holdingReveal = false;
+            _revealHold = null;
+            after?.Invoke();
+        }
+
+        IEnumerator PlayRadarSweep()
+        {
+            _radarPlaying = true;
+            if (_graphRun != null)
+                RefreshGraphBoard();
+            else
+                RefreshBoard();
+
+            var radar = RadarPathPreview.Ensure(transform);
+            var scan = TryShowTileOrGraphScanPlayer();
+            if (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+            {
+                var seconds = _gridGame.CurrentLevel != null
+                    ? PathPreviewSeconds.For(_gridGame.CurrentLevel)
+                    : PathPreviewSeconds.ForLevel(_playingLevel);
+                var hold = _gridGame.CurrentLevel != null
+                    ? PathPreviewSeconds.HoldFor(_gridGame.CurrentLevel)
+                    : PathPreviewSeconds.HoldFor(_playingLevel);
+                yield return radar.Play(_board, _gridGame.Run.Path.Cells, seconds, hold, scan);
+            }
+            else if (_graphBoard != null && _graphBoard.IsBuilt && _graphRun != null)
+            {
+                var origin = _graphBoard.Layout.Origin + new Vector3(0f, GridPathOverlay.Lift + 0.08f, 0f);
+                var worldPath = _graphBoard.RouteWorldPoints(_graphRun.Path.Nodes, GridPathOverlay.Lift);
+                var width = _graphBoard.Layout.WorldWidth;
+                var depth = _graphBoard.Layout.WorldDepth;
+                if (_playingMode == GameModeId.GraphArena && _graphLevel != null)
+                {
+                    var seconds = _graphLevel.PreviewSeconds;
+                    var hold = GraphLevelLadder.For(_playingLevel).HoldSeconds;
+                    if (_graphLevel.PreviewKind == PathPreviewKind.CameraFlash)
+                        yield return radar.PlayFlash(worldPath, origin, width, depth, seconds, scan);
+                    else
+                        yield return radar.Play(worldPath, origin, width, depth, seconds, hold, scan);
+                }
+                else
+                {
+                    yield return radar.Play(
+                        worldPath,
+                        origin,
+                        width,
+                        depth,
+                        PathPreviewSeconds.ForLevel(_playingLevel),
+                        PathPreviewSeconds.Hold,
+                        scan);
+                }
             }
 
-            _revealHold = StartCoroutine(GridMistakeRoutine(wrongFrom, wrongTo, afterPainted));
+            HideScoutScanPlayer();
+            HideRadarMemorizeCue();
+            _radarPlaying = false;
+            if (_graphRun != null)
+                RefreshGraphBoard();
+            else
+                RefreshBoard();
         }
+
+        bool HasRadarPath() =>
+            (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+            || (_graphBoard != null && _graphBoard.IsBuilt && _graphRun != null);
 
         void ShowStepCallout(string caption, bool recover)
         {
@@ -972,86 +1186,41 @@ namespace Game.Unity
                 recover);
         }
 
-        IEnumerator GridMistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, Action afterPainted)
-        {
-            var run = _gridGame.Run;
-            var destination = _board.WorldPosition(run.CurrentCell);
-            yield return BoardStepFeedback.FlashWrongTurnThenTravel(
-                _walker,
-                _board != null ? _board.Overlay : null,
-                wrongFrom + Vector3.up * GridPathOverlay.Lift,
-                wrongTo + Vector3.up * GridPathOverlay.Lift,
-                destination,
-                hopPath: null,
-                afterFlash: () => RefreshBoard());
-            _holdingReveal = false;
-            _revealHold = null;
-            afterPainted?.Invoke();
-        }
-
         void StepGraph(Nixin.Graph.Core.GraphNodeId target)
         {
             var from = _graphRun.CurrentNode;
             var wrongFrom = _graphBoard.WorldPosition(from);
             var wrongTo = _graphBoard.WorldPosition(target);
+            var wrongPath = _graphBoard.EdgeWorldPoints(from, target);
             var outcome = _graphRun.Choose(target);
             var hopPath = _graphBoard.EdgeWorldPoints(from, _graphRun.CurrentNode);
 
             switch (outcome)
             {
                 case WalkOutcome.Advanced:
+                    _graphLevelOneFue?.OnCorrectStep(reachedGoal: false);
                     _walker.HopAlong(hopPath);
                     RefreshGraphBoard();
                     _effects.PlayCorrect(null);
                     _hud.SetMessage("On the path. Keep going!");
                     break;
                 case WalkOutcome.WrongRevealed:
-                    _graphBoard.SetState(target, GraphNodeVisualState.Wrong);
-                    _effects.PlayMistake(null, null);
-                    _hud.SetMessage($"Wrong junction — {_graphRun.LivesLeft} lives left.");
-                    StopRevealHold();
-                    _holdingReveal = true;
-                    _revealHold = StartCoroutine(GraphMistakeRoutine(
-                        wrongFrom,
-                        wrongTo,
-                        hopPath,
-                        () =>
-                        {
-                            _holdingReveal = false;
-                            _revealHold = null;
-                        }));
+                    _graphLevelOneFue?.OnWrongStep();
+                    _hud.SetMessage($"Wrong junction — {_graphRun.LivesLeft} heart slices left.");
+                    BeginGraphMistake(from, target, wrongFrom, wrongTo, wrongPath, hopPath, null);
                     break;
                 case WalkOutcome.RunFailed:
-                    _graphBoard.SetState(target, GraphNodeVisualState.Wrong);
-                    _effects.PlayRunFailed();
-                    StopRevealHold();
-                    _holdingReveal = true;
-                    _revealHold = StartCoroutine(GraphMistakeRoutine(
-                        wrongFrom,
-                        wrongTo,
-                        hopPath,
-                        () =>
-                        {
-                            ShowRetryFromMemory();
-                            _revealHold = StartCoroutine(RewindAfterFailedWalk());
-                        }));
+                    BeginGraphWalkFailRestart();
                     break;
                 case WalkOutcome.LevelCompleted:
+                    _graphLevelOneFue?.OnCorrectStep(reachedGoal: true);
                     if (_graphRun.LastRevealed.HasValue)
                     {
-                        _graphBoard.SetState(target, GraphNodeVisualState.Wrong);
-                        _effects.PlayMistake(null, null);
-                        StopRevealHold();
-                        _holdingReveal = true;
-                        _revealHold = StartCoroutine(GraphMistakeRoutine(
-                            wrongFrom,
-                            wrongTo,
-                            hopPath,
-                            () =>
-                            {
-                                _effects.PlayLevelCompleted();
-                                BeginCompletion(_graphRun.Score);
-                            }));
+                        BeginGraphMistake(from, target, wrongFrom, wrongTo, wrongPath, hopPath, () =>
+                        {
+                            _effects.PlayLevelCompleted();
+                            BeginCompletion(_graphRun.Score);
+                        });
                     }
                     else
                     {
@@ -1063,24 +1232,103 @@ namespace Game.Unity
 
                     break;
                 case WalkOutcome.SessionOver:
-                    _graphBoard.SetState(target, GraphNodeVisualState.Wrong);
-                    _effects.PlaySessionFailed();
-                    StopRevealHold();
-                    _holdingReveal = true;
-                    _revealHold = StartCoroutine(GraphMistakeRoutine(
-                        wrongFrom,
-                        wrongTo,
-                        hopPath,
-                        () =>
-                        {
-                            _holdingReveal = false;
-                            _revealHold = null;
-                            HoldRevealThen(() => FinishSession(false, _graphRun.Score));
-                        }));
+                    BeginLevelFail(_graphRun.Score);
                     break;
             }
 
+            if (!_holdingReveal)
+                RefreshHud();
+        }
+
+        void BeginGraphWalkFailRestart()
+        {
+            StopRevealHold();
+            _holdingReveal = true;
+            _effects.PlayRunFailed();
             RefreshHud();
+            _revealHold = StartCoroutine(CrashRestartGraph());
+        }
+
+        void BeginGraphMistake(
+            Nixin.Graph.Core.GraphNodeId from,
+            Nixin.Graph.Core.GraphNodeId wrong,
+            Vector3 wrongFrom,
+            Vector3 wrongTo,
+            IReadOnlyList<Vector3> wrongPath,
+            IReadOnlyList<Vector3> hopPath,
+            Action afterPainted,
+            bool runFailed = false,
+            bool sessionFailed = false)
+        {
+            StopRevealHold();
+            _holdingReveal = true;
+            if (sessionFailed)
+                _effects.PlaySessionFailed();
+            else if (runFailed)
+                _effects.PlayRunFailed();
+
+            _revealHold = StartCoroutine(GraphMissRoutine(
+                from,
+                wrong,
+                wrongFrom,
+                wrongTo,
+                wrongPath,
+                hopPath,
+                afterPainted,
+                magnetPull: !runFailed));
+        }
+
+        IEnumerator GraphMissRoutine(
+            Nixin.Graph.Core.GraphNodeId from,
+            Nixin.Graph.Core.GraphNodeId wrong,
+            Vector3 wrongFrom,
+            Vector3 wrongTo,
+            IReadOnlyList<Vector3> wrongPath,
+            IReadOnlyList<Vector3> hopPath,
+            Action afterPainted,
+            bool magnetPull)
+        {
+            var destination = _graphBoard.WorldPosition(_graphRun.CurrentNode);
+            var revealed = _graphBoard.NodeAt(_graphRun.CurrentNode) as GraphNodeCircleView;
+            yield return MissBeat.Play(
+                this,
+                _walker,
+                null,
+                _camera,
+                _hud,
+                null,
+                null,
+                wrongFrom + Vector3.up * GridPathOverlay.Lift,
+                wrongTo + Vector3.up * GridPathOverlay.Lift,
+                destination,
+                _graphRun.RunNumber,
+                0.44f,
+                intense: false,
+                onSpark: RefreshHud,
+                afterFlash: () =>
+                {
+                    RefreshGraphBoard();
+                    RefreshHud();
+                },
+                after: () =>
+                {
+                    _holdingReveal = afterPainted != null;
+                    _revealHold = null;
+                    afterPainted?.Invoke();
+                    if (afterPainted == null)
+                        _holdingReveal = false;
+                },
+                magnetPull: magnetPull,
+                approachPath: wrongPath,
+                magnetPath: hopPath,
+                paintWrong: () =>
+                {
+                    _graphBoard.NodeAt(wrong)?.SetVisible(true);
+                    _graphBoard.SetState(wrong, GraphNodeVisualState.Wrong);
+                    _graphBoard.SetEdgeVisual(from, wrong, GraphEdgeVisualState.Wrong);
+                },
+                flashRevealed: () => revealed?.Flash(GraphNodeVisualState.Revealed, 0.45f),
+                walkWrongPath: _playingMode != GameModeId.ScoutArena);
         }
 
         void BeginCompletion(int score)
@@ -1113,11 +1361,21 @@ namespace Game.Unity
                     _playingLevel,
                     Math.Max(0, score),
                     completed,
-                    _catalog.Mode(_playingMode).Count);
+                    _catalog.Mode(_playingMode).Count,
+                    mistakes: SessionMistakes());
             }
 
             _journey.RememberPlayed(_playingMode, _playingLevel);
             _repository.Save(_journey);
+        }
+
+        int SessionMistakes()
+        {
+            if (_graphRun != null)
+                return _graphRun.MistakesMade;
+            if (_gridGame != null && _gridGame.Run != null)
+                return _gridGame.Run.MistakesMade;
+            return 0;
         }
 
         IEnumerator CelebrateThenPopup(int score)
@@ -1152,7 +1410,10 @@ namespace Game.Unity
             {
                 _zoomingOverview = true;
                 if (_graphViewport.IsActive && _graphBoard != null && _graphBoard.IsBuilt)
-                    _graphViewport.Reset(_graphBoard.Layout, _camera != null ? _camera.aspect : 1f);
+                    _graphViewport.Reset(
+                        _graphBoard.Layout,
+                        _camera != null ? _camera.aspect : 1f,
+                        TileHudViewportInset());
             }
 
             var elapsed = 0f;
@@ -1211,10 +1472,13 @@ namespace Game.Unity
             if (_graphBoard != null && _graphBoard.IsBuilt)
             {
                 origin = _graphBoard.Layout.Origin;
+                var inset = _playingMode == GameModeId.GraphArena ? TileHudViewportInset() : 0f;
                 size = BoardCamera.ContainOrthographicSize(
                     _graphBoard.Layout.WorldWidth,
                     _graphBoard.Layout.WorldDepth,
-                    _camera.aspect);
+                    _camera.aspect,
+                    inset) * BoardCamera.Padding;
+                origin.z += BoardCamera.TopHudFocusOffset(inset, size);
                 return true;
             }
 
@@ -1239,7 +1503,9 @@ namespace Game.Unity
                     _graphBoard.Layout.Origin,
                     _graphBoard.Layout.WorldWidth,
                     _graphBoard.Layout.WorldDepth,
-                    _camera.aspect);
+                    _camera.aspect,
+                    bottomAlign: false,
+                    topViewportInset: _playingMode == GameModeId.GraphArena ? TileHudViewportInset() : 0f);
             }
         }
 
@@ -1276,7 +1542,7 @@ namespace Game.Unity
             }
 
             StopRevealHold();
-            _revealHold = StartCoroutine(ScoutIntroRoutine(origin, overviewSize, settledMessage));
+            _revealHold = StartCoroutine(ScoutRotationIntroRoutine(origin, overviewSize, settledMessage));
         }
 
         void PlayArenaIntro(Action after)
@@ -1297,12 +1563,7 @@ namespace Game.Unity
             {
                 _arenaIntroPlaying = false;
                 if (_board != null && _board.IsBuilt)
-                {
                     ApplyCameraFraming();
-                    RefreshBoard();
-                }
-                if (_graphBoard != null && _graphBoard.IsBuilt)
-                    RefreshGraphBoard();
                 RefreshHud();
                 after?.Invoke();
             }
@@ -1332,8 +1593,7 @@ namespace Game.Unity
             if (_graphBoard == null || _graphRun == null)
                 return;
 
-            var options = _graphRun.Options();
-            _graphBoard.SetNodesVisible(_graphRun.CurrentNode, _graphRun.WalkedNodes, options, showAll: true);
+            _graphBoard.SetAllNodesVisible(false);
             _graphBoard.SetAllEdgesVisible(false);
             if (_graphBoard.Overlay != null)
                 _graphBoard.Overlay.gameObject.SetActive(false);
@@ -1362,21 +1622,50 @@ namespace Game.Unity
             ShowOpeningCard(force: true, overlayHome: true);
         }
 
-        void MaybeShowOpeningCard()
+        void ContinueAfterArenaIntro(string settledMessage)
         {
-            if (_graphLevelOneFue != null && _graphLevelOneFue.IsActive)
+            if (ShouldShowOpeningCardNow()
+                && ShowOpeningCard(force: false, afterDismissed: () => ContinueAfterOpeningCard(settledMessage)))
                 return;
-            ShowOpeningCard(force: false);
+
+            ContinueAfterOpeningCard(settledMessage);
         }
 
-        void ShowOpeningCard(bool force, bool overlayHome = false)
+        void ContinueAfterOpeningCard(string settledMessage)
+        {
+            if (ShouldPlayScoutIntro())
+            {
+                MaybeStartScoutIntro(settledMessage);
+                return;
+            }
+
+            if (HasRadarPath())
+            {
+                _revealHold = StartCoroutine(RadarThenPlayAfterIntro(null));
+                return;
+            }
+
+            if (_graphBoard != null && _graphBoard.IsBuilt)
+                RefreshGraphBoard();
+        }
+
+        bool ShouldShowOpeningCardNow()
+        {
+            if (_graphLevelOneFue != null && _graphLevelOneFue.IsActive)
+                return false;
+            if (!OpeningCardSpec.ShouldShow(_playingLevel))
+                return false;
+            return _fueStore == null || !_fueStore.HasSeen(OpeningCardSpec.LessonIdFor(_playingLevel));
+        }
+
+        bool ShowOpeningCard(bool force, bool overlayHome = false, Action afterDismissed = null)
         {
             if (!force && !OpeningCardSpec.ShouldShow(_playingLevel))
-                return;
+                return false;
             if (!force
                 && _fueStore != null
                 && _fueStore.HasSeen(OpeningCardSpec.LessonIdFor(_playingLevel)))
-                return;
+                return false;
 
             Transform parent = null;
             if (overlayHome)
@@ -1388,10 +1677,11 @@ namespace Game.Unity
             if (parent == null && _hud != null)
                 parent = _hud.OverlayRoot;
             if (parent == null)
-                return;
+                return false;
 
             _openingCard.Ensure(parent);
             _openingCardBlocking = true;
+            _levelOneChrome.Hide();
             var level = _playingLevel;
             var markSeen = !overlayHome;
             _openingCard.Show(() =>
@@ -1399,7 +1689,9 @@ namespace Game.Unity
                 _openingCardBlocking = false;
                 if (markSeen && OpeningCardSpec.ShouldShow(level))
                     _fueStore?.MarkSeen(OpeningCardSpec.LessonIdFor(level));
+                afterDismissed?.Invoke();
             });
+            return true;
         }
 
         bool ShouldPlayScoutIntro()
@@ -1433,6 +1725,7 @@ namespace Game.Unity
             _camera.farClipPlane = BoardCamera.FarClip;
 
             yield return new WaitForSeconds(ScoutIntroHoldSeconds);
+            yield return PlayRadarSweep();
 
             var elapsed = 0f;
             while (elapsed < ScoutIntroZoomSeconds)
@@ -1457,26 +1750,213 @@ namespace Game.Unity
             _revealHold = null;
         }
 
-        IEnumerator GraphMistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, IReadOnlyList<Vector3> hopPath, Action after)
+        IEnumerator ScoutRotationIntroRoutine(Vector3 overviewOrigin, float overviewSize, string settledMessage)
         {
-            yield return BoardStepFeedback.FlashWrongTurnThenTravel(
-                _walker,
-                _graphBoard != null ? _graphBoard.Overlay : null,
-                wrongFrom + Vector3.up * GridPathOverlay.Lift,
-                wrongTo + Vector3.up * GridPathOverlay.Lift,
-                _graphBoard.WorldPosition(_graphRun.CurrentNode),
-                hopPath,
-                afterFlash: () => RefreshGraphBoard());
+            _holdingReveal = true;
+            _completionOverview = false;
+            _zoomingOverview = false;
+            CurrentOverlay()?.ResetVisuals();
+            if (_graphBoard != null && _graphBoard.IsBuilt)
+            {
+                _graphBoard.SetAllNodesVisible(false);
+                _graphBoard.SetAllEdgesVisible(false);
+                if (_graphBoard.Overlay != null)
+                    _graphBoard.Overlay.gameObject.SetActive(false);
+            }
+
+            ApplyWalkerFacing(instant: true);
+            if (_walker != null)
+                _walker.YawDegreesPerSecond = ScoutRotationMove.TourYawDegreesPerSecond;
+            var start = ScoutWalkerOrigin();
+            BoardCamera.FrameFollow(
+                _camera,
+                start,
+                _arenaSettings.FollowOrthographicSize,
+                FollowHeadingYaw());
+            var scan = ShowScoutScanPlayer();
+            BeginScoutScanFue(scan);
+            yield return WalkScoutTourPath(scan);
+            HideScoutScanFue();
+            HideScoutScanPlayer();
+            yield return new WaitForSeconds(ScoutRotationMove.DestinationHoldSeconds);
+
+            _zoomingOverview = true;
+            yield return ScoutRotationMove.LerpFollow(
+                _camera,
+                _walker != null ? _walker.transform.position : start,
+                _arenaSettings.FollowOrthographicSize,
+                FollowHeadingYaw(),
+                overviewOrigin,
+                overviewSize,
+                0f,
+                ScoutRotationMove.ZoomSeconds);
+            yield return new WaitForSeconds(ScoutRotationMove.OverviewHoldSeconds);
+
+            HideScoutTourPathLine();
+            if (_walker != null)
+            {
+                _walker.MotionPaused = false;
+                _walker.SnapTo(start, restoreAlpha: true);
+            }
+            ApplyWalkerFacing(instant: true);
+            yield return ScoutRotationMove.LerpFollow(
+                _camera,
+                overviewOrigin,
+                overviewSize,
+                0f,
+                start,
+                _arenaSettings.FollowOrthographicSize,
+                FollowHeadingYaw(),
+                ScoutRotationMove.ZoomSeconds);
+
+            _zoomingOverview = false;
+            _suppressScoutIntroHighlights = false;
+            ApplyCameraFraming();
+            _hud.SetMessage(settledMessage);
+            RefreshBoard();
+            RefreshGraphBoard();
+            yield return new WaitForSeconds(ScoutIntroChoicePreviewSeconds);
             _holdingReveal = false;
             _revealHold = null;
-            after?.Invoke();
+        }
+
+        Vector3 ScoutWalkerOrigin()
+        {
+            if (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+                return _board.WorldPosition(_gridGame.Run.Path.Start);
+            if (_graphBoard != null && _graphBoard.IsBuilt && _graphRun != null)
+                return _graphBoard.WorldPosition(_graphRun.Path.Start);
+            return _walker != null ? _walker.transform.position : Vector3.zero;
+        }
+
+        IEnumerator WalkScoutTourPath(ScoutScanPlayer player)
+        {
+            if (_walker == null)
+                yield break;
+
+            var hops = ScoutTourHopSeconds();
+            var pause = ScoutRotationMove.TourPauseSecondsFor(_playingLevel);
+            var total = ScoutRotationMove.TourTotalSeconds(hops, pause);
+            player?.SetProgress(0f, total);
+            yield return WaitScoutScanFue(player);
+            if (hops.Length == 0)
+                yield break;
+
+            for (var i = 0; i < hops.Length; i++)
+            {
+                StartScoutTourHop(i);
+                while (_walker != null && _walker.IsHopping)
+                {
+                    SyncScoutTourPause(player);
+                    TickScoutScanFue(player);
+                    player?.SetProgress(
+                        ScoutRotationMove.TourCoveredSeconds(hops, i, _walker.TravelNormalized, pause),
+                        total);
+                    yield return null;
+                }
+
+                player?.SetProgress(ScoutRotationMove.TourCoveredSeconds(hops, i + 1, 0f, pause), total);
+                if (i >= hops.Length - 1)
+                    continue;
+
+                var pauseElapsed = 0f;
+                var pauseBase = ScoutRotationMove.TourCoveredSeconds(hops, i + 1, 0f, pause);
+                while (pauseElapsed < pause)
+                {
+                    SyncScoutTourPause(player);
+                    TickScoutScanFue(player);
+                    if (player == null || !player.HeldPaused)
+                        pauseElapsed += Time.deltaTime;
+                    player?.SetProgress(pauseBase + Mathf.Min(pauseElapsed, pause), total);
+                    yield return null;
+                }
+            }
+
+            SyncScoutTourPause(null);
+            player?.SetProgress(total, total);
+        }
+
+        float[] ScoutTourHopSeconds()
+        {
+            var hopSeconds = ScoutRotationMove.TourHopSecondsFor(_playingLevel);
+            if (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+            {
+                var cells = _gridGame.Run.Path.Cells;
+                if (cells == null || cells.Count < 2)
+                    return System.Array.Empty<float>();
+                var hops = new float[cells.Count - 1];
+                for (var i = 1; i < cells.Count; i++)
+                {
+                    hops[i - 1] = WalkerView.SecondsForDistance(
+                        _board.WorldPosition(cells[i - 1]),
+                        _board.WorldPosition(cells[i]),
+                        hopSeconds);
+                }
+
+                return hops;
+            }
+
+            if (_graphBoard == null || !_graphBoard.IsBuilt || _graphRun == null)
+                return System.Array.Empty<float>();
+
+            var nodes = _graphRun.Path.Nodes;
+            if (nodes == null || nodes.Count < 2)
+                return System.Array.Empty<float>();
+            var graphHops = new float[nodes.Count - 1];
+            for (var i = 1; i < nodes.Count; i++)
+            {
+                var edge = _graphBoard.EdgeWorldPoints(nodes[i - 1], nodes[i]);
+                graphHops[i - 1] = WalkerView.SecondsForPath(edge, hopSeconds);
+            }
+
+            return graphHops;
+        }
+
+        void StartScoutTourHop(int hopIndex)
+        {
+            if (_walker == null)
+                return;
+
+            if (_board != null && _board.IsBuilt && _gridGame?.Run != null)
+            {
+                var cells = _gridGame.Run.Path.Cells;
+                var next = _board.WorldPosition(cells[hopIndex + 1]);
+                _walker.HopTo(
+                    next,
+                    WalkerView.SecondsForDistance(
+                        _walker.transform.position,
+                        next,
+                        ScoutRotationMove.TourHopSecondsFor(_playingLevel)));
+                return;
+            }
+
+            if (_graphBoard == null || !_graphBoard.IsBuilt || _graphRun == null)
+                return;
+
+            var nodes = _graphRun.Path.Nodes;
+            var edge = _graphBoard.EdgeWorldPoints(nodes[hopIndex], nodes[hopIndex + 1]);
+            _walker.HopAlong(edge, WalkerView.SecondsForPath(edge, ScoutRotationMove.TourHopSecondsFor(_playingLevel)));
+        }
+
+        void SyncScoutTourPause(ScoutScanPlayer player)
+        {
+            if (_walker == null)
+                return;
+            _walker.MotionPaused = player != null && player.HeldPaused;
+        }
+
+        void HideScoutTourPathLine()
+        {
+            CurrentOverlay()?.ResetVisuals();
+            if (_graphBoard != null && _graphBoard.Overlay != null)
+                _graphBoard.Overlay.gameObject.SetActive(false);
         }
 
         int NextPlayable()
         {
             var progress = _journey.For(_playingMode);
             var next = _playingLevel + 1;
-            if (next <= _catalog.Mode(_playingMode).Count && progress.IsUnlocked(next))
+            if (next <= ArenaLevelCount(_playingMode) && progress.IsUnlocked(next))
                 return next;
             return _playingLevel;
         }
@@ -1486,96 +1966,83 @@ namespace Game.Unity
             _gridGame.BeginNextWalk();
             var run = _gridGame.Run;
             _walker.SnapTo(_board.WorldPosition(run.Path.Start));
+            ApplyWalkerFacing(instant: true);
             ApplyCameraFraming();
             _hud.SetMessage("On the path. Keep going!");
             RefreshBoard();
             RefreshHud();
         }
 
-        IEnumerator RewindAfterFailedWalk()
+        IEnumerator CrashRestartGraph()
         {
             _holdingReveal = true;
-            _zoomingOverview = true;
+            var panHome = ShouldPlayScoutIntro();
+            _followReturnPan = panHome;
+            var walked = CopyNodes(_graphRun.WalkedNodes);
+            yield return WalkedTrailFade.CrashOutGraph(
+                _walker,
+                _graphBoard,
+                walked,
+                WalkedTrailFade.FadeSeconds);
+            _graphRun.BeginNextWalk();
+            var origin = _graphBoard != null
+                ? _graphBoard.WorldPosition(_graphRun.CurrentNode)
+                : Vector3.zero;
 
-            if (_graphRun != null && _graphRun.IsAwaitingNextWalk)
+            if (_playingMode == GameModeId.GraphArena && _graphBoard != null && _graphBoard.IsBuilt)
             {
-                _graphRun.BeginNextWalk();
-                _walker.SnapTo(_graphBoard.WorldPosition(_graphRun.CurrentNode));
-                RefreshGraphBoard();
-                if (_playingMode == GameModeId.GraphArena && _graphBoard != null && _graphBoard.IsBuilt)
-                {
-                    var aspect = _camera != null ? _camera.aspect : 1f;
-                    _graphViewport.Reset(_graphBoard.Layout, aspect);
-                    if (TryOverviewFrame(out var origin, out var size))
-                    {
-                        var fromPos = _camera != null ? _camera.transform.position : origin;
-                        var fromSize = _camera != null ? _camera.orthographicSize : size;
-                        var toPos = new Vector3(origin.x, BoardCamera.Height, origin.z);
-                        yield return BoardStepFeedback.LerpCamera(
-                            _camera,
-                            fromPos,
-                            fromSize,
-                            toPos,
-                            size,
-                            BoardStepFeedback.RewindCameraSeconds);
-                        _graphViewport.Apply(_camera);
-                    }
-                    else
-                        ApplyCameraFraming();
-                }
-                else if (ShouldPlayScoutIntro() && _walker != null && _camera != null && _arenaSettings != null)
-                {
-                    yield return LerpFollowToWalker();
-                }
-                else
+                if (_walker != null)
+                    _walker.SnapTo(origin, restoreAlpha: false);
+                var aspect = _camera != null ? _camera.aspect : 1f;
+                _graphViewport.Reset(_graphBoard.Layout, aspect, TileHudViewportInset());
+                ApplyCameraFraming();
+                _graphViewport.Apply(_camera);
+            }
+            else if (panHome)
+            {
+                yield return PanArenaTo(origin);
+                if (_walker != null)
+                    _walker.SnapTo(origin, restoreAlpha: false);
+                ApplyWalkerFacing(instant: true);
+                if (UsesScoutRotation)
                     ApplyCameraFraming();
             }
-            else if (_gridGame != null && _gridGame.Run != null && _gridGame.Run.IsAwaitingNextWalk)
+            else
             {
-                _gridGame.BeginNextWalk();
-                var run = _gridGame.Run;
-                _walker.SnapTo(_board.WorldPosition(run.Path.Start));
-                _hud.SetMessage("On the path. Keep going!");
-                RefreshBoard();
-                if (ShouldPlayScoutIntro() && _walker != null && _camera != null && _arenaSettings != null)
-                    yield return LerpFollowToWalker();
-                else
-                    ApplyCameraFraming();
+                if (_walker != null)
+                    _walker.SnapTo(origin, restoreAlpha: false);
+                ApplyWalkerFacing(instant: true);
+                ApplyCameraFraming();
             }
 
+            if (_walker != null)
+                yield return _walker.Rematerialize(WalkerView.CrashInSeconds);
             _hud.SetMessage("On the path. Keep going!");
+            RefreshGraphBoard();
             RefreshHud();
-            _zoomingOverview = false;
+            _followReturnPan = false;
             _holdingReveal = false;
             _revealHold = null;
         }
 
-        IEnumerator LerpFollowToWalker()
+        static Nixin.Graph.Core.GraphNodeId[] CopyNodes(IReadOnlyList<Nixin.Graph.Core.GraphNodeId> nodes)
         {
-            var focus = _walker.transform.position;
-            if (_board != null && _board.IsBuilt)
-                focus.y = _board.Layout.Origin.y;
-            else if (_graphBoard != null && _graphBoard.IsBuilt)
-                focus.y = _graphBoard.Layout.Origin.y;
-
-            var toPos = new Vector3(focus.x, BoardCamera.Height, focus.z);
-            var toSize = _arenaSettings.FollowOrthographicSize;
-            var fromPos = _camera.transform.position;
-            var fromSize = _camera.orthographicSize;
-            yield return BoardStepFeedback.LerpCamera(
-                _camera,
-                fromPos,
-                fromSize,
-                toPos,
-                toSize,
-                BoardStepFeedback.RewindCameraSeconds);
+            if (nodes == null || nodes.Count == 0)
+                return Array.Empty<Nixin.Graph.Core.GraphNodeId>();
+            var copy = new Nixin.Graph.Core.GraphNodeId[nodes.Count];
+            for (var i = 0; i < nodes.Count; i++)
+                copy[i] = nodes[i];
+            return copy;
         }
 
-        void ShowRetryFromMemory()
+        IEnumerator PanArenaTo(Vector3 boardPoint)
         {
-            JourneyUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
-                MemoryPathPopups.RetryFromMemory(),
-                replacePopups: true);
+            if (_camera == null)
+                yield break;
+
+            var to = new Vector3(boardPoint.x, BoardCamera.Height, boardPoint.z);
+            var seconds = BoardStepFeedback.ReturnPanSeconds(_camera.transform.position, to);
+            yield return BoardStepFeedback.PanLinear(_camera, to, seconds);
         }
 
         void ShowHome()
@@ -1585,15 +2052,15 @@ namespace Game.Unity
             TearDownViews();
             _gridGame = null;
             _graphRun = null;
-            _graphLevel = null;
+            ReleasePlayableGraphLevel();
             _sharedGridProgress = false;
             _hud.SetVisible(false);
             if (!ModeExists(_selectedMode) || !GameModeUnlock.IsUnlocked(
                     _selectedMode,
                     _journey,
                     _catalog.UnlockConfig,
-                    Math.Max(1, _catalog.TileArena.Count),
-                    Math.Max(1, _catalog.GraphArena.Count)))
+                    Math.Max(1, ArenaLevelCount(GameModeId.TileArena)),
+                    Math.Max(1, ArenaLevelCount(GameModeId.GraphArena))))
             {
                 _selectedMode = GameModeId.TileArena;
             }
@@ -1606,7 +2073,7 @@ namespace Game.Unity
             {
                 Level = progress.HighestUnlockedLevel,
                 StarsEarned = LevelAccess.StarsEarned(progress),
-                StarsMax = LevelAccess.StarsPossible(Math.Max(1, mode.Count)),
+                StarsMax = LevelAccess.StarsPossible(Math.Max(1, ArenaLevelCount(_selectedMode))),
                 CareerScore = progress.CareerScore,
                 SoundOn = PlayerSettingsStore.SoundEffects,
                 Modes = BuildModeIcons(),
@@ -1647,8 +2114,8 @@ namespace Game.Unity
                     id,
                     _journey,
                     _catalog.UnlockConfig,
-                    Math.Max(1, _catalog.TileArena.Count),
-                    Math.Max(1, _catalog.GraphArena.Count)),
+                    Math.Max(1, ArenaLevelCount(GameModeId.TileArena)),
+                    Math.Max(1, ArenaLevelCount(GameModeId.GraphArena))),
                 Selected = _selectedMode == id,
                 Tint = tint
             };
@@ -1691,8 +2158,8 @@ namespace Game.Unity
                     id,
                     _journey,
                     _catalog.UnlockConfig,
-                    Math.Max(1, _catalog.TileArena.Count),
-                    Math.Max(1, _catalog.GraphArena.Count)))
+                    Math.Max(1, ArenaLevelCount(GameModeId.TileArena)),
+                    Math.Max(1, ArenaLevelCount(GameModeId.GraphArena))))
             {
                 ShowNotice(GameModeUnlock.LockReason(id, _catalog.UnlockConfig), "OK", ShowHome);
                 return;
@@ -1719,17 +2186,18 @@ namespace Game.Unity
 
             var mode = _catalog.Mode(_selectedMode);
             var progress = _journey.For(_selectedMode);
-            var tiles = new JourneyLevelTileInfo[mode.Count];
+            var count = ArenaLevelCount(_selectedMode);
+            var tiles = new JourneyLevelTileInfo[count];
             for (var i = 0; i < tiles.Length; i++)
             {
                 var number = i + 1;
                 var lane = LevelAccess.Lane(progress, number);
-                var entry = mode.Get(number);
+                var entry = _catalog.PlayableEntry(_selectedMode, number);
                 tiles[i] = new JourneyLevelTileInfo
                 {
                     Number = number,
                     Lane = lane,
-                    Stars = LevelAccess.StarsOn(lane),
+                    Stars = LevelAccess.StarsOn(progress, number),
                     Thumbnail = entry.ThumbnailSource,
                     Swatch = SwatchFor(entry)
                 };
@@ -1739,7 +2207,7 @@ namespace Game.Unity
             {
                 Title = mode.DisplayName,
                 StarsEarned = LevelAccess.StarsEarned(progress),
-                StarsMax = LevelAccess.StarsPossible(Math.Max(1, mode.Count)),
+                StarsMax = LevelAccess.StarsPossible(Math.Max(1, count)),
                 Tiles = tiles,
                 OnBack = ShowHome,
                 OnPick = ShowLevelDetail
@@ -1763,14 +2231,13 @@ namespace Game.Unity
 
         void ShowLevelDetail(int levelNumber)
         {
-            var mode = _catalog.Mode(_selectedMode);
-            var entry = mode.Get(levelNumber);
+            var entry = _catalog.PlayableEntry(_selectedMode, levelNumber);
             var progress = _journey.For(_selectedMode);
-            var gridLabel = entry.IsGraph
-                ? (entry.GraphLevel != null ? entry.GraphLevel.DisplayName : "Graph path")
-                : entry.GridSpec.Width + " x " + entry.GridSpec.Height + " Grid";
-            var steps = entry.IsGraph
-                ? "Click the next node"
+            var gridLabel = _selectedMode == GameModeId.GraphArena || entry.IsGraph
+                ? (levelNumber == 1 ? "Follow the finger" : "Graph path")
+                : GridSizeLabel(_selectedMode, levelNumber, entry);
+            var steps = _selectedMode == GameModeId.GraphArena || entry.IsGraph
+                ? "Tap the next node"
                 : "Walk the hidden path";
 
             JourneyUi.Ensure().Open<LevelDetailScreen, LevelDetailPayload>(new LevelDetailPayload
@@ -1784,6 +2251,12 @@ namespace Game.Unity
                 OnBack = ShowLevelSelect,
                 OnStart = () => StartLevel(_selectedMode, levelNumber)
             });
+        }
+
+        static string GridSizeLabel(GameModeId mode, int levelNumber, JourneyLevelEntry entry)
+        {
+            var spec = JourneyCatalog.PlayableGridSpec(mode, levelNumber - 1, entry.GridSpec);
+            return spec.Width + " x " + spec.Height + " Grid";
         }
 
         void ShowSettings()
@@ -1820,9 +2293,11 @@ namespace Game.Unity
                 MemoryPathPopups.Complete(
                     score,
                     canAdvance,
+                    currentLevel,
                     canAdvance ? (Action)(() => StartLevel(_playingMode, nextLevel)) : null,
                     () => StartLevel(_playingMode, currentLevel),
-                    ShowHome),
+                    ShowHome,
+                    LevelAccess.StarsFromMistakes(SessionMistakes())),
                 replacePopups: true);
         }
 
@@ -1830,7 +2305,7 @@ namespace Game.Unity
         {
             _ = body;
             JourneyUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
-                MemoryPathPopups.GameOver(ShowHome, () => StartLevel(_playingMode, level)),
+                MemoryPathPopups.GameOver(level, ShowHome, () => StartLevel(_playingMode, level)),
                 replacePopups: true);
         }
 
@@ -1863,14 +2338,31 @@ namespace Game.Unity
             ShowHome();
         }
 
+        int ArenaLevelCount(GameModeId id) =>
+            JourneyCatalog.PlayableLevelCount(_catalog, id);
+
+        void ReleasePlayableGraphLevel()
+        {
+            if (_graphLevel != null && _ownsGraphLevel)
+            {
+                if (Application.isPlaying)
+                    Destroy(_graphLevel);
+                else
+                    DestroyImmediate(_graphLevel);
+            }
+
+            _graphLevel = null;
+            _ownsGraphLevel = false;
+        }
+
         bool EnsureModeUnlocked(GameModeId mode, out string reason)
         {
             var unlocked = GameModeUnlock.IsUnlocked(
                 mode,
                 _journey,
                 _catalog.UnlockConfig,
-                Math.Max(1, _catalog.TileArena.Count),
-                Math.Max(1, _catalog.GraphArena.Count));
+                Math.Max(1, ArenaLevelCount(GameModeId.TileArena)),
+                Math.Max(1, ArenaLevelCount(GameModeId.GraphArena)));
             reason = unlocked ? string.Empty : GameModeUnlock.LockReason(mode, _catalog.UnlockConfig);
             return unlocked;
         }
@@ -1889,25 +2381,42 @@ namespace Game.Unity
             var run = _gridGame?.Run;
             var visibleOptions = run == null
                 ? null
-                : _suppressScoutIntroHighlights && IsScoutGridPlay
+                : _radarPlaying || (_suppressScoutIntroHighlights && IsScoutGridPlay)
                     ? System.Array.Empty<GridCoord>()
                     : PathOptionFilter.VisibleGridOptions(run.WalkedCells, run.Options());
             GridBoardPresenter.Refresh(
                 _board,
                 run,
                 visibleOptions: visibleOptions,
-                showChoicePaths: IsScoutGridPlay && !_suppressScoutIntroHighlights);
-            RefreshLevelOneFue(run, visibleOptions);
+                showChoicePaths: !_radarPlaying
+                    && !(_suppressScoutIntroHighlights && IsScoutGridPlay)
+                    && (_levelOneFue == null || !_levelOneFue.IsActive),
+                highlightOrigin: !IsScoutGridPlay,
+                trailWidthScale: IsScoutGridPlay ? ScoutRotationMove.TrailWidthScale : 1f);
+            RefreshLevelOneFue(run);
         }
 
         void RefreshGraphBoard()
         {
-            var visibleOptions = _graphRun == null
-                ? null
-                : _suppressScoutIntroHighlights && _playingMode == GameModeId.ScoutArena
-                    ? System.Array.Empty<Nixin.Graph.Core.GraphNodeId>()
-                    : PathOptionFilter.VisibleGraphOptions(_graphRun.WalkedNodes, _graphRun.Options());
-            GraphBoardPresenter.Refresh(_graphBoard, _graphRun, false, visibleOptions);
+            if (_graphBoard == null || !_graphBoard.IsBuilt || _graphRun == null)
+                return;
+
+            var hideChoices = _radarPlaying
+                || (_suppressScoutIntroHighlights && _playingMode == GameModeId.ScoutArena);
+            var visibleOptions = hideChoices
+                ? System.Array.Empty<Nixin.Graph.Core.GraphNodeId>()
+                : PathOptionFilter.VisibleGraphOptions(_graphRun.WalkedNodes, _graphRun.Options());
+            GraphBoardPresenter.Refresh(_graphBoard, _graphRun, false, visibleOptions, showChoicePaths: !hideChoices);
+            if (!_radarPlaying)
+                return;
+
+            _graphBoard.SetAllNodesVisible(false);
+            _graphBoard.SetAllEdgesVisible(false);
+            if (_graphBoard.Overlay != null)
+            {
+                _graphBoard.Overlay.ResetVisuals();
+                _graphBoard.Overlay.gameObject.SetActive(false);
+            }
         }
 
         void RefreshHud()
@@ -1932,12 +2441,12 @@ namespace Game.Unity
                 _hud.SetHealth(run.RunNumber, run.LivesLeft, livesPerRun, runsPerSession);
             else
                 _hud.SetHealth(1, livesPerRun, livesPerRun, runsPerSession);
-            RefreshLevelOneFue(run, run == null ? null : PathOptionFilter.VisibleGridOptions(run.WalkedCells, run.Options()));
+            RefreshLevelOneFue(run);
         }
 
-        void RefreshLevelOneFue(GridWalkRun run, IReadOnlyList<GridCoord> visibleOptions)
+        void RefreshLevelOneFue(GridWalkRun run)
         {
-            if (_arenaIntroPlaying)
+            if (_arenaIntroPlaying || _radarPlaying || _openingCardBlocking)
             {
                 _levelOneChrome.Hide();
                 return;
@@ -1950,7 +2459,7 @@ namespace Game.Unity
                 return;
             }
 
-            _levelOneChrome.Present(_levelOneFue, _board, _camera, visibleOptions, run.CurrentCell);
+            _levelOneChrome.Present(_levelOneFue, _board, _camera, run);
         }
 
         void CompleteLevelOneFueIfNeeded()
@@ -1958,14 +2467,14 @@ namespace Game.Unity
             if (_levelOneFue == null || !_levelOneFue.IsComplete)
                 return;
 
-            _fueStore?.MarkSeen(LevelOneFueSpec.LessonId);
+            _fueStore?.MarkSeen(LevelOneFueSpec.LessonIdFor(_playingLevel));
             _levelOneChrome.Hide();
             _levelOneFue = null;
         }
 
         void RefreshGraphLevelOneFue()
         {
-            if (_arenaIntroPlaying)
+            if (_arenaIntroPlaying || _radarPlaying)
             {
                 _graphLevelOneChrome.Hide();
                 return;
@@ -1981,12 +2490,11 @@ namespace Game.Unity
             var coachingReady = !InputLocked;
             if (coachingReady)
             {
-                _graphLevelOneFue.ObserveGestures(_graphViewport.DidZoom, _graphViewport.DidPan);
-                _graphLevelOneChrome.Present(_graphLevelOneFue);
+                _graphLevelOneChrome.Present(_graphLevelOneFue, _graphBoard, _camera, _graphRun);
                 _hud.SetMessage(_graphLevelOneFue.Beat switch
                 {
-                    GraphLevelOneFueBeat.PromptZoom => GraphLevelOneCopy.Zoom,
-                    GraphLevelOneFueBeat.PromptPan => GraphLevelOneCopy.Pan,
+                    GraphLevelOneFueBeat.PromptTap => GraphLevelOneCopy.Prompt,
+                    GraphLevelOneFueBeat.HealthHint => GraphLevelOneCopy.Health,
                     _ => "Tap the next node on the path."
                 });
             }
@@ -2030,15 +2538,136 @@ namespace Game.Unity
             }
 
             _holdingReveal = false;
+            _radarPlaying = false;
             _zoomingOverview = false;
+            _followReturnPan = false;
             _suppressScoutIntroHighlights = false;
+            HideRadarMemorizeCue(immediate: true);
+            HideScoutScanFue();
+            HideScoutScanPlayer(immediate: true);
+            if (_walker != null)
+                _walker.MotionPaused = false;
+        }
+
+        ScoutScanPlayer ShowScoutScanPlayer()
+        {
+            var player = ScoutScanPlayer.Ensure(_hud != null ? _hud.OverlayRoot : null);
+            player?.Show();
+            return player;
+        }
+
+        ScoutScanPlayer ShowRadarScanPlayer()
+        {
+            var player = ShowScoutScanPlayer();
+            player?.SetCaption(RadarMemorizeCue.Caption);
+            return player;
+        }
+
+        ScoutScanPlayer TryShowTileOrGraphScanPlayer()
+        {
+            if (!PathPreviewSeconds.UsesScanPause(_playingLevel))
+            {
+                ShowRadarMemorizeCue();
+                return null;
+            }
+
+            return ShowRadarScanPlayer();
+        }
+
+        void ShowRadarMemorizeCue()
+        {
+            var cue = RadarMemorizeCue.Ensure(_hud != null ? _hud.OverlayRoot : null);
+            cue?.Show();
+        }
+
+        void HideScoutScanPlayer(bool immediate = false)
+        {
+            ScoutScanPlayer.HideOn(_hud != null ? _hud.OverlayRoot : null, immediate);
+        }
+
+        void BeginScoutScanFue(ScoutScanPlayer player)
+        {
+            _scoutScanFue = ScoutScanFueSession.TryStart(
+                _playingMode,
+                _playingLevel,
+                _fueStore != null && _fueStore.HasSeen(ScoutScanFueSpec.LessonId));
+            if (_scoutScanFue == null)
+                return;
+
+            _scoutScanChrome.Ensure(_hud);
+            _scoutScanChrome.Present(_scoutScanFue, player);
+        }
+
+        IEnumerator WaitScoutScanFue(ScoutScanPlayer player)
+        {
+            if (_scoutScanFue == null || !_scoutScanFue.IsActive)
+                yield break;
+
+            while (_scoutScanFue != null && _scoutScanFue.IsActive)
+            {
+                if (_walker != null)
+                    _walker.MotionPaused = true;
+                TickScoutScanFue(player);
+                yield return null;
+            }
+
+            if (_walker != null)
+                _walker.MotionPaused = false;
+        }
+
+        void TickScoutScanFue(ScoutScanPlayer player)
+        {
+            if (_scoutScanFue == null || !_scoutScanFue.IsActive || player == null)
+                return;
+
+            _scoutScanFue.ObserveHold(player.HeldPaused);
+            _scoutScanChrome.Present(_scoutScanFue, player);
+            if (!_scoutScanFue.IsComplete)
+                return;
+
+            _fueStore?.MarkSeen(ScoutScanFueSpec.LessonId);
+            player.SetCaption(ScoutScanPlayer.Caption);
+            _scoutScanChrome.Hide();
+            _scoutScanFue = null;
+        }
+
+        void HideScoutScanFue()
+        {
+            _scoutScanChrome.Hide();
+            _scoutScanFue = null;
+        }
+
+        void HideRadarMemorizeCue(bool immediate = false)
+        {
+            if (_hud == null || _hud.OverlayRoot == null)
+                return;
+            var cue = _hud.OverlayRoot.GetComponentInChildren<RadarMemorizeCue>(true);
+            if (cue == null)
+                return;
+            if (immediate)
+                cue.HideImmediate();
+            else
+                cue.Hide();
         }
 
         void TearDownViews()
         {
             _completionOverview = false;
             _zoomingOverview = false;
+            _followReturnPan = false;
             _suppressScoutIntroHighlights = false;
+            _radarPlaying = false;
+            HideRadarMemorizeCue(immediate: true);
+            HideScoutScanFue();
+            HideScoutScanPlayer(immediate: true);
+            if (_walker != null)
+                _walker.MotionPaused = false;
+            var radar = transform.Find("Radar Preview");
+            if (radar != null)
+            {
+                var preview = radar.GetComponent<RadarPathPreview>();
+                preview?.Clear();
+            }
             _graphViewport.Clear();
             StopArenaIntro();
             _openingCard.Hide();
@@ -2047,6 +2676,8 @@ namespace Game.Unity
             _levelOneFue = null;
             _graphLevelOneChrome.Hide();
             _graphLevelOneFue = null;
+            ReleasePlayableGraphLevel();
+            HideScoutScanFue();
             ArenaEnvironment.Clear(transform);
 
             if (_camera != null)

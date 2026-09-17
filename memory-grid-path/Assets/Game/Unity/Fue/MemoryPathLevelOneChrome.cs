@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Core.Fue;
+using Game.Core.Rules;
 using Game.Unity.Ui;
 using Game.Unity.View;
 using Nixin.Fue;
@@ -12,12 +13,12 @@ namespace Game.Unity.Fue
     {
         static readonly Vector2 TileFingerOffset = new Vector2(8f, -56f);
         static readonly Vector2 HealthFingerOffset = new Vector2(-12f, -78f);
+        static readonly Vector2 TapFingerSize = new Vector2(168f, 168f);
 
         FueFocusOverlay _overlay;
         FueNarrationBanner _banner;
         FuePointerHint _healthFinger;
-        FueSwipeHint _swipeHint;
-        readonly List<FuePointerHint> _tileFingers = new List<FuePointerHint>();
+        FuePointerHint _tileFinger;
         GridPathHud _hud;
 
         public void Ensure(GridPathHud hud)
@@ -33,25 +34,27 @@ namespace Game.Unity.Fue
                 _banner = FueNarrationBanner.Create(root);
             if (_healthFinger == null)
                 _healthFinger = FuePointerHint.Create(root);
-            if (_swipeHint == null)
-                _swipeHint = FueSwipeHint.Create(root);
+            if (_tileFinger == null)
+            {
+                _tileFinger = FuePointerHint.Create(root);
+                _tileFinger.SetAction(FueGestureAction.Tap);
+                _tileFinger.SetSize(TapFingerSize);
+            }
         }
 
         public void Present(
             LevelOneFueSession session,
             GridBoardView board,
             Camera camera,
-            IReadOnlyList<GridCoord> visibleOptions,
-            GridCoord current)
+            GridWalkRun run)
         {
             if (session == null || !session.IsActive || _hud == null)
                 return;
 
             Ensure(_hud);
             ShowNarration(session.Beat);
-            ShowSwipe(session.Beat);
             ShowHealthFinger(session.Beat);
-            ShowChoiceHints(session.Beat, board, camera, visibleOptions, current);
+            ShowChoiceHints(session.Beat, board, camera, run);
         }
 
         public void ClearTileHighlights(GridBoardView board = null)
@@ -65,9 +68,7 @@ namespace Game.Unity.Fue
             _overlay?.HideImmediate();
             _banner?.HideImmediate();
             _healthFinger?.HideImmediate();
-            _swipeHint?.HideImmediate();
-            for (var i = 0; i < _tileFingers.Count; i++)
-                _tileFingers[i].HideImmediate();
+            _tileFinger?.HideImmediate();
         }
 
         void ShowNarration(LevelOneFueBeat beat)
@@ -88,17 +89,6 @@ namespace Game.Unity.Fue
             _banner.Show(copy, null, MemoryPathPalette.Mascot);
         }
 
-        void ShowSwipe(LevelOneFueBeat beat)
-        {
-            if (_swipeHint == null)
-                return;
-
-            if (beat == LevelOneFueBeat.PromptMove)
-                _swipeHint.Show();
-            else
-                _swipeHint.Hide();
-        }
-
         void ShowHealthFinger(LevelOneFueBeat beat)
         {
             var well = _hud != null ? _hud.HealthWell : null;
@@ -115,72 +105,37 @@ namespace Game.Unity.Fue
             LevelOneFueBeat beat,
             GridBoardView board,
             Camera camera,
-            IReadOnlyList<GridCoord> visibleOptions,
-            GridCoord current)
+            GridWalkRun run)
         {
-            if (board == null || !board.IsBuilt || visibleOptions == null || visibleOptions.Count == 0)
+            if (beat != LevelOneFueBeat.PromptMove
+                || board == null
+                || !board.IsBuilt
+                || run == null
+                || run.Step + 1 >= run.Path.Cells.Count)
             {
                 HideChoiceHints();
                 return;
             }
 
-            var renderers = new List<Renderer>(visibleOptions.Count);
-            EnsureTileFingers(visibleOptions.Count);
-            for (var i = 0; i < _tileFingers.Count; i++)
-            {
-                if (i >= visibleOptions.Count)
-                {
-                    _tileFingers[i].Hide();
-                    continue;
-                }
-
-                var tile = board.TileAt(visibleOptions[i]);
-                var renderer = RendererOf(tile);
-                if (renderer != null)
-                    renderers.Add(renderer);
-                _tileFingers[i].ShowAtWorld(
-                    camera,
-                    board.WorldPosition(visibleOptions[i]),
-                    TileFingerOffset);
-            }
-
-            if (renderers.Count > 0 && beat == LevelOneFueBeat.PromptMove)
-            {
-                _overlay.ShowWorld(renderers, compulsory: false);
-                board.Overlay?.ShowChoices(
-                    board.WorldPosition(current) + Vector3.up * GridPathOverlay.Lift,
-                    BuildChoicePoints(board, visibleOptions),
-                    board.Layout.TileSize * 0.09f);
-            }
+            var next = run.Path.Cells[run.Step + 1];
+            var tile = board.TileAt(next);
+            var renderer = RendererOf(tile);
+            _tileFinger?.ShowAtWorld(camera, board.WorldPosition(next), TileFingerOffset);
+            if (renderer != null)
+                _overlay.ShowWorld(new List<Renderer> { renderer }, compulsory: false);
             else
-            {
                 _overlay?.Hide();
-                board.Overlay?.ClearChoices();
-            }
-        }
 
-        static Vector3[] BuildChoicePoints(GridBoardView board, IReadOnlyList<GridCoord> options)
-        {
-            var points = new Vector3[options.Count];
-            for (var i = 0; i < options.Count; i++)
-                points[i] = board.WorldPosition(options[i]) + Vector3.up * GridPathOverlay.Lift;
-            return points;
+            board.Overlay?.ShowChoices(
+                board.WorldPosition(run.CurrentCell) + Vector3.up * GridPathOverlay.Lift,
+                new[] { board.WorldPosition(next) + Vector3.up * GridPathOverlay.Lift },
+                board.Layout.TileSize * 0.09f);
         }
 
         void HideChoiceHints()
         {
             _overlay?.Hide();
-            for (var i = 0; i < _tileFingers.Count; i++)
-                _tileFingers[i].Hide();
-        }
-
-        void EnsureTileFingers(int count)
-        {
-            var root = _hud != null ? _hud.OverlayRoot : null;
-            if (root == null)
-                return;
-            while (_tileFingers.Count < count)
-                _tileFingers.Add(FuePointerHint.Create(root));
+            _tileFinger?.Hide();
         }
 
         static Renderer RendererOf(ITileView tile)

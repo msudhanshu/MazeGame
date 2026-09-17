@@ -11,7 +11,8 @@ namespace Game.Unity.Ui
         public static readonly Color HudPill = Hex(0x2B2F3A);
         public static readonly Color HudPause = new Color(30f / 255f, 41f / 255f, 59f / 255f, 0.8f);
         public static readonly Color HudPauseGlow = new Color(244f / 255f, 114f / 255f, 182f / 255f, 0.25f);
-        public static readonly Color HudHealthWell = new Color(11f / 255f, 15f / 255f, 25f / 255f, 0.6f);
+        public static readonly Color HudHealthWell = Hex(0xFFF3CD);
+        public static readonly Color HudHealthWellBorder = Hex(0xFDE68A);
         public static readonly Color HudSteps = new Color(30f / 255f, 41f / 255f, 59f / 255f, 0.5f);
         public static readonly Color HudStepsBorder = new Color(244f / 255f, 114f / 255f, 182f / 255f, 0.2f);
         public static readonly Color HudText = Hex(0xF3F4F6);
@@ -19,10 +20,14 @@ namespace Game.Unity.Ui
         public static readonly Color HudLevel = Hex(0xFBBF24);
         public static readonly Color HudScore = Hex(0x22D3EE);
         public static readonly Color Teal = Hex(0x2DD4BF);
-        public static readonly Color HealthFill = Hex(0x33F24D);
-        public static readonly Color HealthGlow = new Color(102f / 255f, 1f, 128f / 255f, 0.3f);
-        public static readonly Color HealthEmpty = Hex(0x1F2E26);
+        public static readonly Color HealthFill = Hex(0xE11D48);
+        public static readonly Color HealthGlow = new Color(225f / 255f, 29f / 255f, 72f / 255f, 0.35f);
+        public static readonly Color HealthEmpty = Hex(0x1F1418);
         public static readonly Color HealthDivider = Hex(0x0F141A);
+        public static readonly Color HeartBright = Hex(0xE11D48);
+        public static readonly Color HeartDim = Hex(0x7A6A6E);
+        public static readonly Color HeartSpent = Hex(0x141416);
+        public static readonly Color FailWash = new Color(0.05f, 0.05f, 0.07f, 0.88f);
 
         public static readonly Color Ink = Hex(0x111827);
         public static readonly Color PopupInk = Hex(0x1A1D2A);
@@ -98,6 +103,7 @@ namespace Game.Unity.Ui
         public static readonly Color HomeStar = Hex(0xF59E0B);
         public static readonly Color HomeScore = Hex(0x0D9488);
         public static readonly Color HomeModeSelected = Hex(0x14B8A6);
+        public static readonly Color HomeModeSelectedRing = Hex(0x3AFFE9);
         public static readonly Color HomeGraph = Hex(0x6366F1);
         public static readonly Color HomeLockedCard = new Color(226f / 255f, 232f / 255f, 240f / 255f, 0.5f);
         public static readonly Color HomeLockedHeader = new Color(148f / 255f, 163f / 255f, 184f / 255f, 0.25f);

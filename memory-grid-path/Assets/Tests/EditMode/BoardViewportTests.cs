@@ -13,10 +13,20 @@ namespace Game.Unity.Tests
             var limits = BoardViewport.ComputeLimits(Vector3.zero, worldWidth: 12f, worldDepth: 18f, aspect: 9f / 16f);
             var framing = BoardViewport.DefaultFraming(limits);
 
-            Assert.That(framing.Focus, Is.EqualTo(Vector3.zero));
             Assert.That(
                 framing.OrthographicSize,
                 Is.EqualTo(BoardCamera.ContainOrthographicSize(12f, 18f, 9f / 16f)).Within(0.001f));
+            Assert.That(framing.Focus.z, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(-9f, framing.Focus.z, framing.OrthographicSize),
+                Is.GreaterThan(0.01f));
+            Assert.That(
+                BoardCamera.ViewportY(9f, framing.Focus.z, framing.OrthographicSize),
+                Is.LessThan(0.99f));
+            Assert.That(
+                BoardCamera.ViewportY(-9f, framing.Focus.z, framing.OrthographicSize)
+                    + BoardCamera.ViewportY(9f, framing.Focus.z, framing.OrthographicSize),
+                Is.EqualTo(1f).Within(0.001f));
         }
 
         [Test]
@@ -97,6 +107,60 @@ namespace Game.Unity.Tests
 
             Assert.That(panned.Focus.x, Is.EqualTo(0f).Within(0.001f));
             Assert.That(panned.Focus.z, Is.EqualTo(0f).Within(0.001f));
+        }
+
+        [Test]
+        public void PanKeepsAShortPhotoCenteredWhenFullyZoomedOut()
+        {
+            var aspect = 9f / 16f;
+            var limits = BoardViewport.ComputeLimits(
+                Vector3.zero,
+                worldWidth: 12f,
+                worldDepth: 6f,
+                aspect,
+                panSlack: 0f);
+            var framing = BoardViewport.DefaultFraming(limits);
+
+            var panned = BoardViewport.ApplyPan(framing, new Vector2(4f, -3f), limits, aspect);
+
+            Assert.That(panned.Focus.x, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(panned.Focus.z, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(-3f, panned.Focus.z, panned.OrthographicSize),
+                Is.GreaterThan(0.01f));
+            Assert.That(
+                BoardCamera.ViewportY(3f, panned.Focus.z, panned.OrthographicSize),
+                Is.LessThan(0.99f));
+        }
+
+        [Test]
+        public void HudInsetCentersAShortPhotoBetweenChromeAndBottom()
+        {
+            var aspect = 9f / 16f;
+            const float inset = 0.2f;
+            var limits = BoardViewport.ComputeLimits(
+                Vector3.zero,
+                worldWidth: 12f,
+                worldDepth: 6f,
+                aspect,
+                topViewportInset: inset);
+            var framing = BoardViewport.DefaultFraming(limits);
+
+            Assert.That(
+                framing.OrthographicSize,
+                Is.EqualTo(BoardCamera.ContainOrthographicSize(12f, 6f, aspect, inset)).Within(0.001f));
+            Assert.That(
+                framing.Focus.z,
+                Is.EqualTo(BoardCamera.TopHudFocusOffset(inset, framing.OrthographicSize)).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(0f, framing.Focus.z, framing.OrthographicSize),
+                Is.EqualTo((1f - inset) * 0.5f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(-3f, framing.Focus.z, framing.OrthographicSize),
+                Is.GreaterThan(0.01f));
+            Assert.That(
+                BoardCamera.ViewportY(3f, framing.Focus.z, framing.OrthographicSize),
+                Is.LessThanOrEqualTo(1f - inset + 0.001f));
         }
     }
 }

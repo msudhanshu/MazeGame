@@ -22,7 +22,7 @@ namespace Game.Unity.Graph
         public BoardViewport.Framing Framing => _framing;
         public BoardViewport.Limits Limits => _limits;
 
-        public void Bind(GraphBoardLayout layout, float aspect)
+        public void Bind(GraphBoardLayout layout, float aspect, float topViewportInset = 0f)
         {
             if (layout == null)
             {
@@ -34,14 +34,30 @@ namespace Game.Unity.Graph
                 layout.Origin,
                 layout.WorldWidth,
                 layout.WorldDepth,
-                aspect);
+                aspect,
+                topViewportInset: topViewportInset);
             _framing = BoardViewport.DefaultFraming(_limits);
             _active = true;
         }
 
         public void Clear() => _active = false;
 
-        public void Reset(GraphBoardLayout layout, float aspect) => Bind(layout, aspect);
+        public void Reset(GraphBoardLayout layout, float aspect, float topViewportInset = 0f) =>
+            Bind(layout, aspect, topViewportInset);
+
+        public void RefreshLimits(GraphBoardLayout layout, float aspect, float topViewportInset)
+        {
+            if (!_active || layout == null)
+                return;
+
+            _limits = BoardViewport.ComputeLimits(
+                layout.Origin,
+                layout.WorldWidth,
+                layout.WorldDepth,
+                aspect,
+                topViewportInset: topViewportInset);
+            _framing = BoardViewport.Clamp(_framing, _limits, aspect);
+        }
 
         public void UpdateInput(Camera camera, GraphBoardLayout layout, bool allowInput)
         {

@@ -7,11 +7,12 @@ namespace Game.Core.Tests
     public class OpeningCardSpecTests
     {
         [Test]
-        public void ShowsOnTheFirstFiveLevels()
+        public void ShowsOnTheFirstTwoLevels()
         {
             Assert.That(OpeningCardSpec.ShouldShow(1), Is.True);
-            Assert.That(OpeningCardSpec.ShouldShow(5), Is.True);
-            Assert.That(OpeningCardSpec.ShouldShow(6), Is.False);
+            Assert.That(OpeningCardSpec.ShouldShow(2), Is.True);
+            Assert.That(OpeningCardSpec.ShouldShow(3), Is.False);
+            Assert.That(OpeningCardSpec.ShouldShow(5), Is.False);
             Assert.That(OpeningCardSpec.ShouldShow(0), Is.False);
         }
 
@@ -19,7 +20,7 @@ namespace Game.Core.Tests
         public void LessonIdsArePerLevel()
         {
             Assert.That(OpeningCardSpec.LessonIdFor(1), Is.EqualTo("memory-path.opening-card.1"));
-            Assert.That(OpeningCardSpec.LessonIdFor(5), Is.Not.EqualTo(OpeningCardSpec.LessonIdFor(4)));
+            Assert.That(OpeningCardSpec.LessonIdFor(2), Is.Not.EqualTo(OpeningCardSpec.LessonIdFor(1)));
         }
     }
 }

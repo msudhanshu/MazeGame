@@ -1,3 +1,4 @@
+using Game.Unity.Input;
 using Game.Unity.View;
 using NUnit.Framework;
 using Nixin.Grid.Core;
@@ -115,12 +116,54 @@ namespace Game.Unity.Tests
                 ray,
                 current,
                 new[] { option },
-                tilePickRadius: 0.42f,
-                edgePickRadius: 0.26f,
+                tilePickRadius: BoardInput.CandidateTilePickRadius,
+                edgePickRadius: BoardInput.CandidateEdgePickRadius,
                 out var target);
 
             Assert.That(picked, Is.True);
             Assert.That(target, Is.EqualTo(option));
+        }
+
+        [Test]
+        public void ARayOnTheChoiceLineNearTheWalkerPicksThatOption()
+        {
+            var layout = Layout();
+            var current = new GridCoord(2, 2);
+            var option = new GridCoord(3, 2);
+            var currentWorld = layout.WorldPosition(current);
+            var optionWorld = layout.WorldPosition(option);
+            var along = Vector3.Lerp(currentWorld, optionWorld, 0.12f);
+            var ray = new Ray(along + new Vector3(0f, 10f, 0f), Vector3.down);
+
+            var picked = layout.TryPickOptionUnderRay(
+                ray,
+                current,
+                new[] { option },
+                tilePickRadius: BoardInput.CandidateTilePickRadius,
+                edgePickRadius: BoardInput.CandidateEdgePickRadius,
+                out var target);
+
+            Assert.That(picked, Is.True);
+            Assert.That(target, Is.EqualTo(option));
+        }
+
+        [Test]
+        public void ARayOnTheCurrentTileDoesNotPickAnOption()
+        {
+            var layout = Layout();
+            var current = new GridCoord(2, 2);
+            var option = new GridCoord(3, 2);
+            var ray = new Ray(layout.WorldPosition(current) + new Vector3(0f, 10f, 0f), Vector3.down);
+
+            var picked = layout.TryPickOptionUnderRay(
+                ray,
+                current,
+                new[] { option },
+                tilePickRadius: BoardInput.CandidateTilePickRadius,
+                edgePickRadius: BoardInput.CandidateEdgePickRadius,
+                out _);
+
+            Assert.That(picked, Is.False);
         }
 
         [Test]

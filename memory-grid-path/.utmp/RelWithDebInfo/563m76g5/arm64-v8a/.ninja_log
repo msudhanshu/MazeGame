@@ -1,0 +1,10 @@
+# ninja log v5
+1	1351	1789493183831330537	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	35adbed683288d63
+0	1390	1789493183846153030	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	753f39f6c45a91ab
+1	1401	1789493183892615617	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	cca0005cdba817a2
+1	1438	1789493183934978144	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	e92576d0a895c8dd
+1	1460	1789493183957609446	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	335e9545830a1869
+2	1466	1789493183965252080	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	bac6bc584e126e25
+1	1583	1789493184083593171	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	cd90fbb807cc3de9
+0	1739	1789493184235609846	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	dcb887eb6b22c17b
+1739	1820	1789493184318098523	/Users/sid/Tech/NixinStudio/GameStudio/MazeGame/memory-grid-path/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/563m76g5/obj/arm64-v8a/libgame.so	51935d506d6fce0b

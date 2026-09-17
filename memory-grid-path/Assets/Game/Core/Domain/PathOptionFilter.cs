@@ -5,8 +5,8 @@ using Nixin.Grid.Core;
 namespace Game.Core.Domain
 {
     /// <summary>
-    /// UI-facing move choices. The rules may keep the immediate parent as a hidden fallback
-    /// choice, but the board should not highlight or invite the player to go straight back.
+    /// UI-facing move choices. Paths do not self-cross, so already-walked tiles/nodes are
+    /// hidden from highlights and arrows. Rules may still keep them as a fallback.
     /// </summary>
     public static class PathOptionFilter
     {
@@ -16,14 +16,11 @@ namespace Game.Core.Domain
         {
             if (options == null || options.Count == 0)
                 return System.Array.Empty<GridCoord>();
-            if (walked == null || walked.Count < 2)
-                return options;
 
-            var parent = walked[walked.Count - 2];
             var filtered = new List<GridCoord>(options.Count);
             for (var i = 0; i < options.Count; i++)
             {
-                if (options[i] != parent)
+                if (!Contains(walked, options[i]))
                     filtered.Add(options[i]);
             }
 
@@ -50,14 +47,11 @@ namespace Game.Core.Domain
         {
             if (options == null || options.Count == 0)
                 return System.Array.Empty<GraphNodeId>();
-            if (walked == null || walked.Count < 2)
-                return options;
 
-            var parent = walked[walked.Count - 2];
             var filtered = new List<GraphNodeId>(options.Count);
             for (var i = 0; i < options.Count; i++)
             {
-                if (options[i] != parent)
+                if (!Contains(walked, options[i]))
                     filtered.Add(options[i]);
             }
 

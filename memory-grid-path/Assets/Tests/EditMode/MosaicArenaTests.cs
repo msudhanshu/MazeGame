@@ -18,10 +18,13 @@ namespace Game.Unity.Tests
             var lighthouse = MosaicGlassLook.For(TileVisualState.Lighthouse);
             var revealed = MosaicGlassLook.For(TileVisualState.Revealed);
             var failed = MosaicGlassLook.For(TileVisualState.Wrong);
+            var candidate = MosaicGlassLook.For(TileVisualState.Candidate);
 
             Assert.That(idle.Alpha, Is.LessThan(0.2f));
             Assert.That(idle.Frost, Is.LessThan(0.2f));
-            Assert.That(revealed.Alpha, Is.LessThan(0.2f));
+            Assert.That(revealed.Tint.r, Is.GreaterThan(revealed.Tint.g));
+            Assert.That(revealed.Alpha, Is.GreaterThan(0.7f));
+            Assert.That(candidate.TintStrength, Is.GreaterThan(idle.TintStrength));
             Assert.That(walked.Tint, Is.EqualTo(Color.white));
             Assert.That(walked.Frost, Is.GreaterThan(0.7f));
             Assert.That(walked.Alpha, Is.GreaterThan(idle.Alpha));

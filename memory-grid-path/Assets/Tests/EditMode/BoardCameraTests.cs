@@ -103,6 +103,35 @@ namespace Game.Unity.Tests
         }
 
         [Test]
+        public void HeadingFollowStaysTopDownAndYawsScreenUp()
+        {
+            var focus = new Vector3(2f, 0f, 3f);
+            BoardCamera.FrameFollow(_camera, focus, orthographicSize: 0.65f, headingYaw: 90f);
+
+            Assert.That(BoardCamera.IsTopDown(_camera), Is.True);
+            Assert.That(_camera.transform.position.x, Is.EqualTo(focus.x).Within(0.0001f));
+            Assert.That(_camera.transform.position.z, Is.EqualTo(focus.z).Within(0.0001f));
+            Assert.That(Vector3.Dot(_camera.transform.up, Vector3.right), Is.GreaterThan(0.99f));
+            Assert.That(ScoutRotationMove.HeadingYaw(_camera), Is.EqualTo(90f).Within(0.1f));
+        }
+
+        [Test]
+        public void SmoothFollowLocksYawToHeadingWithoutLag()
+        {
+            BoardCamera.FrameFollow(_camera, Vector3.zero, orthographicSize: 0.65f, headingYaw: 0f);
+            BoardCamera.SmoothFollowWalker(
+                _camera,
+                Vector3.zero,
+                orthographicSize: 0.65f,
+                smoothing: 10f,
+                headingYaw: 90f,
+                yawSmoothing: 0f);
+
+            Assert.That(ScoutRotationMove.HeadingYaw(_camera), Is.EqualTo(90f).Within(0.1f));
+            Assert.That(Vector3.Dot(_camera.transform.up, Vector3.right), Is.GreaterThan(0.99f));
+        }
+
+        [Test]
         public void FitWidthPinsWorldWidthToTheScreen()
         {
             var aspect = 9f / 16f;
@@ -159,6 +188,19 @@ namespace Game.Unity.Tests
         }
 
         [Test]
+        public void CoverFillsTheScreenAndCropsAMismatchedPhoto()
+        {
+            var aspect = 16f / 9f;
+            BoardCamera.FrameTopDownCover(_camera, Vector3.zero, width: 12f, depth: 24f, aspect);
+
+            Assert.That(_camera.orthographicSize * 2f * aspect, Is.EqualTo(12f).Within(0.001f));
+            Assert.That(_camera.orthographicSize * 2f, Is.LessThan(24f - 0.001f));
+            Assert.That(
+                _camera.orthographicSize,
+                Is.EqualTo(BoardCamera.CoverOrthographicSize(12f, 24f, aspect)).Within(0.001f));
+        }
+
+        [Test]
         public void ContainShowsTheWholePhotoOnAMismatchedScreen()
         {
             var aspect = 16f / 9f;
@@ -169,6 +211,74 @@ namespace Game.Unity.Tests
             Assert.That(
                 _camera.orthographicSize,
                 Is.EqualTo(BoardCamera.ContainOrthographicSize(12f, 24f, aspect)).Within(0.001f));
+        }
+
+        [Test]
+        public void ContainBottomAlignsAShortPhoto()
+        {
+            var aspect = 9f / 16f;
+            BoardCamera.FrameTopDownForBounds(
+                _camera,
+                Vector3.zero,
+                width: 12f,
+                depth: 6f,
+                aspect,
+                bottomAlign: true);
+
+            Assert.That(_camera.orthographicSize * 2f * aspect, Is.GreaterThanOrEqualTo(12f - 0.001f));
+            Assert.That(_camera.orthographicSize, Is.GreaterThan(3f));
+            Assert.That(
+                BoardCamera.ViewportY(-3f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.EqualTo(0f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(3f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.LessThan(1f - 0.01f));
+        }
+
+        [Test]
+        public void ContainStaysCenteredWhenBottomAlignIsOff()
+        {
+            var aspect = 9f / 16f;
+            BoardCamera.FrameTopDownForBounds(
+                _camera,
+                Vector3.zero,
+                width: 12f,
+                depth: 6f,
+                aspect,
+                bottomAlign: false);
+
+            Assert.That(_camera.transform.position.z, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(-3f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.GreaterThan(0.01f));
+        }
+
+        [Test]
+        public void ContainHudCentersAShortPhotoBetweenChromeAndBottom()
+        {
+            var aspect = 9f / 16f;
+            const float inset = 0.2f;
+            BoardCamera.FrameTopDownForBounds(
+                _camera,
+                Vector3.zero,
+                width: 12f,
+                depth: 6f,
+                aspect,
+                bottomAlign: false,
+                topViewportInset: inset);
+
+            Assert.That(
+                _camera.transform.position.z,
+                Is.EqualTo(BoardCamera.TopHudFocusOffset(inset, _camera.orthographicSize)).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(0f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.EqualTo((1f - inset) * 0.5f).Within(0.001f));
+            Assert.That(
+                BoardCamera.ViewportY(-3f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.GreaterThan(0.01f));
+            Assert.That(
+                BoardCamera.ViewportY(3f, _camera.transform.position.z, _camera.orthographicSize),
+                Is.LessThanOrEqualTo(1f - inset + 0.001f));
         }
     }
 }

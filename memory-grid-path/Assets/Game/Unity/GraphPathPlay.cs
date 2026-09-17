@@ -138,6 +138,7 @@ namespace Game.Unity
             var boardGo = new GameObject("GraphBoard");
             boardGo.transform.SetParent(transform, false);
             _board = boardGo.AddComponent<GraphBoardView>();
+            _factory.FogOfWar = true;
             _board.Build(level, _factory);
             _factory.ApplyEnvironment(_camera, _board.Layout, transform);
             _viewport.Reset(_board.Layout, _camera.aspect);
@@ -160,7 +161,8 @@ namespace Game.Unity
                     _board.Layout.Origin,
                     _board.Layout.WorldWidth,
                     _board.Layout.WorldDepth,
-                    _camera.aspect);
+                    _camera.aspect,
+                    bottomAlign: true);
         }
 
         GraphLevelDefinition CurrentLevel()

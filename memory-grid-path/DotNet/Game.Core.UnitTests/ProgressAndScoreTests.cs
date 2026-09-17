@@ -179,6 +179,7 @@ namespace Game.Core.Tests
             Assert.That(progress.IsUnlocked(2), Is.False);
             Assert.That(progress.BestScoreFor(1), Is.EqualTo(0));
             Assert.That(progress.BestScores, Is.Empty);
+            Assert.That(progress.LastStars, Is.Empty);
             Assert.That(progress.CareerScore, Is.EqualTo(0));
             Assert.That(progress.SkipCharges, Is.EqualTo(0));
             Assert.That(progress.HighGradeStreak, Is.EqualTo(0));
@@ -238,6 +239,7 @@ namespace Game.Core.Tests
             Assert.That(progress.CareerScore, Is.EqualTo(config.SkipRewardPoints));
             Assert.That(progress.HighestUnlockedLevel, Is.EqualTo(13));
             Assert.That(progress.HighGradeStreak, Is.EqualTo(0));
+            Assert.That(progress.LastStarsFor(12), Is.EqualTo(0));
 
             progress.RecordResult(13, 800, true, 50, 95, config);
             Assert.That(progress.SkipCharges, Is.EqualTo(2), "holding charges blocks a new grant");
@@ -277,6 +279,33 @@ namespace Game.Core.Tests
             Assert.That(restored.SkipCharges, Is.EqualTo(2));
             Assert.That(restored.HighGradeStreak, Is.EqualTo(1));
             Assert.That(restored.BestScoreFor(8), Is.EqualTo(900));
+        }
+
+        [Test]
+        public void RoundTripsLastRunStars()
+        {
+            var original = new PlayerProgress(highestUnlockedLevel: 1);
+            original.RecordResult(1, 400, completed: true, levelCount: 20, mistakes: 0);
+            original.RecordResult(2, 100, completed: true, levelCount: 20, mistakes: 1);
+
+            var restored = ProgressSaveFormat.Parse(ProgressSaveFormat.Serialize(original));
+
+            Assert.That(restored.LastStarsFor(1), Is.EqualTo(3));
+            Assert.That(restored.LastStarsFor(2), Is.EqualTo(2));
+            Assert.That(LevelAccess.StarsEarned(restored), Is.EqualTo(5));
+        }
+
+        [Test]
+        public void V3SaveFallsBackToThreeStarsOnClearedLevels()
+        {
+            var restored = ProgressSaveFormat.Parse("v3|3|100|0|0|2|1:900,2:750");
+
+            Assert.That(restored.HighestUnlockedLevel, Is.EqualTo(3));
+            Assert.That(restored.HighestClearedLevel, Is.EqualTo(2));
+            Assert.That(restored.LastStarsFor(1), Is.EqualTo(3));
+            Assert.That(restored.LastStarsFor(2), Is.EqualTo(3));
+            Assert.That(LevelAccess.StarsOn(restored, 3), Is.EqualTo(0));
+            Assert.That(LevelAccess.StarsEarned(restored), Is.EqualTo(6));
         }
 
         [Test]
@@ -357,7 +386,7 @@ namespace Game.Core.Tests
             game.StartLevel(1, seed: 5);
 
             Assert.That(game.Run.LivesLeft, Is.EqualTo(2));
-            Assert.That(game.Run.Config.RunsPerSession, Is.EqualTo(2));
+            Assert.That(game.Run.Config.RunsPerSession, Is.EqualTo(3));
             Assert.That(game.Run.LighthouseCells, Is.Empty);
         }
 

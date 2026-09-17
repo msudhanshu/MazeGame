@@ -61,6 +61,30 @@ namespace Game.Unity.Tests
             }
         }
 
+        [Test]
+        public void PlayCorrectPaintsTheTileWalked()
+        {
+            var previous = PlayerSettingsStore.SoundEffects;
+            var host = new GameObject("FxHostCorrect");
+            try
+            {
+                PlayerSettingsStore.SoundEffects = false;
+                MemoryPathAudio.ResetForTests();
+                var fx = DanceFloorEffects.Create(host.transform);
+                var tile = new FakeTileView(new GridCoord(0, 1));
+
+                fx.PlayCorrect(tile, 3);
+
+                Assert.That(tile.State, Is.EqualTo(TileVisualState.Walked));
+            }
+            finally
+            {
+                PlayerSettingsStore.SoundEffects = previous;
+                MemoryPathAudio.ResetForTests();
+                Object.DestroyImmediate(host);
+            }
+        }
+
         sealed class FakeTileView : ITileView
         {
             public FakeTileView(GridCoord coord) => Coord = coord;

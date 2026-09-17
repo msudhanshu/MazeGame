@@ -1,5 +1,9 @@
+using System.Collections.Generic;
 using Game.Core.Fue;
+using Game.Core.Rules;
+using Game.Unity.Graph;
 using Game.Unity.Ui;
+using Game.Unity.View;
 using Nixin.Fue;
 using UnityEngine;
 
@@ -7,9 +11,14 @@ namespace Game.Unity.Fue
 {
     public sealed class MemoryPathGraphLevelOneChrome
     {
+        static readonly Vector2 NodeFingerOffset = new Vector2(8f, -56f);
+        static readonly Vector2 HealthFingerOffset = new Vector2(-12f, -78f);
+        static readonly Vector2 TapFingerSize = new Vector2(168f, 168f);
+
+        FueFocusOverlay _overlay;
         FueNarrationBanner _banner;
-        FuePinchHint _pinchHint;
-        FuePanHint _panHint;
+        FuePointerHint _healthFinger;
+        FuePointerHint _nodeFinger;
         GridPathHud _hud;
 
         public void Ensure(GridPathHud hud)
@@ -19,41 +28,49 @@ namespace Game.Unity.Fue
             if (root == null)
                 return;
 
+            if (_overlay == null)
+                _overlay = FueFocusOverlay.Create(root);
             if (_banner == null)
                 _banner = FueNarrationBanner.Create(root);
-            if (_pinchHint == null)
-                _pinchHint = FuePinchHint.Create(root);
-            if (_panHint == null)
-                _panHint = FuePanHint.Create(root);
+            if (_healthFinger == null)
+                _healthFinger = FuePointerHint.Create(root);
+            if (_nodeFinger == null)
+            {
+                _nodeFinger = FuePointerHint.Create(root);
+                _nodeFinger.SetAction(FueGestureAction.Tap);
+                _nodeFinger.SetSize(TapFingerSize);
+            }
         }
 
-        public void Present(GraphLevelOneFueSession session)
+        public void Present(
+            GraphLevelOneFueSession session,
+            GraphBoardView board,
+            Camera camera,
+            GraphWalkRun run)
         {
             if (session == null || !session.IsActive || _hud == null)
                 return;
 
             Ensure(_hud);
-            _pinchHint?.transform.SetAsLastSibling();
-            _panHint?.transform.SetAsLastSibling();
-            _banner?.transform.SetAsLastSibling();
             ShowNarration(session.Beat);
-            ShowPinch(session.Beat);
-            ShowPan(session.Beat);
+            ShowHealthFinger(session.Beat);
+            ShowNextNodeHint(session.Beat, board, camera, run);
         }
 
         public void Hide()
         {
+            _overlay?.HideImmediate();
             _banner?.HideImmediate();
-            _pinchHint?.HideImmediate();
-            _panHint?.HideImmediate();
+            _healthFinger?.HideImmediate();
+            _nodeFinger?.HideImmediate();
         }
 
         void ShowNarration(GraphLevelOneFueBeat beat)
         {
             var copy = beat switch
             {
-                GraphLevelOneFueBeat.PromptZoom => GraphLevelOneCopy.Zoom,
-                GraphLevelOneFueBeat.PromptPan => GraphLevelOneCopy.Pan,
+                GraphLevelOneFueBeat.PromptTap => GraphLevelOneCopy.Prompt,
+                GraphLevelOneFueBeat.HealthHint => GraphLevelOneCopy.Health,
                 _ => null
             };
 
@@ -66,26 +83,56 @@ namespace Game.Unity.Fue
             _banner.Show(copy, NixinFue.Narrator, Color.white);
         }
 
-        void ShowPinch(GraphLevelOneFueBeat beat)
+        void ShowHealthFinger(GraphLevelOneFueBeat beat)
         {
-            if (_pinchHint == null)
+            var well = _hud != null ? _hud.HealthWell : null;
+            if (well == null || _healthFinger == null)
                 return;
 
-            if (beat == GraphLevelOneFueBeat.PromptZoom)
-                _pinchHint.Show();
+            if (beat == GraphLevelOneFueBeat.HealthHint)
+                _healthFinger.ShowAt(well, HealthFingerOffset);
             else
-                _pinchHint.Hide();
+                _healthFinger.Hide();
         }
 
-        void ShowPan(GraphLevelOneFueBeat beat)
+        void ShowNextNodeHint(
+            GraphLevelOneFueBeat beat,
+            GraphBoardView board,
+            Camera camera,
+            GraphWalkRun run)
         {
-            if (_panHint == null)
+            if ((beat != GraphLevelOneFueBeat.PromptTap && beat != GraphLevelOneFueBeat.HealthHint)
+                || board == null
+                || !board.IsBuilt
+                || run == null
+                || run.IsOver
+                || run.Step + 1 >= run.Path.Nodes.Count)
+            {
+                HideNodeHint();
                 return;
+            }
 
-            if (beat == GraphLevelOneFueBeat.PromptPan)
-                _panHint.Show();
+            var next = run.Path.Nodes[run.Step + 1];
+            var world = board.WorldPosition(next);
+            _nodeFinger?.ShowAtWorld(camera, world, NodeFingerOffset);
+
+            var renderer = RendererOf(board.NodeAt(next));
+            if (renderer != null)
+                _overlay.ShowWorld(new List<Renderer> { renderer }, compulsory: false);
             else
-                _panHint.Hide();
+                _overlay?.Hide();
+        }
+
+        void HideNodeHint()
+        {
+            _overlay?.Hide();
+            _nodeFinger?.Hide();
+        }
+
+        static Renderer RendererOf(IGraphNodeView node)
+        {
+            var behaviour = node as MonoBehaviour;
+            return behaviour != null ? behaviour.GetComponent<Renderer>() : null;
         }
     }
 }

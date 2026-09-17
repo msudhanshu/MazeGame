@@ -14,7 +14,9 @@ namespace Game.Unity.View
             GridWalkRun run,
             bool showPath = false,
             System.Collections.Generic.IReadOnlyList<Nixin.Grid.Core.GridCoord> visibleOptions = null,
-            bool showChoicePaths = false)
+            bool showChoicePaths = false,
+            bool highlightOrigin = true,
+            float trailWidthScale = 1f)
         {
             if (board == null || !board.IsBuilt || run == null)
                 return;
@@ -58,10 +60,10 @@ namespace Game.Unity.View
             if (run.LastRevealed.HasValue)
                 board.SetState(run.LastRevealed.Value, TileVisualState.Walked);
 
-            if (run.Step == 0)
+            if (highlightOrigin && run.Step == 0)
                 board.SetState(run.Path.Start, TileVisualState.Start);
 
-            board.Overlay?.Refresh(run, board.Layout, showPath);
+            board.Overlay?.Refresh(run, board.Layout, showPath, trailWidthScale);
             if (showChoicePaths && !run.IsOver && visibleOptions != null && visibleOptions.Count > 0)
             {
                 var points = new UnityEngine.Vector3[visibleOptions.Count];
@@ -71,7 +73,7 @@ namespace Game.Unity.View
                 board.Overlay?.ShowChoices(
                     board.WorldPosition(run.CurrentCell) + UnityEngine.Vector3.up * GridPathOverlay.Lift,
                     points,
-                    board.Layout.TileSize * 0.09f);
+                    board.Layout.TileSize * 0.09f * trailWidthScale);
             }
             else
             {

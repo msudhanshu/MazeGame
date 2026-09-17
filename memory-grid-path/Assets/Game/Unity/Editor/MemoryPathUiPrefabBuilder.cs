@@ -35,8 +35,7 @@ namespace Game.Unity.Editor
             EditorApplication.delayCall += EnsureAssets;
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Bake UI Prefabs")]
-        [MenuItem("Nixin Studio/Memory Grid Path/Bake Popup Prefabs")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Bake/UI Prefabs", false, 40)]
         public static void BakeMenu()
         {
             BakePrefabs();

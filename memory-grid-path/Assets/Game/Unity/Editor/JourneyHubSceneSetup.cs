@@ -1,3 +1,4 @@
+using Game.Core.Domain;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Game.Unity.Editor
     {
         const string ScenePath = "Assets/Scenes/JourneyHub.unity";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Open Journey Hub")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Open Journey Hub", false, 0)]
         public static void OpenJourneyHub()
         {
             EnsureSceneExists();
@@ -16,17 +17,31 @@ namespace Game.Unity.Editor
                 EditorSceneManager.OpenScene(ScenePath);
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Journey Catalog")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Catalog/Journey Catalog", false, 20)]
         public static void CreateJourneyCatalog()
         {
-            var catalog = JourneyCatalogBuilder.CreateOrUpdate();
+            var catalog = JourneyCatalogBuilder.CreateNewAsset();
+            var path = AssetDatabase.GetAssetPath(catalog);
             Selection.activeObject = catalog;
-            Debug.Log("Journey catalog ready at " + JourneyCatalogBuilder.CatalogPath +
-                      ". Tile Arena " + JourneyCatalogBuilder.TileArenaLevelCount +
-                      " levels, Graph Arena 3, Scout Arena 6. Unlock: 10 then 5.");
+            Debug.Log("Created a new Journey catalog at " + path +
+                      ". Existing catalogs were not modified. Tile Arena " +
+                      JourneyCatalogBuilder.TileArenaLevelCount +
+                      " levels, Graph Arena " + GraphLevelLadder.Count +
+                      ", Scout Arena " + LevelCatalog.ScoutSpecs.Count +
+                      ". Unlock: 10 then 5.");
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Journey Hub Scene")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Catalog/Sync Tile Arena Economy From Core", false, 21)]
+        public static void SyncTileArenaEconomy()
+        {
+            var catalog = JourneyCatalogBuilder.SyncExistingTileArenaEconomy();
+            Selection.activeObject = catalog;
+            Debug.Log("Tile Arena Grid rows now match LevelCatalog (" +
+                      catalog.TileArena.Count + " levels). Scout Arena is " +
+                      catalog.ScoutArena.Count + " city-pack grids. Graph Arena was left as-is.");
+        }
+
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Create Journey Hub Scene", false, 80)]
         public static void CreateJourneyHubScene()
         {
             EnsureSceneExists();
@@ -37,11 +52,10 @@ namespace Game.Unity.Editor
         static void EnsureSceneExists()
         {
             System.IO.Directory.CreateDirectory("Assets/Scenes");
-            var catalog = JourneyCatalogBuilder.CreateOrUpdate();
-
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
                 return;
 
+            var catalog = JourneyCatalogBuilder.LoadExistingOrCreateNew();
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             var go = new GameObject("JourneyHubPlay");
             var hub = go.AddComponent<JourneyHubPlay>();

@@ -73,7 +73,8 @@ namespace Game.Unity.Themes.Experimental
                 return;
             }
 
-            if (State == TileVisualState.Pickup
+            if (State == TileVisualState.Candidate
+                || State == TileVisualState.Pickup
                 || State == TileVisualState.Wrong
                 || State == TileVisualState.WrongIntense)
                 Apply(State);
@@ -88,7 +89,16 @@ namespace Game.Unity.Themes.Experimental
 
             var look = MosaicGlassLook.For(state);
             var scale = 1f;
-            if (state == TileVisualState.Pickup)
+            if (state == TileVisualState.Candidate)
+            {
+                var beat = 0.5f + 0.5f * Mathf.Abs(Mathf.Sin(Time.time * 5.5f));
+                look = new MosaicGlassLook(
+                    DanceFloorPalette.CandidateEdge,
+                    0.38f + 0.22f * beat,
+                    0.18f + 0.16f * beat,
+                    0.28f + 0.16f * beat);
+            }
+            else if (state == TileVisualState.Pickup)
             {
                 look = new MosaicGlassLook(
                     look.Tint,

@@ -56,6 +56,8 @@ namespace Game.Unity.Ui
         public bool CloseOnBackdrop = true;
         public bool StackButtons;
         public bool ShowCloseButton;
+        public bool DarkWash;
+        public bool BurstSparkles;
         public float AutoCloseSeconds;
         public MemoryPathButton[] Buttons;
     }
@@ -91,8 +93,12 @@ namespace Game.Unity.Ui
         [SerializeField] HorizontalLayoutGroup _confettiLeftLayout;
         [SerializeField] HorizontalLayoutGroup _confettiRightLayout;
         [SerializeField] Button _closeButton;
+        [SerializeField] Image _wash;
+        Transform _sparkRoot;
         MemoryPathPopupPayload _payload;
         Coroutine _autoClose;
+        Coroutine _sparkBurst;
+        Coroutine _starPop;
         Color _titleRest;
 
         public bool HasBuiltLayout => _panel != null;
@@ -130,6 +136,7 @@ namespace Game.Unity.Ui
 
             var titleSize = _payload.TitleSize > 0f ? S(_payload.TitleSize) : TitleSize(_payload.Chrome);
             _title.text = _payload.Title ?? "";
+            _title.gameObject.SetActive(!string.IsNullOrEmpty(_payload.Title));
             _title.color = _payload.TitleColor;
             _title.font = UiDraw.FontOf(_payload.TitleWeight);
             _title.fontSize = titleSize;
@@ -146,6 +153,8 @@ namespace Game.Unity.Ui
             BindStars(_payload.Stars);
             BindScore(_payload.ScoreLabel, _payload.ScoreLine);
             BindConfetti(_payload.Chrome);
+            BindWash(_payload.DarkWash);
+            BindSparkles(_payload.BurstSparkles);
 
             _bodyLayout.childAlignment = Centered(_payload.Chrome)
                 ? TextAnchor.UpperCenter
@@ -246,6 +255,7 @@ namespace Game.Unity.Ui
         public override void OnClosed()
         {
             StopAutoClose();
+            StopStarPop();
         }
 
         void StopAutoClose()
@@ -339,9 +349,7 @@ namespace Game.Unity.Ui
         void BindGlyph(MemoryPathGlyph glyph)
         {
             var show = glyph != MemoryPathGlyph.None;
-            // _glyphCircle.gameObject.SetActive(show);
-            // Temp manjeet
-            _glyphCircle.gameObject.SetActive(false);
+            _glyphCircle.gameObject.SetActive(show);
             if (!show)
                 return;
 
@@ -359,16 +367,17 @@ namespace Game.Unity.Ui
 
             _heart.gameObject.SetActive(fail);
             _pauseMark.gameObject.SetActive(!fail);
-            if (fail && _heart.sprite == null)
+            if (fail)
             {
-                var sprite = UiDraw.ResourceSprite("MemoryPath/heart-crack");
-                _heart.enabled = sprite != null;
-                _heart.sprite = sprite;
+                _heart.sprite = UiDraw.Heart;
+                _heart.color = Color.white;
+                _heart.enabled = true;
             }
         }
 
         void BindStars(int stars)
         {
+            StopStarPop();
             stars = Mathf.Clamp(stars, 0, 3);
             _stars.gameObject.SetActive(stars > 0);
             if (stars <= 0)
@@ -378,16 +387,102 @@ namespace Game.Unity.Ui
             if (side == null)
                 side = UiDraw.ResourceSprite("MemoryPath/star");
             var center = UiDraw.ResourceSprite("MemoryPath/star-center") ?? side;
+            var dim = new Color(1f, 1f, 1f, 0.28f);
             for (var i = 0; i < _starIcons.Length; i++)
             {
                 var on = i < stars;
-                _starIcons[i].gameObject.SetActive(side != null && on);
+                _starIcons[i].gameObject.SetActive(side != null);
                 _starDots[i].gameObject.SetActive(side == null);
                 if (side != null)
+                {
                     _starIcons[i].sprite = i == 1 ? center : side;
+                    _starIcons[i].color = on ? Color.white : dim;
+                    _starIcons[i].rectTransform.localScale = Vector3.one;
+                }
                 else
+                {
                     _starDots[i].color = on ? MemoryPathPalette.LevelsButton : MemoryPathPalette.LockedTile;
+                    _starDots[i].rectTransform.localScale = Vector3.one;
+                }
             }
+
+            if (!Application.isPlaying
+                || !isActiveAndEnabled
+                || _payload == null
+                || _payload.Chrome != MemoryPathPopupChrome.Complete)
+                return;
+
+            _starPop = StartCoroutine(PopStars(stars));
+        }
+
+        void StopStarPop()
+        {
+            if (_starPop != null)
+            {
+                StopCoroutine(_starPop);
+                _starPop = null;
+            }
+
+            ResetStarScales();
+        }
+
+        void ResetStarScales()
+        {
+            if (_starIcons != null)
+            {
+                for (var i = 0; i < _starIcons.Length; i++)
+                {
+                    if (_starIcons[i] != null)
+                        _starIcons[i].rectTransform.localScale = Vector3.one;
+                }
+            }
+
+            if (_starDots != null)
+            {
+                for (var i = 0; i < _starDots.Length; i++)
+                {
+                    if (_starDots[i] != null)
+                        _starDots[i].rectTransform.localScale = Vector3.one;
+                }
+            }
+        }
+
+        IEnumerator PopStars(int filled)
+        {
+            var icons = _starIcons[0] != null && _starIcons[0].gameObject.activeSelf ? _starIcons : _starDots;
+            for (var i = 0; i < icons.Length; i++)
+            {
+                if (icons[i] == null)
+                    continue;
+                icons[i].rectTransform.localScale = i < filled ? Vector3.zero : Vector3.one;
+            }
+
+            for (var i = 0; i < filled; i++)
+            {
+                if (icons[i] == null)
+                    continue;
+                yield return PopStar(icons[i].rectTransform);
+            }
+
+            _starPop = null;
+        }
+
+        static IEnumerator PopStar(RectTransform rect)
+        {
+            const float duration = 0.28f;
+            var elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(elapsed / duration);
+                var scale = t < 0.62f
+                    ? Mathf.SmoothStep(0f, 1.22f, t / 0.62f)
+                    : Mathf.Lerp(1.22f, 1f, (t - 0.62f) / 0.38f);
+                rect.localScale = new Vector3(scale, scale, 1f);
+                yield return null;
+            }
+
+            rect.localScale = Vector3.one;
         }
 
         void BindScore(string caption, string value)
@@ -454,6 +549,95 @@ namespace Game.Unity.Ui
             ShowConfetti(_confettiRight, chrome);
         }
 
+        void BindWash(bool dark)
+        {
+            if (_wash == null)
+                return;
+            _wash.gameObject.SetActive(dark);
+            _wash.color = MemoryPathPalette.FailWash;
+        }
+
+        void BindSparkles(bool burst)
+        {
+            if (_sparkBurst != null)
+            {
+                StopCoroutine(_sparkBurst);
+                _sparkBurst = null;
+            }
+
+            if (_sparkRoot != null)
+            {
+                for (var i = _sparkRoot.childCount - 1; i >= 0; i--)
+                {
+                    var child = _sparkRoot.GetChild(i).gameObject;
+                    if (Application.isPlaying)
+                        Destroy(child);
+                    else
+                        DestroyImmediate(child);
+                }
+            }
+
+            if (!burst || !isActiveAndEnabled || !Application.isPlaying)
+                return;
+            _sparkBurst = StartCoroutine(SparkleBurst());
+        }
+
+        IEnumerator SparkleBurst()
+        {
+            EnsureSparkRoot();
+            var colors = new[]
+            {
+                MemoryPathPalette.ConfettiGold,
+                MemoryPathPalette.ConfettiYellow,
+                MemoryPathPalette.ConfettiPink,
+                MemoryPathPalette.ConfettiMint,
+                MemoryPathPalette.ConfettiSky
+            };
+            for (var i = 0; i < 28; i++)
+            {
+                var bit = UiDraw.Panel(_sparkRoot, "Spark" + i, colors[i % colors.Length]);
+                bit.raycastTarget = false;
+                UiDraw.SetCornerRadius(bit, S(2));
+                var rect = bit.rectTransform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
+                rect.pivot = new Vector2(0.5f, 1f);
+                rect.anchoredPosition = new Vector2(UnityEngine.Random.Range(-S(180), S(180)), S(20));
+                rect.sizeDelta = new Vector2(S(8), S(14));
+                rect.localRotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(-40f, 40f));
+                StartCoroutine(FallSpark(rect, UnityEngine.Random.Range(0.7f, 1.4f)));
+            }
+
+            yield return new WaitForSeconds(1.6f);
+            _sparkBurst = null;
+        }
+
+        static IEnumerator FallSpark(RectTransform rect, float seconds)
+        {
+            var start = rect.anchoredPosition;
+            var end = start + new Vector2(UnityEngine.Random.Range(-40f, 40f), -S(520));
+            var spin = UnityEngine.Random.Range(-180f, 180f);
+            var elapsed = 0f;
+            while (elapsed < seconds && rect != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(elapsed / seconds);
+                rect.anchoredPosition = Vector2.Lerp(start, end, t * t);
+                rect.localRotation = Quaternion.Euler(0f, 0f, spin * t);
+                yield return null;
+            }
+        }
+
+        void EnsureSparkRoot()
+        {
+            if (_sparkRoot != null)
+                return;
+            var go = new GameObject("Sparkles", typeof(RectTransform));
+            go.transform.SetParent(transform, false);
+            go.transform.SetAsFirstSibling();
+            UiDraw.Stretch(go.GetComponent<RectTransform>());
+            _sparkRoot = go.transform;
+        }
+
         static void ShowConfetti(Transform bar, MemoryPathPopupChrome chrome)
         {
             if (bar == null)
@@ -470,6 +654,12 @@ namespace Game.Unity.Ui
         {
             var rect = GetComponent<RectTransform>();
             UiDraw.Stretch(rect);
+
+            _wash = UiDraw.Panel(transform, "Wash", MemoryPathPalette.FailWash);
+            _wash.raycastTarget = false;
+            UiDraw.Stretch(_wash.rectTransform);
+            _wash.gameObject.SetActive(false);
+            _wash.transform.SetAsFirstSibling();
 
             _panel = UiDraw.Panel(transform, "Panel", MemoryPathPalette.PopupCream);
             var panelRect = _panel.rectTransform;
@@ -559,7 +749,8 @@ namespace Game.Unity.Ui
             inner.rectTransform.offsetMax = new Vector2(-inset, -inset);
             inner.raycastTarget = false;
 
-            _heart = UiDraw.Icon(inner.transform, "Heart", UiDraw.ResourceSprite("MemoryPath/heart-crack"), S(32));
+            _heart = UiDraw.Icon(inner.transform, "Heart", UiDraw.Heart, S(32));
+            _heart.color = Color.white;
             Center(_heart.rectTransform);
 
             _pauseMark = new GameObject("Pause", typeof(HorizontalLayoutGroup)).transform;

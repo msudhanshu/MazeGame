@@ -19,7 +19,7 @@ namespace Game.Unity.Editor
             EditorApplication.delayCall += ApplyOnceThisSession;
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Fix Pixelated Game View")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Fix Pixelated Game View", false, 80)]
         public static void FixFromMenu()
         {
             ApplyToOpenGameViews();

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="29" result="Passed" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.4216458">
+  <test-suite type="TestSuite" id="1000" name="Memorize Path" fullname="Memorize Path" runstate="Runnable" testcasecount="288" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.421646" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1331" name="Game.Unity.EditModeTests.dll" fullname="/Users/sid/Tech/NixinStudio/GameStudio/MazeGame/memory-grid-path/Library/ScriptAssemblies/Game.Unity.EditModeTests.dll" runstate="Runnable" testcasecount="288" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.413912" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="51627" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1332" name="Game" fullname="Game" runstate="Runnable" testcasecount="288" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.411836" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1333" name="Unity" fullname="Game.Unity" runstate="Runnable" testcasecount="288" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.410255" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1334" name="Tests" fullname="Game.Unity.Tests" runstate="Runnable" testcasecount="288" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.408749" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1139" name="GridPathOverlayTests" fullname="Game.Unity.Tests.GridPathOverlayTests" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.044715" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1147" name="ASmallerTrailWidthScaleMakesTheYellowPathThinner" fullname="Game.Unity.Tests.GridPathOverlayTests.ASmallerTrailWidthScaleMakesTheYellowPathThinner" methodname="ASmallerTrailWidthScaleMakesTheYellowPathThinner" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="2096730121" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.025544" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1151" name="AWorldPolylineDrawsTheSameTrailAndDots" fullname="Game.Unity.Tests.GridPathOverlayTests.AWorldPolylineDrawsTheSameTrailAndDots" methodname="AWorldPolylineDrawsTheSameTrailAndDots" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1905188024" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.003147" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1143" name="BlockedTilesGetACross" fullname="Game.Unity.Tests.GridPathOverlayTests.BlockedTilesGetACross" methodname="BlockedTilesGetACross" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1140651693" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.002011" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1140" name="BuildingTheBoardAttachesAnOverlay" fullname="Game.Unity.Tests.GridPathOverlayTests.BuildingTheBoardAttachesAnOverlay" methodname="BuildingTheBoardAttachesAnOverlay" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1171790102" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.001154" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1150" name="CelebrateArrowsMoveSlowerThanAWalk" fullname="Game.Unity.Tests.GridPathOverlayTests.CelebrateArrowsMoveSlowerThanAWalk" methodname="CelebrateArrowsMoveSlowerThanAWalk" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="558636007" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000180" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1148" name="ChoiceLineStartsJustOffTheWalker" fullname="Game.Unity.Tests.GridPathOverlayTests.ChoiceLineStartsJustOffTheWalker" methodname="ChoiceLineStartsJustOffTheWalker" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1291966564" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.001217" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1154" name="ClearingTheBoardHidesTheTrail" fullname="Game.Unity.Tests.GridPathOverlayTests.ClearingTheBoardHidesTheTrail" methodname="ClearingTheBoardHidesTheTrail" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1287260153" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000461" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1144" name="CompletingThePathCelebratesAlongTheFullTrail" fullname="Game.Unity.Tests.GridPathOverlayTests.CompletingThePathCelebratesAlongTheFullTrail" methodname="CompletingThePathCelebratesAlongTheFullTrail" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="729300220" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000658" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1146" name="FocusedStyleMakesTheTrailThinnerAndMoreTransparent" fullname="Game.Unity.Tests.GridPathOverlayTests.FocusedStyleMakesTheTrailThinnerAndMoreTransparent" methodname="FocusedStyleMakesTheTrailThinnerAndMoreTransparent" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="349900221" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000669" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1152" name="PointAlongFollowsThePolyline" fullname="Game.Unity.Tests.GridPathOverlayTests.PointAlongFollowsThePolyline" methodname="PointAlongFollowsThePolyline" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="474354819" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000264" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1153" name="RadarScanClipsThePathAtTheSweepLine" fullname="Game.Unity.Tests.GridPathOverlayTests.RadarScanClipsThePathAtTheSweepLine" methodname="RadarScanClipsThePathAtTheSweepLine" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="196614091" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000450" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="StartOfAWalkShowsHomeAndNoStandingDot" fullname="Game.Unity.Tests.GridPathOverlayTests.StartOfAWalkShowsHomeAndNoStandingDot" methodname="StartOfAWalkShowsHomeAndNoStandingDot" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="2029392690" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000349" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1145" name="TrailAndDotsAreTranslucent" fullname="Game.Unity.Tests.GridPathOverlayTests.TrailAndDotsAreTranslucent" methodname="TrailAndDotsAreTranslucent" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="1105650448" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1142" name="WalkingDrawsALineDotsAndForwardArrows" fullname="Game.Unity.Tests.GridPathOverlayTests.WalkingDrawsALineDotsAndForwardArrows" methodname="WalkingDrawsALineDotsAndForwardArrows" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="449942525" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000487" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1149" name="WrongTurnPreviewUsesARedSingleArrowSegment" fullname="Game.Unity.Tests.GridPathOverlayTests.WrongTurnPreviewUsesARedSingleArrowSegment" methodname="WrongTurnPreviewUsesARedSingleArrowSegment" classname="Game.Unity.Tests.GridPathOverlayTests" runstate="Runnable" seed="588185541" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000601" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1165" name="JourneyCatalogBuilderTests" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.356296" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1168" name="CreateNewAssetDoesNotOverwriteExistingCatalog" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.CreateNewAssetDoesNotOverwriteExistingCatalog" methodname="CreateNewAssetDoesNotOverwriteExistingCatalog" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="2139508233" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.331325" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1172" name="ExtractedGraphLevel10StaysTheArenaWhenPlayableCopiesAreMade" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.ExtractedGraphLevel10StaysTheArenaWhenPlayableCopiesAreMade" methodname="ExtractedGraphLevel10StaysTheArenaWhenPlayableCopiesAreMade" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="1887037156" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.010646" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1171" name="GraphArenaPlayClonesTheRealCatalogArenaAndOnlyChangesTheRoute" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.GraphArenaPlayClonesTheRealCatalogArenaAndOnlyChangesTheRoute" methodname="GraphArenaPlayClonesTheRealCatalogArenaAndOnlyChangesTheRoute" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="78964570" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000802" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1173" name="GraphArenaSampleDefaultsToCameraFlashAndCreateRunWorks" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.GraphArenaSampleDefaultsToCameraFlashAndCreateRunWorks" methodname="GraphArenaSampleDefaultsToCameraFlashAndCreateRunWorks" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="460771819" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000129" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1167" name="ScoutArenaUsesACloserConfigurableFollowZoom" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.ScoutArenaUsesACloserConfigurableFollowZoom" methodname="ScoutArenaUsesACloserConfigurableFollowZoom" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="1460038299" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.008566" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1170" name="ScoutPlayIgnoresGraphSlotsAndStaysOnCityPatchwork" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.ScoutPlayIgnoresGraphSlotsAndStaysOnCityPatchwork" methodname="ScoutPlayIgnoresGraphSlotsAndStaysOnCityPatchwork" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="83600140" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000760" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1169" name="TileArenaPlayUsesCoreEconomyEvenWhenAssetGridsAreStale" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.TileArenaPlayUsesCoreEconomyEvenWhenAssetGridsAreStale" methodname="TileArenaPlayUsesCoreEconomyEvenWhenAssetGridsAreStale" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="1293997165" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000842" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1166" name="TileArenaShipsTwentyFiveLevelsWithAlternatingVisuals" fullname="Game.Unity.Tests.JourneyCatalogBuilderTests.TileArenaShipsTwentyFiveLevelsWithAlternatingVisuals" methodname="TileArenaShipsTwentyFiveLevelsWithAlternatingVisuals" classname="Game.Unity.Tests.JourneyCatalogBuilderTests" runstate="Runnable" seed="1951808646" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.001774" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1279" name="ScoutRotationMoveTests" fullname="Game.Unity.Tests.ScoutRotationMoveTests" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.003543" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1283" name="BoardMoveSwipeUsesHeadingYaw" fullname="Game.Unity.Tests.ScoutRotationMoveTests.BoardMoveSwipeUsesHeadingYaw" methodname="BoardMoveSwipeUsesHeadingYaw" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="1275410644" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000759" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1281" name="RotateSwipeKeepsNorthUpWhenYawIsZero" fullname="Game.Unity.Tests.ScoutRotationMoveTests.RotateSwipeKeepsNorthUpWhenYawIsZero" methodname="RotateSwipeKeepsNorthUpWhenYawIsZero" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="306218" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000091" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1282" name="RotateSwipeTurnsScreenUpIntoFacingWhenYawedEast" fullname="Game.Unity.Tests.ScoutRotationMoveTests.RotateSwipeTurnsScreenUpIntoFacingWhenYawedEast" methodname="RotateSwipeTurnsScreenUpIntoFacingWhenYawedEast" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="151100738" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000075" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1285" name="TourClockCountsHopsAndPauses" fullname="Game.Unity.Tests.ScoutRotationMoveTests.TourClockCountsHopsAndPauses" methodname="TourClockCountsHopsAndPauses" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="1972901574" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000501" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1284" name="VisualResolverCopiesScoutMoveMode" fullname="Game.Unity.Tests.ScoutRotationMoveTests.VisualResolverCopiesScoutMoveMode" methodname="VisualResolverCopiesScoutMoveMode" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="1027667696" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000304" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1280" name="YawFromDeltaUsesWorldForwardAsZero" fullname="Game.Unity.Tests.ScoutRotationMoveTests.YawFromDeltaUsesWorldForwardAsZero" methodname="YawFromDeltaUsesWorldForwardAsZero" classname="Game.Unity.Tests.ScoutRotationMoveTests" runstate="Runnable" seed="2085848056" result="Passed" start-time="2026-09-16 17:02:19Z" end-time="2026-09-16 17:02:19Z" duration="0.000445" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: /Users/sid/Library/Application Support/Nixin Studio/Memorize Path/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

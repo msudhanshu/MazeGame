@@ -19,8 +19,9 @@ namespace Game.Unity.Tests
                 Assert.That(template, Is.Not.Null);
                 Assert.That(template.GetComponent<LevelTileCard>(), Is.Not.Null);
                 Assert.That(screen.transform.Find("Templates").gameObject.activeSelf, Is.False);
-                Assert.That(template.Find("Overlay/Lock"), Is.Not.Null);
-                Assert.That(template.Find("Overlay/Stars/Star0"), Is.Not.Null);
+                Assert.That(template.Find("Art/LockOverlay"), Is.Not.Null);
+                Assert.That(template.Find("Stars/Star0"), Is.Not.Null);
+                Assert.That(template.Find("Caption"), Is.Not.Null);
             }
             finally
             {
@@ -49,7 +50,8 @@ namespace Game.Unity.Tests
                 Assert.That(col.Find("Footer/Arrow"), Is.Not.Null);
 
                 var grid = col.Find("Scroll/Grid").GetComponent<GridLayoutGroup>();
-                Assert.That(grid.constraintCount, Is.EqualTo(4));
+                Assert.That(grid.constraintCount, Is.EqualTo(3));
+                Assert.That(grid.childAlignment, Is.EqualTo(TextAnchor.UpperLeft));
             }
             finally
             {
@@ -74,23 +76,24 @@ namespace Game.Unity.Tests
                 Assert.That(current, Is.Not.Null);
                 Assert.That(locked, Is.Not.Null);
 
-                var clearedThumb = cleared.Find("Thumb").GetComponent<RawImage>();
+                var clearedThumb = cleared.Find("Art/Thumb").GetComponent<RawImage>();
                 Assert.That(clearedThumb.gameObject.activeSelf, Is.True);
                 Assert.That(clearedThumb.texture, Is.EqualTo(thumb));
-                Assert.That(cleared.Find("Overlay/Stars/Star0"), Is.Not.Null);
-                Assert.That(cleared.Find("Overlay/Lock").gameObject.activeSelf, Is.False);
-                Assert.That(cleared.Find("Overlay/Number").GetComponent<TextMeshProUGUI>().text, Is.EqualTo("1"));
+                Assert.That(cleared.Find("Stars/Star0").gameObject.activeSelf, Is.True);
+                Assert.That(cleared.Find("Art/LockOverlay").gameObject.activeSelf, Is.False);
+                Assert.That(cleared.Find("Caption").GetComponent<TextMeshProUGUI>().text, Is.EqualTo("Level 1"));
                 Assert.That(cleared.GetComponent<Button>().interactable, Is.True);
 
-                Assert.That(current.Find("Overlay/Stars").gameObject.activeSelf, Is.True);
-                Assert.That(current.Find("Overlay/Lock").gameObject.activeSelf, Is.False);
-                Assert.That(current.Find("Overlay/Number").GetComponent<TextMeshProUGUI>().text, Is.EqualTo("5"));
+                Assert.That(current.Find("Stars/Star0").gameObject.activeSelf, Is.False);
+                Assert.That(current.Find("Art/LockOverlay").gameObject.activeSelf, Is.False);
+                Assert.That(current.Find("Caption").GetComponent<TextMeshProUGUI>().text, Is.EqualTo("Level 5"));
+                Assert.That(current.GetComponent<Outline>().effectColor, Is.EqualTo(MemoryPathPalette.HomeModeSelectedRing));
 
-                Assert.That(locked.Find("Overlay/Lock").gameObject.activeSelf, Is.True);
-                Assert.That(locked.Find("Overlay/Stars").gameObject.activeSelf, Is.False);
+                Assert.That(locked.Find("Art/LockOverlay").gameObject.activeSelf, Is.True);
+                Assert.That(locked.Find("Stars/Star0").gameObject.activeSelf, Is.False);
                 Assert.That(locked.GetComponent<Button>().interactable, Is.False);
 
-                var fallback = screen.transform.Find("Column/Scroll/Grid/L2/Thumb").GetComponent<RawImage>();
+                var fallback = screen.transform.Find("Column/Scroll/Grid/L2/Art/Thumb").GetComponent<RawImage>();
                 var defaultPhoto = Resources.Load<Texture2D>(LevelTileCard.DefaultTilePhotoResource);
                 Assert.That(fallback.gameObject.activeSelf, Is.True);
                 Assert.That(fallback.texture, Is.EqualTo(defaultPhoto));
@@ -113,7 +116,7 @@ namespace Game.Unity.Tests
                 screen.gameObject.SetActive(true);
                 screen.Bind(SamplePayload());
 
-                var thumb = screen.transform.Find("Column/Scroll/Grid/L1/Thumb").GetComponent<RawImage>();
+                var thumb = screen.transform.Find("Column/Scroll/Grid/L1/Art/Thumb").GetComponent<RawImage>();
                 Assert.That(thumb.gameObject.activeSelf, Is.True);
                 Assert.That(thumb.texture, Is.EqualTo(defaultPhoto));
                 Assert.That(thumb.color, Is.EqualTo(Color.white));
@@ -175,7 +178,8 @@ namespace Game.Unity.Tests
 
                 var grid = col.Find("Scroll/Grid").GetComponent<GridLayoutGroup>();
                 Assert.That(grid.cellSize.x, Is.GreaterThan(100f));
-                Assert.That(grid.constraintCount, Is.EqualTo(4));
+                Assert.That(grid.constraintCount, Is.EqualTo(3));
+                Assert.That(grid.childAlignment, Is.EqualTo(TextAnchor.UpperLeft));
             }
             finally
             {
@@ -205,7 +209,7 @@ namespace Game.Unity.Tests
                 Assert.That(clone, Is.Not.Null);
                 Assert.That(clone.GetComponent<LevelTileCard>(), Is.Not.Null);
                 Assert.That(clone.Find("Badge"), Is.Not.Null);
-                Assert.That(clone.Find("Overlay/Lock"), Is.Not.Null);
+                Assert.That(clone.Find("Art/LockOverlay"), Is.Not.Null);
                 Assert.That(clone.Find("Mark"), Is.Null);
             }
             finally
@@ -236,10 +240,10 @@ namespace Game.Unity.Tests
                 var clone = instance.transform.Find("Column/Scroll/Grid/L1");
                 Assert.That(clone, Is.Not.Null);
                 Assert.That(clone.GetComponent<LevelTileCard>(), Is.Not.Null);
-                Assert.That(clone.Find("Thumb"), Is.Not.Null);
-                Assert.That(clone.Find("Overlay/Lock"), Is.Not.Null);
-                Assert.That(clone.Find("Overlay/Stars/Star0"), Is.Not.Null);
-                Assert.That(clone.Find("Overlay/Number"), Is.Not.Null);
+                Assert.That(clone.Find("Art/Thumb"), Is.Not.Null);
+                Assert.That(clone.Find("Art/LockOverlay"), Is.Not.Null);
+                Assert.That(clone.Find("Stars/Star0"), Is.Not.Null);
+                Assert.That(clone.Find("Caption"), Is.Not.Null);
             }
             finally
             {

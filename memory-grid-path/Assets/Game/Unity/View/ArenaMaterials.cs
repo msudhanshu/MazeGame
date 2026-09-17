@@ -11,11 +11,24 @@ namespace Game.Unity.View
         const string UnlitResourcePath = "Shaders/UnlitColor";
         const string OverlayResourcePath = "Shaders/UnlitOverlay";
 
+        const string UnlitAlphaResourcePath = "Shaders/UnlitColorAlpha";
+
         public static Material Unlit(string name, Color color)
         {
             var shader = Resources.Load<Shader>(UnlitResourcePath)
                          ?? Shader.Find("Nixin Studio/UnlitColor")
                          ?? Shader.Find("Universal Render Pipeline/Unlit")
+                         ?? Shader.Find("Sprites/Default");
+            var material = new Material(shader) { name = name };
+            Tint(material, color);
+            return material;
+        }
+
+        public static Material UnlitAlpha(string name, Color color)
+        {
+            var shader = Resources.Load<Shader>(UnlitAlphaResourcePath)
+                         ?? Shader.Find("Nixin Studio/UnlitColorAlpha")
+                         ?? Resources.Load<Shader>(OverlayResourcePath)
                          ?? Shader.Find("Sprites/Default");
             var material = new Material(shader) { name = name };
             Tint(material, color);

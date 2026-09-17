@@ -33,7 +33,11 @@ namespace Game.Unity.Ui
             if (existing != null)
                 return existing;
 
-            var go = new GameObject("MemoryPathStepCallout", typeof(RectTransform), typeof(MemoryPathStepCallout));
+            var go = new GameObject(
+                "MemoryPathStepCallout",
+                typeof(RectTransform),
+                typeof(CanvasGroup),
+                typeof(MemoryPathStepCallout));
             go.transform.SetParent(parent, false);
             var callout = go.GetComponent<MemoryPathStepCallout>();
             callout.Build();
@@ -177,7 +181,7 @@ namespace Game.Unity.Ui
 
         void EnsureBuilt()
         {
-            if (_label == null)
+            if (_label == null || _group == null)
                 Build();
         }
 
@@ -189,7 +193,9 @@ namespace Game.Unity.Ui
             _root.pivot = new Vector2(0.5f, 0f);
             _root.sizeDelta = new Vector2(220f, 56f);
 
-            _group = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+            _group = gameObject.GetComponent<CanvasGroup>();
+            if (_group == null)
+                _group = gameObject.AddComponent<CanvasGroup>();
             _group.blocksRaycasts = false;
             _group.interactable = false;
 
@@ -200,8 +206,9 @@ namespace Game.Unity.Ui
                 ?? _panel.gameObject.AddComponent<LayoutElement>();
             panelIgnore.ignoreLayout = true;
 
-            var layout = gameObject.GetComponent<HorizontalLayoutGroup>()
-                ?? gameObject.AddComponent<HorizontalLayoutGroup>();
+            var layout = gameObject.GetComponent<HorizontalLayoutGroup>();
+            if (layout == null)
+                layout = gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.padding = new RectOffset(16, 16, 10, 12);
             layout.childAlignment = TextAnchor.MiddleCenter;
             layout.childControlWidth = true;
@@ -209,8 +216,9 @@ namespace Game.Unity.Ui
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
 
-            _fitter = gameObject.GetComponent<ContentSizeFitter>()
-                ?? gameObject.AddComponent<ContentSizeFitter>();
+            _fitter = gameObject.GetComponent<ContentSizeFitter>();
+            if (_fitter == null)
+                _fitter = gameObject.AddComponent<ContentSizeFitter>();
             _fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
             _fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 

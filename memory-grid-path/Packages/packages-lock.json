@@ -1,49 +1,49 @@
 {
   "dependencies": {
     "com.nixin.boot": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.boot",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.boot",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.fue": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.fue",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.fue",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.game.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.game.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.game.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.graph.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.graph.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.graph.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.grid.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.grid.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.grid.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.icons": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.icons",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.icons",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.memory.core": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.memory.core",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.memory.core",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.nixin.ui": {
-      "version": "file:../../../NixinStudio/GameStudio/NixinStudioUnityCore/packages/com.nixin.ui",
+      "version": "file:../../../NixinStudioUnityCore/packages/com.nixin.ui",
       "depth": 0,
       "source": "local",
       "dependencies": {

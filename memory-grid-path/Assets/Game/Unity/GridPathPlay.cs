@@ -47,6 +47,7 @@ namespace Game.Unity
         bool _holdingReveal;
         Coroutine _revealHold;
         MemoryPathStepCallout _stepCallout;
+        bool _radarPlaying;
 
         const float RevealHoldSeconds = 1.25f;
 
@@ -113,6 +114,7 @@ namespace Game.Unity
                 UpdateFollowCamera();
             else
                 ApplyCameraFraming();
+            CameraFeel.Apply(_camera);
         }
 
         void UpdateFollowCamera()
@@ -124,11 +126,16 @@ namespace Game.Unity
 
             var focus = _walker.transform.position;
             focus.y = _board.Layout.Origin.y;
+            var heading = ScoutRotationMove.UsesRotation(_arenaSettings) && _walker != null
+                ? _walker.YawDegrees
+                : 0f;
             BoardCamera.SmoothFollowWalker(
                 _camera,
                 focus,
                 _arenaSettings.FollowOrthographicSize,
-                _arenaSettings.FollowSmoothing);
+                _arenaSettings.FollowSmoothing,
+                heading,
+                yawSmoothing: 0f);
         }
 
         void Update()
@@ -143,7 +150,8 @@ namespace Game.Unity
                 visibleOptions,
                 PlayerSettingsStore.PathDrag,
                 IsPlayOption,
-                out var target);
+                out var target,
+                ScoutRotationMove.UsesRotation(_arenaSettings) ? ScoutRotationMove.HeadingYaw(_camera) : 0f);
             if (_game == null || !_game.IsPlaying || InputLocked)
                 return;
             if (_hud == null || !_hud.IsShown)
@@ -158,7 +166,7 @@ namespace Game.Unity
 
         bool IsPlayOption(GridCoord cell) => _game != null && _game.Run != null && _game.Run.IsOption(cell);
 
-        bool InputLocked => _holdingReveal || (_walker != null && _walker.IsHopping);
+        bool InputLocked => _holdingReveal || _radarPlaying || (_walker != null && _walker.IsHopping);
 
         void StartLevel(int levelNumber)
         {
@@ -220,6 +228,39 @@ namespace Game.Unity
             MemoryPathAudio.Play(MemoryPathCue.GameStart);
             RefreshBoard();
             RefreshHud();
+            _revealHold = StartCoroutine(RadarThenPlay());
+        }
+
+        IEnumerator RadarThenPlay()
+        {
+            _holdingReveal = true;
+            _radarPlaying = true;
+            RefreshBoard();
+            var radar = RadarPathPreview.Ensure(transform);
+            ScoutScanPlayer scan = null;
+            if (PathPreviewSeconds.UsesScanPause(_game.CurrentLevel))
+            {
+                scan = ScoutScanPlayer.Ensure(_hud != null ? _hud.OverlayRoot : null);
+                scan?.Show();
+                scan?.SetCaption(RadarMemorizeCue.Caption);
+            }
+            else
+            {
+                RadarMemorizeCue.Ensure(_hud != null ? _hud.OverlayRoot : null)?.Show();
+            }
+
+            yield return radar.Play(
+                _board,
+                _game.Run.Path.Cells,
+                PathPreviewSeconds.For(_game.CurrentLevel),
+                PathPreviewSeconds.HoldFor(_game.CurrentLevel),
+                scan);
+            ScoutScanPlayer.HideOn(_hud != null ? _hud.OverlayRoot : null);
+            RadarMemorizeCue.HideOn(_hud != null ? _hud.OverlayRoot : null);
+            _radarPlaying = false;
+            RefreshBoard();
+            _holdingReveal = false;
+            _revealHold = null;
         }
 
         void ConfirmSkip()
@@ -247,6 +288,8 @@ namespace Game.Unity
             _theme.ApplyEnvironment(_camera, _board.Layout, transform);
 
             _walker = WalkerView.Create(transform, _board.WorldPosition(_game.Run.Path.Start), DanceFloorPalette.Start);
+            if (_walker != null)
+                _walker.FaceTravel = ScoutRotationMove.UsesRotation(_arenaSettings);
             ApplyCameraFraming();
         }
 
@@ -264,7 +307,13 @@ namespace Game.Unity
                 focus.y = _board.Layout.Origin.y;
                 if (_arenaSettings.CameraMode != ArenaCameraMode.FollowWalker)
                     focus = _board.Layout.Origin;
-                BoardCamera.FrameFollow(_camera, focus, _arenaSettings.FollowOrthographicSize);
+                BoardCamera.FrameFollow(
+                    _camera,
+                    focus,
+                    _arenaSettings.FollowOrthographicSize,
+                    ScoutRotationMove.UsesRotation(_arenaSettings) && _walker != null
+                        ? _walker.YawDegrees
+                        : 0f);
                 return;
             }
 
@@ -280,6 +329,8 @@ namespace Game.Unity
 
         void TearDownBoard()
         {
+            RadarMemorizeCue.HideOn(_hud != null ? _hud.OverlayRoot : null);
+            ScoutScanPlayer.HideOn(_hud != null ? _hud.OverlayRoot : null);
             ArenaEnvironment.Clear(transform);
 
             if (_board != null)
@@ -311,7 +362,7 @@ namespace Game.Unity
             switch (outcome)
             {
                 case WalkOutcome.Advanced:
-                    _effects.PlayCorrect(_board.TileAt(target));
+                    _effects.PlayCorrect(_board.TileAt(target), run.Step);
                     _walker.HopTo(destination);
                     if (run.WasFailedInPriorWalk(target))
                         ShowStepCallout(MemoryPathStepCueCopy.RandomRecovered(), recover: true);
@@ -322,7 +373,7 @@ namespace Game.Unity
                     break;
 
                 case WalkOutcome.WrongRevealed:
-                    _hud.SetMessage($"Off the path. The real tile is lit — {run.LivesLeft} health left.");
+                    _hud.SetMessage($"Off the path. The real tile is lit — {run.LivesLeft} heart slices left.");
                     BeginMistake(
                         wrongTile,
                         wrongFrom,
@@ -333,12 +384,11 @@ namespace Game.Unity
                     break;
 
                 case WalkOutcome.RunFailed:
-                    BeginMistake(wrongTile, wrongFrom, wrongTo, () =>
-                    {
-                        ShowRetryFromMemory();
-                        StartNextWalk();
-                    }, runFailed: true, forgotPriorWalk: run.LastRevealed.HasValue
-                        && run.WasCoveredInPriorWalk(run.LastRevealed.Value));
+                    StopRevealHold();
+                    _holdingReveal = true;
+                    _effects.PlayRunFailed();
+                    RefreshHud();
+                    _revealHold = StartCoroutine(CrashRestart());
                     break;
 
                 case WalkOutcome.LevelCompleted:
@@ -361,21 +411,22 @@ namespace Game.Unity
                     break;
 
                 case WalkOutcome.SessionOver:
+                    StopRevealHold();
+                    _holdingReveal = true;
+                    _effects.PlaySessionFailed();
                     _hud.SetMessage("Out of lives.");
-                    BeginMistake(
-                        wrongTile,
-                        wrongFrom,
-                        wrongTo,
-                        () => HoldRevealThen(() => OnSessionFinished(
+                    RefreshHud();
+                    OnSessionFinished(
                         $"The path faded away. You reached step {run.FurthestStep} of {run.TotalSteps}.",
-                        completed: false)), sessionFailed: true);
+                        completed: false);
                     break;
             }
 
             if (glimpse != null)
                 PlayGlimpse(glimpse);
 
-            RefreshHud();
+            if (!_holdingReveal)
+                RefreshHud();
         }
 
         void BeginMistake(
@@ -390,31 +441,86 @@ namespace Game.Unity
             StopRevealHold();
             _holdingReveal = true;
             if (sessionFailed)
-            {
-                wrong?.SetState(TileVisualState.WrongIntense);
-                wrong?.Flash(TileVisualState.WrongIntense, DanceFloorEffects.WrongIntenseFlashSeconds);
                 _effects.PlaySessionFailed();
-            }
             else if (runFailed)
-            {
-                wrong?.SetState(forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong);
-                wrong?.Flash(
-                    forgotPriorWalk ? TileVisualState.WrongIntense : TileVisualState.Wrong,
-                    forgotPriorWalk
-                        ? DanceFloorEffects.WrongIntenseFlashSeconds
-                        : DanceFloorEffects.WrongFlashSeconds);
                 _effects.PlayRunFailed();
-                if (forgotPriorWalk)
-                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
-            }
-            else
-            {
-                _effects.PlayMistake(wrong, RevealedTile(_game.Run), forgotPriorWalk);
-                if (forgotPriorWalk)
-                    ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
-            }
+            if (forgotPriorWalk)
+                ShowStepCallout(MemoryPathStepCueCopy.RandomForgot(), recover: false);
 
-            _revealHold = StartCoroutine(MistakeRoutine(wrongFrom, wrongTo, afterPainted));
+            var revealed = RevealedTile(_game.Run);
+            _revealHold = StartCoroutine(MissRoutine(wrong, revealed, wrongFrom, wrongTo, afterPainted, magnetPull: !runFailed));
+        }
+
+        IEnumerator MissRoutine(
+            ITileView wrong,
+            ITileView revealed,
+            Vector3 wrongFrom,
+            Vector3 wrongTo,
+            Action afterPainted,
+            bool magnetPull)
+        {
+            var destination = _board.WorldPosition(_game.Run.CurrentCell);
+            yield return MissBeat.Play(
+                this,
+                _walker,
+                _board != null ? _board.Overlay : null,
+                _camera,
+                _hud,
+                wrong,
+                revealed,
+                wrongFrom + Vector3.up * GridPathOverlay.Lift,
+                wrongTo + Vector3.up * GridPathOverlay.Lift,
+                destination,
+                _game.Run.RunNumber,
+                _board.Layout.TileSize,
+                intense: false,
+                onSpark: RefreshHud,
+                afterFlash: RefreshBoard,
+                after: () =>
+                {
+                    RefreshHud();
+                    _holdingReveal = afterPainted != null;
+                    _revealHold = null;
+                    afterPainted?.Invoke();
+                    if (afterPainted == null)
+                        _holdingReveal = false;
+                },
+                magnetPull: magnetPull);
+        }
+
+        IEnumerator CrashRestart()
+        {
+            _holdingReveal = true;
+            var run = _game.Run;
+            var walked = CopyCells(run != null ? run.WalkedCells : null);
+            yield return WalkedTrailFade.CrashOut(
+                _walker,
+                _board,
+                _board != null ? _board.Overlay : null,
+                walked,
+                WalkedTrailFade.FadeSeconds);
+            _game.BeginNextWalk();
+            run = _game.Run;
+            if (_walker != null && _board != null && run != null)
+                _walker.SnapTo(_board.WorldPosition(run.Path.Start), restoreAlpha: false);
+            ApplyCameraFraming();
+            if (_walker != null)
+                yield return _walker.Rematerialize(WalkerView.CrashInSeconds);
+            _hud.SetMessage("On the path. Keep going!");
+            RefreshBoard();
+            RefreshHud();
+            _holdingReveal = false;
+            _revealHold = null;
+        }
+
+        static GridCoord[] CopyCells(IReadOnlyList<GridCoord> cells)
+        {
+            if (cells == null || cells.Count == 0)
+                return Array.Empty<GridCoord>();
+            var copy = new GridCoord[cells.Count];
+            for (var i = 0; i < cells.Count; i++)
+                copy[i] = cells[i];
+            return copy;
         }
 
         void ShowStepCallout(string caption, bool recover)
@@ -431,22 +537,6 @@ namespace Game.Unity
                 _walker.transform.position,
                 caption,
                 recover);
-        }
-
-        IEnumerator MistakeRoutine(Vector3 wrongFrom, Vector3 wrongTo, Action afterPainted)
-        {
-            var destination = _board.WorldPosition(_game.Run.CurrentCell);
-            yield return BoardStepFeedback.FlashWrongTurnThenTravel(
-                _walker,
-                _board != null ? _board.Overlay : null,
-                wrongFrom + Vector3.up * GridPathOverlay.Lift,
-                wrongTo + Vector3.up * GridPathOverlay.Lift,
-                destination,
-                hopPath: null,
-                afterFlash: RefreshBoard);
-            _holdingReveal = false;
-            _revealHold = null;
-            afterPainted?.Invoke();
         }
 
         IEnumerator CelebrateThenPopup(Action show)
@@ -510,13 +600,16 @@ namespace Game.Unity
         void ShowComplete(int score, int nextLevel, int currentLevel)
         {
             var canAdvance = nextLevel > currentLevel;
+            var mistakes = _game != null && _game.Run != null ? _game.Run.MistakesMade : 0;
             MemoryPathUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
                 MemoryPathPopups.Complete(
                     score,
                     canAdvance,
+                    currentLevel,
                     canAdvance ? (Action)(() => StartLevel(nextLevel)) : null,
                     () => StartLevel(currentLevel),
-                    ShowHome),
+                    ShowHome,
+                    LevelAccess.StarsFromMistakes(mistakes)),
                 replacePopups: true);
         }
 
@@ -524,7 +617,7 @@ namespace Game.Unity
         {
             _ = body;
             MemoryPathUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
-                MemoryPathPopups.GameOver(ShowHome, () => StartLevel(level)),
+                MemoryPathPopups.GameOver(level, ShowHome, () => StartLevel(level)),
                 replacePopups: true);
         }
 
@@ -576,7 +669,7 @@ namespace Game.Unity
                 {
                     Number = number,
                     Lane = lane,
-                    Stars = LevelAccess.StarsOn(lane)
+                    Stars = LevelAccess.StarsOn(_game.Progress, number)
                 };
             }
 
@@ -641,7 +734,11 @@ namespace Game.Unity
 
         void RefreshBoard()
         {
-            GridBoardPresenter.Refresh(_board, _game?.Run);
+            var run = _game?.Run;
+            var visible = _radarPlaying
+                ? Array.Empty<GridCoord>()
+                : null;
+            GridBoardPresenter.Refresh(_board, run, visibleOptions: visible);
         }
 
         void RefreshHud()
@@ -715,6 +812,8 @@ namespace Game.Unity
             }
 
             _holdingReveal = false;
+            RadarMemorizeCue.HideOn(_hud != null ? _hud.OverlayRoot : null);
+            ScoutScanPlayer.HideOn(_hud != null ? _hud.OverlayRoot : null);
         }
 
         void StartNextWalk()
@@ -726,13 +825,6 @@ namespace Game.Unity
             _hud.SetMessage("On the path. Keep going!");
             RefreshBoard();
             RefreshHud();
-        }
-
-        void ShowRetryFromMemory()
-        {
-            MemoryPathUi.Ensure().Open<MemoryPathPopup, MemoryPathPopupPayload>(
-                MemoryPathPopups.RetryFromMemory(),
-                replacePopups: true);
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Game.Unity.Ui
 
         static Sprite _rounded;
         static Sprite _circle;
+        static Sprite _heart;
         static TMP_FontAsset _font;
         static readonly Dictionary<UiWeight, TMP_FontAsset> _weights = new Dictionary<UiWeight, TMP_FontAsset>();
         static readonly Dictionary<string, Sprite> _sprites = new Dictionary<string, Sprite>();
@@ -78,10 +79,21 @@ namespace Game.Unity.Ui
             }
         }
 
+        public static Sprite Heart
+        {
+            get
+            {
+                if (_heart == null)
+                    _heart = ResourceSprite("MemoryPath/heart") ?? MakeHeart(128);
+                return _heart;
+            }
+        }
+
         public static void ClearGeneratedCache()
         {
             _rounded = null;
             _circle = null;
+            _heart = null;
         }
 
         public static Sprite MakeSlicedSprite(int size, int radius) => MakeSliced(size, radius);
@@ -152,7 +164,10 @@ namespace Game.Unity.Ui
 
             RestoreSlicedSprites(root);
 
-            var playGrad = root.Find("SafeArea/Column/Hero/Play/Fill/Grad") ?? root.Find("Column/Hero/Play/Fill/Grad");
+            var playGrad = root.Find("SafeArea/Column/Body/Content/Hero/Play/Fill/Grad")
+                ?? root.Find("Column/Body/Content/Hero/Play/Fill/Grad")
+                ?? root.Find("SafeArea/Column/Hero/Play/Fill/Grad")
+                ?? root.Find("Column/Hero/Play/Fill/Grad");
             if (playGrad != null)
             {
                 var raw = playGrad.GetComponent<RawImage>();
@@ -588,6 +603,45 @@ namespace Game.Unity.Ui
                 0,
                 SpriteMeshType.FullRect,
                 new Vector4(border, border, border, border));
+        }
+
+        static Sprite MakeHeart(int size)
+        {
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = "UiHeart",
+                hideFlags = HideFlags.HideAndDontSave,
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var u = (x + 0.5f) / size;
+                    var v = (y + 0.5f) / size;
+                    var px = (u - 0.5f) * 2.55f;
+                    var py = (v - 0.42f) * 2.55f;
+                    var x2 = px * px;
+                    var y2 = py * py;
+                    var a = x2 + y2 - 1f;
+                    var f = a * a * a - x2 * py * py * py;
+                    var alpha = 1f - Mathf.SmoothStep(-0.035f, 0.035f, f);
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+                }
+            }
+
+            tex.Apply(false, false);
+            var sprite = Sprite.Create(
+                tex,
+                new Rect(0, 0, size, size),
+                new Vector2(0.5f, 0.5f),
+                100f,
+                0,
+                SpriteMeshType.Tight);
+            sprite.name = "UiHeart";
+            sprite.hideFlags = HideFlags.HideAndDontSave;
+            return sprite;
         }
     }
 }

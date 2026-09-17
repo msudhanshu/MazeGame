@@ -4,7 +4,7 @@ namespace Game.Core.Fue
 {
     public static class GraphLevelOneFueSpec
     {
-        public const string LessonId = "memory-path.graph-level-1.v2";
+        public const string LessonId = "memory-path.graph-level-1.tap.v1";
         public const int LevelNumber = 1;
 
         public static bool ShouldStart(GameModeId mode, int levelNumber, bool alreadySeen) =>
@@ -13,9 +13,8 @@ namespace Game.Core.Fue
 
     public enum GraphLevelOneFueBeat
     {
-        Intro,
-        PromptZoom,
-        PromptPan,
+        PromptTap,
+        HealthHint,
         Completed
     }
 }

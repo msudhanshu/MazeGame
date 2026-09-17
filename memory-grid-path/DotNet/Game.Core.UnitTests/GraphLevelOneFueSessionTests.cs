@@ -17,36 +17,35 @@ namespace Game.Core.Tests
         }
 
         [Test]
-        public void StartsOnZoomPrompt()
+        public void StartsOnTapPromptAndKeepsCoachingUntilTheGoal()
         {
             var session = GraphLevelOneFueSession.TryStart(GameModeId.GraphArena, 1, alreadySeen: false);
 
-            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptZoom));
-        }
+            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptTap));
 
-        [Test]
-        public void CameraDriftWithoutGesturesDoesNotAdvance()
-        {
-            var session = GraphLevelOneFueSession.TryStart(GameModeId.GraphArena, 1, alreadySeen: false);
+            session.OnCorrectStep(reachedGoal: false);
 
-            session.ObserveGestures(zoomed: false, panned: false);
-
-            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptZoom));
-        }
-
-        [Test]
-        public void ZoomThenPanGesturesCompleteTheLesson()
-        {
-            var session = GraphLevelOneFueSession.TryStart(GameModeId.GraphArena, 1, alreadySeen: false);
-
-            session.ObserveGestures(zoomed: true, panned: false);
-            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptPan));
-
-            session.ObserveGestures(zoomed: false, panned: false);
             Assert.That(session.IsComplete, Is.False);
+            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptTap));
 
-            session.ObserveGestures(zoomed: false, panned: true);
+            session.OnCorrectStep(reachedGoal: true);
+
             Assert.That(session.IsComplete, Is.True);
+        }
+
+        [Test]
+        public void WrongStepShowsHealthHintThenReturnsToTap()
+        {
+            var session = GraphLevelOneFueSession.TryStart(GameModeId.GraphArena, 1, alreadySeen: false);
+
+            session.OnWrongStep();
+
+            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.HealthHint));
+            Assert.That(session.IsActive, Is.True);
+
+            session.OnCorrectStep(reachedGoal: false);
+
+            Assert.That(session.Beat, Is.EqualTo(GraphLevelOneFueBeat.PromptTap));
         }
     }
 }

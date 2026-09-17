@@ -202,7 +202,10 @@ namespace Game.Unity.Tests
                     level.GoalNodeId);
 
                 _board.Build(level, _factory);
-                new GraphNodeCircleViewFactory().ApplyEnvironment(camera, _board.Layout, _host.transform);
+                new GraphNodeCircleViewFactory { FogOfWar = true }.ApplyEnvironment(
+                    camera,
+                    _board.Layout,
+                    _host.transform);
 
                 var visibleWidth = camera.orthographicSize * 2f * camera.aspect;
                 var visibleDepth = camera.orthographicSize * 2f;
@@ -214,12 +217,93 @@ namespace Game.Unity.Tests
                     Is.EqualTo(BoardCamera.ContainOrthographicSize(
                         _board.Layout.WorldWidth,
                         _board.Layout.WorldDepth,
-                        camera.aspect)).Within(0.001f));
+                        camera.aspect) * BoardCamera.Padding).Within(0.001f));
+                var bottomZ = _board.Layout.Origin.z - _board.Layout.WorldDepth * 0.5f;
+                Assert.That(
+                    BoardCamera.ViewportY(bottomZ, camera.transform.position.z, camera.orthographicSize),
+                    Is.EqualTo(0f).Within(0.001f));
             }
             finally
             {
                 Object.DestroyImmediate(cameraGo);
                 Object.DestroyImmediate(texture);
+                Object.DestroyImmediate(level);
+            }
+        }
+
+        [Test]
+        public void GraphCameraBottomAlignsAShortPhoto()
+        {
+            var texture = new Texture2D(16, 9);
+            var level = GraphLevelDefinition.CreateSampleRuntime();
+            var cameraGo = new GameObject("GraphShortCam", typeof(Camera));
+            var camera = cameraGo.GetComponent<Camera>();
+            camera.aspect = 9f / 16f;
+            try
+            {
+                level.SetRuntimeData(
+                    level.DisplayName,
+                    texture,
+                    level.Nodes,
+                    level.Edges,
+                    level.StartNodeId,
+                    level.GoalNodeId);
+
+                _board.Build(level, _factory);
+                new GraphNodeCircleViewFactory { FogOfWar = true }.ApplyEnvironment(
+                    camera,
+                    _board.Layout,
+                    _host.transform);
+
+                Assert.That(
+                    camera.orthographicSize * 2f * camera.aspect,
+                    Is.GreaterThanOrEqualTo(_board.Layout.WorldWidth - 0.001f));
+                Assert.That(camera.orthographicSize, Is.GreaterThan(_board.Layout.WorldDepth * 0.5f + 0.01f));
+                var bottomZ = _board.Layout.Origin.z - _board.Layout.WorldDepth * 0.5f;
+                Assert.That(
+                    BoardCamera.ViewportY(bottomZ, camera.transform.position.z, camera.orthographicSize),
+                    Is.EqualTo(0f).Within(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(cameraGo);
+                Object.DestroyImmediate(texture);
+                Object.DestroyImmediate(level);
+            }
+        }
+
+        [Test]
+        public void NextMovesAreCandidatesWithChoicePaths()
+        {
+            var level = GraphLevelDefinition.CreateSampleRuntime();
+            try
+            {
+                _board.Build(level, _factory);
+                var run = GraphBoardPresenter.CreateRun(level, seed: 3);
+                var options = PathOptionFilter.VisibleGraphOptions(run.WalkedNodes, run.Options());
+                GraphBoardPresenter.Refresh(_board, run, false, options);
+
+                Assert.That(options.Count, Is.GreaterThan(0));
+                foreach (var option in options)
+                    Assert.That(((FakeGraphNodeView)_board.NodeAt(option)).State, Is.EqualTo(GraphNodeVisualState.Candidate));
+
+                Assert.That(_board.Overlay.transform.Find(GridPathOverlay.ChoicesName).childCount, Is.EqualTo(0));
+                foreach (var edge in _board.Edges)
+                {
+                    if (!edge.Visible)
+                        continue;
+                    var isOption = GraphEdgeReveal.IsVisible(
+                        edge.NodeA,
+                        edge.NodeB,
+                        run.CurrentNode,
+                        run.WalkedNodes,
+                        options);
+                    if (isOption)
+                        Assert.That(edge.Visual, Is.EqualTo(GraphEdgeVisualState.Candidate), edge.NodeA.Value + "-" + edge.NodeB.Value);
+                }
+            }
+            finally
+            {
                 Object.DestroyImmediate(level);
             }
         }
@@ -265,9 +349,9 @@ namespace Game.Unity.Tests
                 Assert.That(overlay, Is.Not.Null);
                 Assert.That(overlay.Trail.enabled, Is.True);
                 Assert.That(overlay.Trail.positionCount, Is.EqualTo(2));
-                Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(2));
+                Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(1));
                 Assert.That(((FakeGraphNodeView)_board.NodeAt(run.Path.Start)).Visible, Is.False);
-                Assert.That(((FakeGraphNodeView)_board.NodeAt(next)).Visible, Is.True);
+                Assert.That(((FakeGraphNodeView)_board.NodeAt(next)).Visible, Is.False);
             }
             finally
             {
@@ -293,7 +377,7 @@ namespace Game.Unity.Tests
 
                 var overlay = _board.Overlay;
                 Assert.That(overlay.Trail.positionCount, Is.GreaterThan(2));
-                Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(2));
+                Assert.That(overlay.transform.Find(GridPathOverlay.DotsName).childCount, Is.EqualTo(1));
 
                 var edge = EdgeBetween(_board, run.Path.Start, next);
                 Assert.That(edge.GetComponent<LineRenderer>().positionCount, Is.GreaterThan(2));
@@ -331,21 +415,51 @@ namespace Game.Unity.Tests
         }
 
         [Test]
-        public void ScoutGraphEnvironmentPlacesOceanAroundThePhoto()
+        public void GraphArenaPlacesFogAroundThePhoto()
         {
             var level = GraphLevelDefinition.CreateSampleRuntime();
-            var host = new GameObject("GraphOceanHost");
+            var host = new GameObject("GraphFogHost");
+            try
+            {
+                var layout = new GraphBoardLayout(level, Vector3.zero);
+                var factory = new GraphNodeCircleViewFactory { FogOfWar = true };
+                factory.ApplyEnvironment(null, layout, host.transform);
+
+                var padding = host.transform.Find(ScoutFogOfWar.PaddingName);
+                Assert.That(padding, Is.Not.Null);
+                Assert.That(host.transform.Find(ScoutFogOfWar.OverlayName), Is.Null);
+                Assert.That(host.transform.Find(PatchworkOceanBackdrop.OceanName), Is.Null);
+                var paddingRenderer = padding.GetComponent<Renderer>()
+                    ?? padding.GetComponentInChildren<Renderer>();
+                Assert.That(paddingRenderer, Is.Not.Null);
+                Assert.That(paddingRenderer.bounds.size.x, Is.GreaterThan(layout.WorldWidth));
+            }
+            finally
+            {
+                Object.DestroyImmediate(host);
+                Object.DestroyImmediate(level);
+            }
+        }
+
+        [Test]
+        public void ScoutGraphEnvironmentPlacesFogAroundThePhoto()
+        {
+            var level = GraphLevelDefinition.CreateSampleRuntime();
+            var host = new GameObject("GraphFogHost");
             try
             {
                 var layout = new GraphBoardLayout(level, Vector3.zero);
                 var factory = new GraphNodeCircleViewFactory { OceanBackdrop = true };
                 factory.ApplyEnvironment(null, layout, host.transform);
 
-                var ocean = host.transform.Find(PatchworkOceanBackdrop.OceanName);
-                Assert.That(ocean, Is.Not.Null);
-                Assert.That(ocean.position.y, Is.LessThan(0f));
-                var worldWidth = ocean.localScale.x * 10f;
-                Assert.That(worldWidth, Is.GreaterThan(layout.WorldWidth));
+                var padding = host.transform.Find(ScoutFogOfWar.PaddingName);
+                Assert.That(padding, Is.Not.Null);
+                Assert.That(host.transform.Find(ScoutFogOfWar.OverlayName), Is.Null);
+                Assert.That(host.transform.Find(PatchworkOceanBackdrop.OceanName), Is.Null);
+                var paddingRenderer = padding.GetComponent<Renderer>()
+                    ?? padding.GetComponentInChildren<Renderer>();
+                Assert.That(paddingRenderer, Is.Not.Null);
+                Assert.That(paddingRenderer.bounds.size.x, Is.GreaterThan(layout.WorldWidth));
             }
             finally
             {

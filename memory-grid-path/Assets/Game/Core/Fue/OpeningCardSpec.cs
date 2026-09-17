@@ -6,7 +6,7 @@ namespace Game.Core.Fue
     public static class OpeningCardSpec
     {
         public const string LessonId = "memory-path.opening-card";
-        public const int MaxLevel = 5;
+        public const int MaxLevel = 2;
 
         public static bool ShouldShow(int levelNumber) =>
             levelNumber >= 1 && levelNumber <= MaxLevel;

@@ -72,6 +72,18 @@ namespace Game.Unity.Tests
         }
 
         [Test]
+        public void HeartSpriteIsOpaqueInsideAndClearAtTheCorners()
+        {
+            var heart = UiDraw.Heart;
+            Assert.That(heart, Is.Not.Null);
+            var tex = heart.texture;
+            Assert.That(tex, Is.Not.Null);
+            Assert.That(tex.GetPixel(0, 0).a, Is.LessThan(0.1f));
+            Assert.That(tex.GetPixel(tex.width - 1, tex.height - 1).a, Is.LessThan(0.1f));
+            Assert.That(tex.GetPixel(tex.width / 2, tex.height / 2).a, Is.GreaterThan(0.9f));
+        }
+
+        [Test]
         public void HasLiveAtlasIsFalseForNullFont()
         {
             Assert.That(TmpEmojiFallback.HasLiveAtlas(null), Is.False);

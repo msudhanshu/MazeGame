@@ -3,12 +3,12 @@ using Game.Core.State;
 namespace Game.Core.Fue
 {
     /// <summary>
-    /// First Graph Arena level coach for pinch/scroll zoom and drag pan.
-    /// Completes from real gestures, not camera drift caused by zoom-to-cursor.
+    /// First Graph Arena level coach: finger on the next node until the goal.
+    /// Does not alter gameplay rules.
     /// </summary>
     public sealed class GraphLevelOneFueSession
     {
-        public GraphLevelOneFueBeat Beat { get; private set; } = GraphLevelOneFueBeat.PromptZoom;
+        public GraphLevelOneFueBeat Beat { get; private set; } = GraphLevelOneFueBeat.PromptTap;
 
         public bool IsActive => Beat != GraphLevelOneFueBeat.Completed;
         public bool IsComplete => Beat == GraphLevelOneFueBeat.Completed;
@@ -21,13 +21,20 @@ namespace Game.Core.Fue
             return new GraphLevelOneFueSession();
         }
 
-        public void ObserveGestures(bool zoomed, bool panned)
+        public void OnCorrectStep(bool reachedGoal)
         {
-            if (Beat == GraphLevelOneFueBeat.PromptZoom && zoomed)
-                Beat = GraphLevelOneFueBeat.PromptPan;
+            if (IsComplete)
+                return;
 
-            if (Beat == GraphLevelOneFueBeat.PromptPan && panned)
-                Beat = GraphLevelOneFueBeat.Completed;
+            Beat = reachedGoal ? GraphLevelOneFueBeat.Completed : GraphLevelOneFueBeat.PromptTap;
+        }
+
+        public void OnWrongStep()
+        {
+            if (IsComplete)
+                return;
+
+            Beat = GraphLevelOneFueBeat.HealthHint;
         }
     }
 }

@@ -94,6 +94,8 @@ namespace Game.Unity.Data
         [SerializeField] int _maxTurns = 8;
         [SerializeField] int _livesPerRun = 3;
         [SerializeField] int _runsPerSession = 5;
+        [SerializeField] PathPreviewKind _previewKind = PathPreviewKind.CameraFlash;
+        [SerializeField] float _previewSeconds;
 
         public string DisplayName => _displayName;
         public Texture2D Background => _background;
@@ -105,10 +107,26 @@ namespace Game.Unity.Data
         public string GoalNodeId => string.IsNullOrEmpty(_goalNodeId) ? DefaultGoalId() : _goalNodeId;
         public int LivesPerRun => _livesPerRun;
         public int RunsPerSession => _runsPerSession;
+        public PathPreviewKind PreviewKind => _previewKind;
+        public float PreviewSeconds =>
+            GraphPathPreviewSeconds.Resolve(_previewSeconds, _minPathLength, _minTurns, _previewKind);
 
         public PathShapeSpec Shape => new PathShapeSpec(_minPathLength, _maxPathLength, _minTurns, _maxTurns);
 
         public GameConfig ToGameConfig() => GameConfig.Default.WithBudget(_livesPerRun, _runsPerSession);
+
+        public void ApplyLadder(GraphLevelSpec spec)
+        {
+            _minPathLength = spec.MinPath;
+            _maxPathLength = spec.MaxPath;
+            _minTurns = spec.MinTurns;
+            _maxTurns = spec.MaxTurns;
+            _livesPerRun = spec.Lives;
+            _runsPerSession = spec.Runs;
+            _previewKind = spec.PreviewKind;
+            _previewSeconds = spec.PreviewSeconds;
+            ClampShapeToTopology();
+        }
 
         public GraphTopology ToTopology()
         {
@@ -123,12 +141,16 @@ namespace Game.Unity.Data
                 nodes.Add(new GraphNodeId(_nodes[i].Id));
 
             var edges = new List<(GraphNodeId, GraphNodeId)>(_edges.Count);
+            var positions = new List<(float X, float Y)>(_nodes.Count);
+            for (var i = 0; i < _nodes.Count; i++)
+                positions.Add((_nodes[i].NormalizedPosition.x, _nodes[i].NormalizedPosition.y));
+
             for (var i = 0; i < _edges.Count; i++)
             {
                 edges.Add((new GraphNodeId(_edges[i].NodeA), new GraphNodeId(_edges[i].NodeB)));
             }
 
-            return new GraphTopology(nodes, edges);
+            return new GraphTopology(nodes, edges, positions);
         }
 
         public GraphNodeId StartNode => new GraphNodeId(_startNodeId);
@@ -236,7 +258,9 @@ namespace Game.Unity.Data
                 MinTurns = _minTurns,
                 MaxTurns = _maxTurns,
                 LivesPerRun = _livesPerRun,
-                RunsPerSession = _runsPerSession
+                RunsPerSession = _runsPerSession,
+                PreviewKind = _previewKind,
+                PreviewSeconds = _previewSeconds
             };
 
         public void ApplySnapshot(GraphLevelSnapshot snapshot)
@@ -260,6 +284,8 @@ namespace Game.Unity.Data
             _maxTurns = snapshot.MaxTurns;
             _livesPerRun = snapshot.LivesPerRun;
             _runsPerSession = snapshot.RunsPerSession;
+            _previewKind = snapshot.PreviewKind;
+            _previewSeconds = snapshot.PreviewSeconds;
         }
 
         public bool TryValidateSnapshot(GraphLevelSnapshot snapshot, out string error)
@@ -415,6 +441,48 @@ namespace Game.Unity.Data
             return "n" + (max + 1);
         }
 
+        public static GraphLevelDefinition CreatePlayable(int levelNumber, GraphLevelDefinition catalog = null)
+        {
+            var spec = GraphLevelLadder.For(levelNumber);
+            var level = CreateInstance<GraphLevelDefinition>();
+            if (catalog != null && catalog._nodes != null && catalog._nodes.Count >= 2)
+            {
+                level.ApplySnapshot(catalog.CaptureSnapshot());
+            }
+            else
+            {
+                var sample = CreateSampleRuntime();
+                level.ApplySnapshot(sample.CaptureSnapshot());
+                if (Application.isPlaying)
+                    Destroy(sample);
+                else
+                    DestroyImmediate(sample);
+            }
+
+            level.ApplyLadder(spec);
+            return level;
+        }
+
+        void ClampShapeToTopology()
+        {
+            var cap = _nodes != null ? _nodes.Count : 0;
+            if (cap < 2)
+                return;
+
+            if (_maxPathLength > cap)
+                _maxPathLength = cap;
+            if (_minPathLength > _maxPathLength)
+                _minPathLength = _maxPathLength;
+
+            var turnCeiling = Math.Max(0, _maxPathLength - 2);
+            if (_minTurns > turnCeiling)
+                _minTurns = turnCeiling;
+            if (_maxTurns > turnCeiling)
+                _maxTurns = turnCeiling;
+            if (_maxTurns < _minTurns)
+                _maxTurns = _minTurns;
+        }
+
         public static GraphLevelDefinition CreateSampleRuntime()
         {
             var level = CreateInstance<GraphLevelDefinition>();
@@ -422,7 +490,8 @@ namespace Game.Unity.Data
             level._worldWidth = 12f;
             level._minPathLength = 4;
             level._maxPathLength = 8;
-            level._maxTurns = 4;
+            level._maxTurns = 8;
+            level._previewKind = PathPreviewKind.CameraFlash;
             level._nodes = new List<GraphNodeEntry>
             {
                 new GraphNodeEntry { Id = "n0", NormalizedPosition = new Vector2(0.12f, 0.5f) },

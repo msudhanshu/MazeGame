@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Game.Unity.Ui
 {
     /// <summary>
-    /// Prefab-authored level card. Bind clones this object and only fills number, lock,
+    /// Prefab-authored level card. Bind clones this object and only fills caption, lock,
     /// stars, and thumbnail — layout and chrome stay on the template.
     /// </summary>
     public sealed class LevelTileCard : MonoBehaviour
@@ -17,10 +17,12 @@ namespace Game.Unity.Ui
         [SerializeField] Button _button;
         [SerializeField] Image _background;
         [SerializeField] Outline _border;
+        [SerializeField] Mask _mask;
         [SerializeField] RawImage _thumb;
-        [SerializeField] GameObject _scrim;
         [SerializeField] GameObject _lock;
+        [SerializeField] Image _lockScrim;
         [SerializeField] Transform _stars;
+        [SerializeField] Image _starPanel;
         [SerializeField] Image[] _starIcons;
         [SerializeField] TextMeshProUGUI _number;
         [SerializeField] Sprite _starFill;
@@ -30,8 +32,12 @@ namespace Game.Unity.Ui
         [SerializeField] Color _lockedFill = MemoryPathPalette.LockedTile;
         [SerializeField] Color _clearedBorder = MemoryPathPalette.ClearedBorder;
         [SerializeField] Color _lockedBorder = MemoryPathPalette.LockedBorder;
+        [SerializeField] Color _currentBorder = MemoryPathPalette.HomeModeSelectedRing;
         [SerializeField] Color _clearedNumber = MemoryPathPalette.Ink;
-        [SerializeField] Color _lockedNumber = MemoryPathPalette.ButtonInk;
+        [SerializeField] Color _lockedNumber = MemoryPathPalette.HomeMuted;
+        [SerializeField] Color _starPanelFill = MemoryPathPalette.ScoreChip;
+        [SerializeField] Color _lockScrimColor = new Color(0.12f, 0.14f, 0.18f, 0.55f);
+        [SerializeField] float _currentOutline = 2.5f;
 
         public Button Button => _button;
         public TextMeshProUGUI NumberLabel => _number;
@@ -47,24 +53,35 @@ namespace Game.Unity.Ui
                 _background = GetComponent<Image>();
             if (_border == null)
                 _border = GetComponent<Outline>();
+            if (_mask == null)
+                _mask = GetComponent<Mask>();
             if (_thumb == null)
-                _thumb = Find<RawImage>("Thumb");
-            if (_scrim == null)
-            {
-                var scrim = Find("Scrim");
-                if (scrim != null)
-                    _scrim = scrim.gameObject;
-            }
+                _thumb = Find<RawImage>("Art/Thumb") ?? Find<RawImage>("Thumb");
 
             if (_lock == null)
             {
-                var lockSlot = Find("Overlay/Lock") ?? Find("Lock");
-                if (lockSlot != null)
-                    _lock = lockSlot.gameObject;
+                var overlay = Find("Art/LockOverlay") ?? Find("LockOverlay");
+                if (overlay != null)
+                    _lock = overlay.gameObject;
+                else
+                {
+                    var lockSlot = Find("Overlay/Lock") ?? Find("Lock");
+                    if (lockSlot != null)
+                        _lock = lockSlot.gameObject;
+                }
+            }
+
+            if (_lockScrim == null)
+            {
+                var scrim = Find("Art/LockOverlay/Scrim") ?? Find("LockOverlay/Scrim") ?? Find("Scrim");
+                if (scrim != null)
+                    _lockScrim = scrim.GetComponent<Image>();
             }
 
             if (_stars == null)
-                _stars = Find("Overlay/Stars") ?? Find("Stars");
+                _stars = Find("Stars") ?? Find("Overlay/Stars");
+            if (_starPanel == null && _stars != null)
+                _starPanel = _stars.GetComponent<Image>();
             if ((_starIcons == null || _starIcons.Length == 0) && _stars != null)
             {
                 _starIcons = new Image[3];
@@ -78,7 +95,7 @@ namespace Game.Unity.Ui
 
             if (_number == null)
             {
-                var number = Find("Overlay/Number") ?? Find("Number");
+                var number = Find("Caption") ?? Find("Overlay/Number") ?? Find("Number");
                 if (number != null)
                     _number = number.GetComponent<TextMeshProUGUI>();
             }
@@ -98,11 +115,19 @@ namespace Game.Unity.Ui
                 return;
 
             var locked = info.Lane == LevelLane.Locked;
-            var cleared = info.Lane == LevelLane.Cleared;
+            var current = info.Lane == LevelLane.Current;
             if (_background != null)
-                _background.color = cleared ? _clearedFill : _lockedFill;
+                _background.color = locked ? _lockedFill : _clearedFill;
             if (_border != null)
-                _border.effectColor = cleared ? _clearedBorder : _lockedBorder;
+            {
+                _border.effectColor = current ? _currentBorder : (locked ? _lockedBorder : _clearedBorder);
+                var thickness = current ? _currentOutline : 1f;
+                _border.effectDistance = new Vector2(thickness, -thickness);
+                _border.useGraphicAlpha = !current;
+            }
+
+            if (_mask != null)
+                _mask.enabled = !current;
 
             if (_button != null)
                 _button.interactable = !locked;
@@ -113,23 +138,29 @@ namespace Game.Unity.Ui
             {
                 _thumb.texture = texture;
                 _thumb.color = hasThumb ? Color.white : info.Swatch;
-                _thumb.gameObject.SetActive(hasThumb);
+                _thumb.gameObject.SetActive(true);
             }
 
-            if (_scrim != null)
-                _scrim.SetActive(hasThumb);
             if (_lock != null)
                 _lock.SetActive(locked);
-            if (_stars != null)
-                _stars.gameObject.SetActive(!locked);
-
-            if (!locked && _starIcons != null)
+            if (_lockScrim != null)
             {
-                var filled = Mathf.Clamp(info.Stars, 0, 3);
+                _lockScrim.color = _lockScrimColor;
+                _lockScrim.gameObject.SetActive(locked);
+            }
+
+            var filled = Mathf.Clamp(info.Stars, 0, 3);
+            if (_starPanel != null)
+                _starPanel.color = filled > 0 ? _starPanelFill : Color.clear;
+            if (_starIcons != null)
+            {
                 for (var i = 0; i < _starIcons.Length; i++)
                 {
                     var icon = _starIcons[i];
                     if (icon == null)
+                        continue;
+                    icon.gameObject.SetActive(filled > 0);
+                    if (filled <= 0)
                         continue;
                     var sprite = i < filled ? _starFill : _starEmpty;
                     if (sprite != null)
@@ -139,8 +170,8 @@ namespace Game.Unity.Ui
 
             if (_number != null)
             {
-                _number.text = info.Number.ToString();
-                _number.color = cleared ? _clearedNumber : _lockedNumber;
+                _number.text = "Level " + info.Number;
+                _number.color = locked ? _lockedNumber : _clearedNumber;
             }
         }
 

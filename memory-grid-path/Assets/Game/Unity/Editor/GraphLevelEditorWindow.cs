@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Game.Core.Domain;
 using Game.Unity.Data;
 using Game.Unity.Graph;
@@ -49,11 +50,18 @@ namespace Game.Unity.Editor
 
         bool IsDirty => !GraphLevelSnapshot.AreEqual(_draft, _saved);
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Graph Level Editor")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Graph Level Editor", false, 1)]
         public static void Open()
         {
             var window = GetWindow<GraphLevelEditorWindow>("Graph Level Editor");
             window.Show();
+        }
+
+        public static void OpenAndImportJson(string path)
+        {
+            var window = GetWindow<GraphLevelEditorWindow>("Graph Level Editor");
+            window.Show();
+            window.ImportJsonFromPath(path);
         }
 
         [InitializeOnEnterPlayMode]
@@ -86,8 +94,15 @@ namespace Game.Unity.Editor
                 CreateNewLevel();
             if (GUILayout.Button("Create Sample Village"))
                 CreateSampleLevelAsset();
-            if (GUILayout.Button("Repair Duplicate Ids"))
-                RepairDuplicateIds();
+            using (new EditorGUI.DisabledScope(_draft == null))
+            {
+                if (GUILayout.Button("Repair Duplicate Ids"))
+                    RepairDuplicateIds();
+            }
+            if (GUILayout.Button("Open Extractor"))
+                PathGraphExtractMenu.OpenGui();
+            if (GUILayout.Button("Import JSON"))
+                ImportExtractedJsonInteractive();
             EditorGUILayout.EndHorizontal();
 
             if (_asset == null || _draft == null)
@@ -144,6 +159,15 @@ namespace Game.Unity.Editor
 
             if (renamed || GUI.changed)
                 Repaint();
+
+            _draft.PreviewKind = (PathPreviewKind)EditorGUILayout.EnumPopup("Scan Mode", _draft.PreviewKind);
+            _draft.PreviewSeconds = EditorGUILayout.FloatField("Scan Seconds", _draft.PreviewSeconds);
+            _draft.MinPathLength = EditorGUILayout.IntField("Min Path Length", _draft.MinPathLength);
+            _draft.MaxPathLength = EditorGUILayout.IntField("Max Path Length", _draft.MaxPathLength);
+            _draft.MinTurns = EditorGUILayout.IntField("Min Turns", _draft.MinTurns);
+            _draft.MaxTurns = EditorGUILayout.IntField("Max Turns", _draft.MaxTurns);
+            _draft.LivesPerRun = EditorGUILayout.IntField("Lives Per Run", _draft.LivesPerRun);
+            _draft.RunsPerSession = EditorGUILayout.IntField("Runs Per Session", _draft.RunsPerSession);
 
             _previewSeed = EditorGUILayout.IntField("Preview Seed", _previewSeed);
             if (GUILayout.Button("Preview Path"))
@@ -836,6 +860,57 @@ namespace Game.Unity.Editor
             }
 
             return "n" + (max + 1);
+        }
+
+        void ImportExtractedJsonInteractive()
+        {
+            var path = EditorUtility.OpenFilePanel("Import extracted graph", "", "json");
+            if (!string.IsNullOrEmpty(path))
+                ImportJsonFromPath(path);
+        }
+
+        internal void ImportJsonFromPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                EditorUtility.DisplayDialog("Import extracted graph", "JSON file not found.", "OK");
+                return;
+            }
+
+            if (!ExtractedGraphJson.TryParse(File.ReadAllText(path), out var file, out var error))
+            {
+                EditorUtility.DisplayDialog("Import extracted graph", error, "OK");
+                return;
+            }
+
+            if (_asset != null && IsDirty)
+            {
+                var choice = EditorUtility.DisplayDialogComplex(
+                    "Unsaved graph level changes",
+                    "Save changes before importing?",
+                    "Save",
+                    "Cancel",
+                    "Discard");
+
+                if (choice == 1)
+                    return;
+                if (choice == 0)
+                    SaveDraft();
+            }
+
+            if (_asset == null)
+                CreateNewLevel();
+
+            if (_draft == null)
+                return;
+
+            ExtractedGraphJson.Apply(_draft, file);
+            _selectedNodeId = null;
+            _connectFromId = null;
+            ClearDrag();
+            ClearCurveSelection();
+            _previewPath.Clear();
+            Repaint();
         }
 
         void CreateNewLevel()

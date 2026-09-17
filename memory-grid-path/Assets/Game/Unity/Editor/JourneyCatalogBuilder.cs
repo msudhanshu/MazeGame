@@ -2,6 +2,7 @@ using Game.Core.Domain;
 using Game.Core.State;
 using Game.Unity.Data;
 using Game.Unity.Themes.Experimental;
+using Game.Unity.View;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,46 +10,115 @@ namespace Game.Unity.Editor
 {
     public static class JourneyCatalogBuilder
     {
-        public const int TileArenaLevelCount = 20;
+        public const int TileArenaLevelCount = 25;
 
         public const string CatalogPath = "Assets/Game/Unity/Data/JourneyCatalog.asset";
         const string EasyGraphPath = "Assets/Game/Unity/Data/GraphLevels/EasyFork.asset";
         const string SampleGraphPath = "Assets/Game/Unity/Data/GraphLevels/SampleVillage.asset";
         const string GraphLevel2Path = "Assets/Game/Unity/Data/GraphLevels/GraphLevel2.asset";
-        const string MixedPatchworkPath = "Assets/Game/Unity/Data/Patchwork/MixedArenaTiles.asset";
+        const string ExtractedGraphPath = "Assets/Game/Unity/Data/GraphLevels/GraphLevel-1 0.asset";
+        const string BuildingPatchworkPath = "Assets/Game/Unity/Data/Patchwork/BuildingTiles.asset";
 
-        public static JourneyCatalog CreateOrUpdate()
+        /// <summary>
+        /// In-memory default catalog. Does not write or overwrite any asset.
+        /// </summary>
+        public static JourneyCatalog BuildDefault()
+        {
+            var catalog = ScriptableObject.CreateInstance<JourneyCatalog>();
+            ApplyDefaultContent(catalog);
+            return catalog;
+        }
+
+        /// <summary>
+        /// Creates a new unique asset (JourneyCatalog.asset, or JourneyCatalog 1.asset if that
+        /// path is taken). Never overwrites an existing catalog.
+        /// </summary>
+        public static JourneyCatalog CreateNewAsset()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data");
-            System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data/GraphLevels");
+            var catalog = BuildDefault();
+            var path = AssetDatabase.GenerateUniqueAssetPath(CatalogPath);
+            AssetDatabase.CreateAsset(catalog, path);
+            AssetDatabase.SaveAssets();
+            return catalog;
+        }
 
-            var catalog = AssetDatabase.LoadAssetAtPath<JourneyCatalog>(CatalogPath);
+        public static JourneyCatalog LoadExisting() =>
+            AssetDatabase.LoadAssetAtPath<JourneyCatalog>(CatalogPath);
+
+        /// <summary>
+        /// Returns the project catalog if it already exists; otherwise creates a new unique asset.
+        /// Existing catalog contents are never rewritten.
+        /// </summary>
+        public static JourneyCatalog LoadExistingOrCreateNew()
+        {
+            var existing = LoadExisting();
+            return existing != null ? existing : CreateNewAsset();
+        }
+
+        /// <summary>
+        /// Writes Core Tile Arena economy onto the existing catalog. Keeps graph/scout modes,
+        /// icons, and unlock thresholds. Use this when play is still on an old 3x3 Grid table.
+        /// </summary>
+        public static JourneyCatalog SyncExistingTileArenaEconomy()
+        {
+            var catalog = LoadExisting();
             if (catalog == null)
+                return CreateNewAsset();
+
+            var tile = BuildTileArena();
+            tile.Icon = catalog.TileArena.Icon;
+            tile.DisplayName = catalog.TileArena.DisplayName;
+            tile.CameraMode = catalog.TileArena.CameraMode;
+            ReplaceScoutLevels(catalog.ScoutArena);
+            catalog.ApplyModes(tile, catalog.GraphArena, catalog.ScoutArena);
+            EditorUtility.SetDirty(catalog);
+            AssetDatabase.SaveAssets();
+            return catalog;
+        }
+
+        static void ReplaceScoutLevels(JourneyModeDefinition scout)
+        {
+            if (scout == null)
+                return;
+
+            var city = AssetDatabase.LoadAssetAtPath<PatchworkTextureSet>(BuildingPatchworkPath);
+            if (city == null && scout.Levels != null)
             {
-                catalog = ScriptableObject.CreateInstance<JourneyCatalog>();
-                AssetDatabase.CreateAsset(catalog, CatalogPath);
+                for (var i = 0; i < scout.Levels.Length; i++)
+                {
+                    if (scout.Levels[i] != null && scout.Levels[i].PatchworkSet != null)
+                    {
+                        city = scout.Levels[i].PatchworkSet;
+                        break;
+                    }
+                }
             }
 
+            var rebuilt = BuildScoutArena(city);
+            scout.Levels = rebuilt.Levels;
+            scout.ScoutMoveMode = ScoutMoveMode.RotationMoveMode;
+            scout.CameraMode = ArenaCameraMode.FollowWalker;
+            scout.FollowOrthographicSize = ScoutRotationMove.FollowSizeTwo;
+            scout.WalkerScale = ScoutRotationMove.WalkerScale;
+        }
+
+        static void ApplyDefaultContent(JourneyCatalog catalog)
+        {
+            System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data/GraphLevels");
+
+            var extracted = AssetDatabase.LoadAssetAtPath<GraphLevelDefinition>(ExtractedGraphPath);
             var sample = AssetDatabase.LoadAssetAtPath<GraphLevelDefinition>(SampleGraphPath);
             var graph2 = AssetDatabase.LoadAssetAtPath<GraphLevelDefinition>(GraphLevel2Path);
             var easy = EnsureEasyGraph();
-            var patchwork = AssetDatabase.LoadAssetAtPath<PatchworkTextureSet>(MixedPatchworkPath);
-
-            var graphs = new[]
-            {
-                sample != null ? sample : easy,
-                graph2 != null ? graph2 : easy,
-                easy
-            };
+            var patchwork = AssetDatabase.LoadAssetAtPath<PatchworkTextureSet>(BuildingPatchworkPath);
+            var arena = extracted != null ? extracted : (sample != null ? sample : (graph2 != null ? graph2 : easy));
 
             catalog.ApplyUnlockThresholds(10, 5);
             catalog.ApplyModes(
                 BuildTileArena(),
-                BuildGraphArena(graphs),
-                BuildScoutArena(patchwork, graphs));
-            EditorUtility.SetDirty(catalog);
-            AssetDatabase.SaveAssets();
-            return catalog;
+                BuildGraphArena(arena),
+                BuildScoutArena(patchwork));
         }
 
         static GraphLevelDefinition EnsureEasyGraph()
@@ -103,16 +173,16 @@ namespace Game.Unity.Editor
             };
         }
 
-        static JourneyModeDefinition BuildGraphArena(GraphLevelDefinition[] graphs)
+        static JourneyModeDefinition BuildGraphArena(GraphLevelDefinition arena)
         {
-            var levels = new JourneyLevelEntry[graphs.Length];
-            for (var i = 0; i < graphs.Length; i++)
+            var levels = new JourneyLevelEntry[GraphLevelLadder.Count];
+            for (var i = 0; i < levels.Length; i++)
             {
                 levels[i] = new JourneyLevelEntry
                 {
                     Kind = JourneyBoardKind.Graph,
-                    GraphLevel = graphs[i],
-                    ThumbnailTexture = graphs[i] != null ? graphs[i].Background : null
+                    GraphLevel = arena,
+                    ThumbnailTexture = arena != null ? arena.Background : null
                 };
             }
 
@@ -125,28 +195,24 @@ namespace Game.Unity.Editor
             };
         }
 
-        static JourneyModeDefinition BuildScoutArena(PatchworkTextureSet patchwork, GraphLevelDefinition[] graphs)
+        static JourneyModeDefinition BuildScoutArena(PatchworkTextureSet patchwork)
         {
-            var specs = LevelCatalog.NixinDefaultSpecs;
-            var levels = new JourneyLevelEntry[6];
-            for (var i = 0; i < 3; i++)
+            var specs = LevelCatalog.ScoutSpecs;
+            var levels = new JourneyLevelEntry[specs.Count];
+            for (var i = 0; i < specs.Count; i++)
             {
+                var spec = specs[i];
                 levels[i] = new JourneyLevelEntry
                 {
                     Kind = JourneyBoardKind.Grid,
                     VisualType = ArenaVisualType.PatchworkTiles,
-                    Grid = LevelRow.FromSpec(specs[i]),
-                    PatchworkSet = patchwork
-                };
-            }
-
-            for (var i = 0; i < 3; i++)
-            {
-                levels[3 + i] = new JourneyLevelEntry
-                {
-                    Kind = JourneyBoardKind.Graph,
-                    GraphLevel = graphs[i],
-                    ThumbnailTexture = graphs[i] != null ? graphs[i].Background : null
+                    Grid = LevelRow.FromSpec(spec),
+                    PatchworkSet = patchwork,
+                    ThumbnailTexture = patchwork != null && patchwork.HasTextures
+                        ? patchwork.Textures[0]
+                        : null,
+                    FollowOrthographicSize = ScoutRotationMove.FollowOrthographicSizeFor(spec.Width, spec.Height),
+                    WalkerScale = ScoutRotationMove.WalkerScale
                 };
             }
 
@@ -155,8 +221,9 @@ namespace Game.Unity.Editor
                 ModeId = GameModeId.ScoutArena,
                 DisplayName = "Scout Arena",
                 CameraMode = ArenaCameraMode.FollowWalker,
-                FollowOrthographicSize = 1.8f,
-                WalkerScale = 0.55f,
+                ScoutMoveMode = ScoutMoveMode.RotationMoveMode,
+                FollowOrthographicSize = ScoutRotationMove.FollowSizeTwo,
+                WalkerScale = ScoutRotationMove.WalkerScale,
                 Levels = levels
             };
         }

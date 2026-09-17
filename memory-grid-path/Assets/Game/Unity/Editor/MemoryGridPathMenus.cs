@@ -16,10 +16,7 @@ namespace Game.Unity.Editor
         const string TileBuildingTexturePath = "Assets/tilebuilding.png";
         const string TileBoxTexturePath = "Assets/tilebox.png";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Building Patchwork Set")]
-        static void CreateBuildingPatchworkSet() => CreateDefaultPatchworkSets();
-
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Default Patchwork Tile Sets")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Create Default Patchwork Tile Sets", false, 80)]
         static void CreateDefaultPatchworkSets()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data/Patchwork");
@@ -104,7 +101,7 @@ namespace Game.Unity.Editor
             EditorUtility.SetDirty(settings);
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Patchwork Texture Set")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Create Patchwork Texture Set", false, 80)]
         static void CreatePatchworkTextureSet()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data/Patchwork");
@@ -116,7 +113,7 @@ namespace Game.Unity.Editor
             Debug.Log("Add tile textures to the set, then assign it on ArenaVisualSettings → Patchwork Texture Set.");
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Reset Progress")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Reset Progress", false, 2)]
         static void ResetProgress()
         {
             PlayerPrefsProgressRepository.Clear();
@@ -124,7 +121,7 @@ namespace Game.Unity.Editor
             Debug.Log("Memory Grid Path progress cleared (classic scene + Journey Hub). Press Play to start at level 1.");
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Reset Tuning To Nixin Defaults")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Reset Tuning To Nixin Defaults", false, 80)]
         static void ResetTuning()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data");
@@ -142,7 +139,7 @@ namespace Game.Unity.Editor
             Debug.Log("Memory Grid Path tuning reset to studio defaults at " + TuningPath);
         }
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Arena Visual Settings")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Extra/Create Arena Visual Settings", false, 80)]
         static void CreateArenaVisualSettings()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data");
@@ -163,7 +160,7 @@ namespace Game.Unity.Editor
         const string GraphCatalogPath = "Assets/Game/Unity/Data/GraphLevelCatalog.asset";
         const string SampleGraphLevelPath = "Assets/Game/Unity/Data/GraphLevels/SampleVillage.asset";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Graph Level Catalog")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Catalog/Graph Level Catalog", false, 21)]
         static void CreateGraphLevelCatalog()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Data/GraphLevels");

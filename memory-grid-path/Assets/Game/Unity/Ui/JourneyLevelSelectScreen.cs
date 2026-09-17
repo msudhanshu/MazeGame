@@ -31,8 +31,10 @@ namespace Game.Unity.Ui
     {
         public const string TitleCopy = "Select Level";
         public const string FooterCopy = "Scroll for more chapters";
-        public const int Columns = 4;
+        public const int Columns = 3;
         public const float MinLaidOutWidth = 200f;
+        public const float StarPanelFig = 28f;
+        public const float CaptionFig = 36f;
 
         [SerializeField] Button _back;
         [SerializeField] TextMeshProUGUI _headerTitle;
@@ -57,6 +59,7 @@ namespace Game.Unity.Ui
             _payload = payload ?? new JourneyLevelSelectPayload();
             if (_grid == null)
                 Build();
+            UpgradeLegacyGrid();
 
             LevelSelectScreen.WireBack(_back, () => _payload?.OnBack?.Invoke());
             if (_headerTitle != null)
@@ -84,7 +87,7 @@ namespace Game.Unity.Ui
         {
             var gap = S(12);
             var cellW = (width - Si(24) * 2 - gap * (Columns - 1)) / Columns;
-            return new Vector2(cellW, cellW * (96f / 78f));
+            return new Vector2(cellW, S(StarPanelFig) + cellW + S(CaptionFig));
         }
 
         void ClearSpawnedTiles(LevelTileCard template)
@@ -117,12 +120,45 @@ namespace Game.Unity.Ui
             if (_tileCard == null)
                 _tileCard = BuildTileCard(EnsureTemplates()).gameObject;
 
+            if (!HasReworkedCardLayout(_tileCard.transform))
+            {
+                var parent = _tileCard.transform.parent != null ? _tileCard.transform.parent : EnsureTemplates();
+                _tileCard.name = "LevelTile.Retired";
+                _tileCard.SetActive(false);
+                if (Application.isPlaying)
+                    Destroy(_tileCard);
+                else
+                    DestroyImmediate(_tileCard);
+                _tileCard = BuildTileCard(parent).gameObject;
+            }
+
             _tileCard.SetActive(false);
             var card = _tileCard.GetComponent<LevelTileCard>();
             if (card == null)
                 card = _tileCard.AddComponent<LevelTileCard>();
             card.EnsureSlots();
             return card;
+        }
+
+        static bool HasReworkedCardLayout(Transform tile)
+        {
+            return tile != null
+                && tile.Find("Caption") != null
+                && tile.Find("Art/LockOverlay") != null
+                && tile.Find("Stars/Star0") != null;
+        }
+
+        void UpgradeLegacyGrid()
+        {
+            if (_grid == null)
+                return;
+            var grid = _grid.GetComponent<GridLayoutGroup>();
+            if (grid == null || grid.constraintCount == Columns)
+                return;
+
+            grid.constraintCount = Columns;
+            grid.childAlignment = TextAnchor.UpperLeft;
+            grid.cellSize = CellSizeForCanvas(1080f);
         }
 
         Transform EnsureTemplates()
@@ -160,38 +196,61 @@ namespace Game.Unity.Ui
             var mask = tile.gameObject.AddComponent<Mask>();
             mask.showMaskGraphic = true;
 
+            var stack = tile.gameObject.AddComponent<VerticalLayoutGroup>();
+            UiDraw.Vertical(stack, S(4), TextAnchor.UpperCenter);
+            stack.padding = new RectOffset(Si(6), Si(6), Si(6), Si(6));
+
+            var starsPanel = UiDraw.Panel(tile.transform, "Stars", MemoryPathPalette.ScoreChip);
+            starsPanel.raycastTarget = false;
+            UiDraw.SetCornerRadius(starsPanel, S(10));
+            UiDraw.Fit(starsPanel, 0f, S(StarPanelFig));
+            var starRow = starsPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
+            UiDraw.Horizontal(starRow, S(4), TextAnchor.MiddleCenter);
+            starRow.padding = new RectOffset(Si(4), Si(4), Si(2), Si(2));
+            for (var i = 0; i < 3; i++)
+            {
+                var star = MemoryPathMenus.LayoutIcon(starsPanel.transform, "Star" + i, NixinIcons.StarEmpty, S(14));
+                star.raycastTarget = false;
+            }
+
+            var art = new GameObject("Art", typeof(RectTransform), typeof(LayoutElement), typeof(RectMask2D));
+            art.transform.SetParent(tile.transform, false);
+            var artFit = art.GetComponent<LayoutElement>();
+            artFit.flexibleHeight = 1f;
+            artFit.minHeight = S(40);
+
             var thumb = new GameObject("Thumb", typeof(RawImage)).GetComponent<RawImage>();
-            thumb.transform.SetParent(tile.transform, false);
+            thumb.transform.SetParent(art.transform, false);
             UiDraw.Stretch(thumb.rectTransform);
             thumb.raycastTarget = false;
-            thumb.gameObject.SetActive(false);
 
-            var scrim = UiDraw.Panel(tile.transform, "Scrim", new Color(0f, 0f, 0f, 0.28f));
+            var lockRoot = new GameObject("LockOverlay", typeof(RectTransform)).transform;
+            lockRoot.SetParent(art.transform, false);
+            UiDraw.Stretch(lockRoot.GetComponent<RectTransform>());
+            lockRoot.gameObject.SetActive(false);
+
+            var scrim = UiDraw.Panel(lockRoot, "Scrim", new Color(0.12f, 0.14f, 0.18f, 0.55f));
             scrim.raycastTarget = false;
             UiDraw.Stretch(scrim.rectTransform);
-            scrim.gameObject.SetActive(false);
 
-            var overlay = new GameObject("Overlay", typeof(RectTransform), typeof(VerticalLayoutGroup)).transform;
-            overlay.SetParent(tile.transform, false);
-            UiDraw.Stretch(overlay.GetComponent<RectTransform>());
-            var layout = overlay.GetComponent<VerticalLayoutGroup>();
-            UiDraw.Vertical(layout, S(4), TextAnchor.MiddleCenter);
-            layout.padding = new RectOffset(Si(8), Si(8), Si(8), Si(8));
-            layout.childForceExpandWidth = false;
+            var lockIcon = MemoryPathMenus.LayoutIcon(lockRoot, "Icon", NixinIcons.Lock, S(48));
+            lockIcon.raycastTarget = false;
+            var lockFit = lockIcon.GetComponent<LayoutElement>();
+            if (lockFit != null)
+                lockFit.ignoreLayout = true;
+            MemoryPathMenus.Center(lockIcon.rectTransform, S(48));
 
-            MemoryPathMenus.LayoutIcon(overlay, "Lock", NixinIcons.Lock, S(16));
-            overlay.Find("Lock").gameObject.SetActive(false);
-
-            var stars = new GameObject("Stars", typeof(HorizontalLayoutGroup)).transform;
-            stars.SetParent(overlay, false);
-            var starRow = stars.GetComponent<HorizontalLayoutGroup>();
-            UiDraw.Horizontal(starRow, S(4), TextAnchor.MiddleCenter);
-            starRow.childForceExpandWidth = false;
-            for (var i = 0; i < 3; i++)
-                MemoryPathMenus.LayoutIcon(stars, "Star" + i, NixinIcons.StarEmpty, S(12));
-
-            var number = UiDraw.Label(overlay, "Number", "1", S(20), UiWeight.ExtraBold, MemoryPathPalette.Ink);
-            number.textWrappingMode = TextWrappingModes.NoWrap;
+            var caption = UiDraw.Label(
+                tile.transform,
+                "Caption",
+                "Level 1",
+                S(14),
+                UiWeight.ExtraBold,
+                MemoryPathPalette.Ink);
+            caption.textWrappingMode = TextWrappingModes.NoWrap;
+            caption.overflowMode = TextOverflowModes.Ellipsis;
+            caption.raycastTarget = false;
+            UiDraw.Fit(caption, 0f, S(CaptionFig));
 
             var card = tile.gameObject.GetComponent<LevelTileCard>() ?? tile.gameObject.AddComponent<LevelTileCard>();
             card.EnsureSlots();
@@ -245,7 +304,7 @@ namespace Game.Unity.Ui
             grid.spacing = new Vector2(S(12), S(12));
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = Columns;
-            grid.childAlignment = TextAnchor.UpperCenter;
+            grid.childAlignment = TextAnchor.UpperLeft;
             var fitter = content.GetComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             var contentRect = content.GetComponent<RectTransform>();

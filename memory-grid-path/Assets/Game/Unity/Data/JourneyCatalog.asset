@@ -19,6 +19,7 @@ MonoBehaviour:
     DisplayName: Tile Arena
     Icon: {fileID: 21300000, guid: 5b96422db1ff046d6a2702b801009926, type: 3}
     CameraMode: 0
+    ScoutMoveMode: 0
     FollowOrthographicSize: 1.8
     FollowSmoothing: 10
     WalkerScale: 1
@@ -26,17 +27,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 3
-        Width: 3
-        Height: 3
-        MinTurns: 1
+        Side: 4
+        Width: 4
+        Height: 4
+        MinTurns: 6
         Lives: 2
         Runs: 2
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
         BlockedHints: 0
-        LengthSlack: 2
+        LengthSlack: 5
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -49,17 +50,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 1
       Grid:
-        Side: 3
-        Width: 3
-        Height: 4
-        MinTurns: 2
+        Side: 4
+        Width: 4
+        Height: 5
+        MinTurns: 7
         Lives: 2
         Runs: 2
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
         BlockedHints: 0
-        LengthSlack: 2
+        LengthSlack: 5
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 39f7af514667049d09742e16dd38128a, type: 3}
       MosaicBackgroundParticles: 0
@@ -73,16 +74,16 @@ MonoBehaviour:
       VisualType: 0
       Grid:
         Side: 4
-        Width: 3
+        Width: 4
         Height: 5
-        MinTurns: 2
+        MinTurns: 8
         Lives: 2
-        Runs: 3
+        Runs: 2
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
         BlockedHints: 0
-        LengthSlack: 3
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -95,17 +96,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 1
       Grid:
-        Side: 4
-        Width: 4
-        Height: 4
-        MinTurns: 3
+        Side: 5
+        Width: 5
+        Height: 5
+        MinTurns: 8
         Lives: 2
-        Runs: 3
+        Runs: 2
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
         BlockedHints: 0
-        LengthSlack: 3
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 3d769f3cffb09409f8ded16fbb2f3563, type: 3}
       MosaicBackgroundParticles: 1
@@ -118,63 +119,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 4
-        Width: 4
-        Height: 5
-        MinTurns: 3
-        Lives: 2
-        Runs: 3
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 3
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 1
-      Grid:
-        Side: 4
-        Width: 4
-        Height: 5
-        MinTurns: 4
-        Lives: 2
-        Runs: 3
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 3
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 2800000, guid: 5696bc9da17a04ba18e221220b4899e5, type: 3}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 2800000, guid: 5696bc9da17a04ba18e221220b4899e5, type: 3}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 0
-      Grid:
         Side: 5
         Width: 5
         Height: 5
-        MinTurns: 4
-        Lives: 3
-        Runs: 4
+        MinTurns: 9
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 1
-        LengthSlack: 4
+        BlockedHints: 0
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -190,14 +145,60 @@ MonoBehaviour:
         Side: 5
         Width: 5
         Height: 6
-        MinTurns: 8
-        Lives: 3
-        Runs: 4
-        Lighthouses: 1
+        MinTurns: 9
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 1
-        LengthSlack: 4
+        BlockedHints: 0
+        LengthSlack: 6
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 2800000, guid: 5696bc9da17a04ba18e221220b4899e5, type: 3}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 5696bc9da17a04ba18e221220b4899e5, type: 3}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 5
+        Width: 5
+        Height: 6
+        MinTurns: 10
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 6
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 1
+      Grid:
+        Side: 5
+        Width: 5
+        Height: 7
+        MinTurns: 10
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 3d769f3cffb09409f8ded16fbb2f3563, type: 3}
       MosaicBackgroundParticles: 0
@@ -210,17 +211,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 5
-        Width: 5
+        Side: 6
+        Width: 6
         Height: 6
-        MinTurns: 7
-        Lives: 3
-        Runs: 4
+        MinTurns: 11
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 2
-        LengthSlack: 4
+        BlockedHints: 0
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -233,17 +234,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 1
       Grid:
-        Side: 5
-        Width: 5
+        Side: 6
+        Width: 6
         Height: 6
-        MinTurns: 8
-        Lives: 3
-        Runs: 4
+        MinTurns: 12
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 2
-        LengthSlack: 4
+        BlockedHints: 0
+        LengthSlack: 6
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 5696bc9da17a04ba18e221220b4899e5, type: 3}
       MosaicBackgroundParticles: 0
@@ -256,109 +257,63 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 5
-        Width: 5
-        Height: 6
-        MinTurns: 8
-        Lives: 3
-        Runs: 4
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 2
-        LengthSlack: 4
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 1
-      Grid:
-        Side: 5
-        Width: 5
-        Height: 6
-        MinTurns: 9
-        Lives: 3
-        Runs: 4
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 3
-        LengthSlack: 4
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 0
-      Grid:
         Side: 6
         Width: 6
         Height: 7
-        MinTurns: 8
-        Lives: 3
-        Runs: 5
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 3
-        LengthSlack: 5
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 1
-      Grid:
-        Side: 6
-        Width: 6
-        Height: 7
-        MinTurns: 9
-        Lives: 3
-        Runs: 5
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 3
-        LengthSlack: 5
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 0
-      Grid:
-        Side: 6
-        Width: 6
-        Height: 8
         MinTurns: 12
-        Lives: 3
-        Runs: 5
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
-        Glimpse: 1
+        Glimpse: 0
         Beacon: 0
-        BlockedHints: 4
-        LengthSlack: 5
+        BlockedHints: 0
+        LengthSlack: 6
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 1
+      Grid:
+        Side: 6
+        Width: 6
+        Height: 7
+        MinTurns: 13
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 7
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 6
+        Width: 6
+        Height: 8
+        MinTurns: 13
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 7
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -374,14 +329,60 @@ MonoBehaviour:
         Side: 6
         Width: 6
         Height: 8
-        MinTurns: 11
-        Lives: 3
-        Runs: 5
+        MinTurns: 14
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 4
-        LengthSlack: 5
+        BlockedHints: 0
+        LengthSlack: 7
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 7
+        Width: 7
+        Height: 7
+        MinTurns: 14
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 7
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 1
+      Grid:
+        Side: 7
+        Width: 7
+        Height: 7
+        MinTurns: 15
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 7
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: b27ebafbc6252478c8314ca4ba8afbfc, type: 3}
       MosaicBackgroundParticles: 1
@@ -394,17 +395,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 6
-        Width: 6
+        Side: 7
+        Width: 7
         Height: 8
-        MinTurns: 12
-        Lives: 3
-        Runs: 5
+        MinTurns: 15
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 4
-        LengthSlack: 5
+        BlockedHints: 0
+        LengthSlack: 8
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -417,17 +418,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 1
       Grid:
-        Side: 6
-        Width: 6
-        Height: 9
+        Side: 7
+        Width: 7
+        Height: 8
         MinTurns: 16
-        Lives: 3
-        Runs: 5
-        Lighthouses: 1
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 5
-        LengthSlack: 5
+        BlockedHints: 0
+        LengthSlack: 8
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 39f7af514667049d09742e16dd38128a, type: 3}
       MosaicBackgroundParticles: 1
@@ -440,17 +441,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 0
       Grid:
-        Side: 6
-        Width: 6
+        Side: 7
+        Width: 7
         Height: 9
-        MinTurns: 13
-        Lives: 3
-        Runs: 5
+        MinTurns: 16
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 5
-        LengthSlack: 5
+        BlockedHints: 0
+        LengthSlack: 8
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
@@ -463,17 +464,17 @@ MonoBehaviour:
     - Kind: 0
       VisualType: 1
       Grid:
-        Side: 6
-        Width: 6
-        Height: 10
+        Side: 7
+        Width: 7
+        Height: 9
         MinTurns: 17
-        Lives: 3
-        Runs: 5
-        Lighthouses: 1
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
         Glimpse: 0
         Beacon: 0
-        BlockedHints: 5
-        LengthSlack: 6
+        BlockedHints: 0
+        LengthSlack: 8
       GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
       MosaicBackgroundParticles: 1
@@ -483,11 +484,127 @@ MonoBehaviour:
       ThumbnailTexture: {fileID: 2800000, guid: 38098e510f7a94e24a79de065597ad6c, type: 3}
       FollowOrthographicSize: 0
       WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 8
+        Width: 8
+        Height: 8
+        MinTurns: 17
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 8
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 1
+      Grid:
+        Side: 8
+        Width: 8
+        Height: 8
+        MinTurns: 18
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 8
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 2800000, guid: 39f7af514667049d09742e16dd38128a, type: 3}
+      MosaicBackgroundParticles: 1
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 39f7af514667049d09742e16dd38128a, type: 3}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 8
+        Width: 8
+        Height: 8
+        MinTurns: 18
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 9
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 1
+      Grid:
+        Side: 8
+        Width: 8
+        Height: 9
+        MinTurns: 19
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 9
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 2800000, guid: 3d769f3cffb09409f8ded16fbb2f3563, type: 3}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 3d769f3cffb09409f8ded16fbb2f3563, type: 3}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 0
+      VisualType: 0
+      Grid:
+        Side: 8
+        Width: 8
+        Height: 9
+        MinTurns: 20
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 9
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
   _graphArena:
     ModeId: 1
     DisplayName: Graph Arena
     Icon: {fileID: 21300000, guid: 79ae85ea0afaf4ff4a2ebaab8df24007, type: 3}
     CameraMode: 0
+    ScoutMoveMode: 0
     FollowOrthographicSize: 1.8
     FollowSmoothing: 10
     WalkerScale: 1
@@ -506,30 +623,7 @@ MonoBehaviour:
         Beacon: 0
         BlockedHints: 0
         LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 0f831135cd4d443b1a9d76b0feffebe0, type: 2}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 1
-      VisualType: 0
-      Grid:
-        Side: 0
-        Width: 0
-        Height: 0
-        MinTurns: 0
-        Lives: 0
-        Runs: 0
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 4f39ef5d1a1cb499582c18f164283b6a, type: 2}
+      GraphLevel: {fileID: 11400000, guid: 6ddc73ac11bdf4c8d9e69a3597a1f38b, type: 2}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
       MosaicVfxPrefab: {fileID: 0}
@@ -552,7 +646,145 @@ MonoBehaviour:
         Beacon: 0
         BlockedHints: 0
         LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 4f39ef5d1a1cb499582c18f164283b6a, type: 2}
+      GraphLevel: {fileID: 11400000, guid: 584c3f6c1d5e741a08a01769d18de11e, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: 1e2de3ab022774fab891dbcfc287c68b, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: e8cee46c4b2646b7a664aef3537be102, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: c40ae50945d146e7a5fa2eb13a048f59, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: eaf8c3963afe49abbcd78e42a754f5d2, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: 7594942235b04cc3bf84ca841631ed1f, type: 2}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 0}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 0}
+      FollowOrthographicSize: 0
+      WalkerScale: 0
+    - Kind: 1
+      VisualType: 0
+      Grid:
+        Side: 0
+        Width: 0
+        Height: 0
+        MinTurns: 0
+        Lives: 0
+        Runs: 0
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 11400000, guid: 27ea3256be7645b59b30605254f7cdf7, type: 2}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
       MosaicVfxPrefab: {fileID: 0}
@@ -566,19 +798,112 @@ MonoBehaviour:
     DisplayName: Scout Arena
     Icon: {fileID: 21300000, guid: 6ae1bd5445449453f9c85a4a7459c6b7, type: 3}
     CameraMode: 1
-    FollowOrthographicSize: 1.8
+    ScoutMoveMode: 1
+    FollowOrthographicSize: 0.48
     FollowSmoothing: 10
-    WalkerScale: 0.55
+    WalkerScale: 0.42
     Levels:
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 2
+        Width: 2
+        Height: 2
+        MinTurns: 1
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 0
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.48
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 2
+        Width: 2
+        Height: 2
+        MinTurns: 1
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 1
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.48
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 2
+        Width: 2
+        Height: 3
+        MinTurns: 1
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 1
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.58
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 2
+        Width: 2
+        Height: 3
+        MinTurns: 2
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 2
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.58
+      WalkerScale: 0.42
     - Kind: 0
       VisualType: 2
       Grid:
         Side: 3
         Width: 3
         Height: 3
-        MinTurns: 1
+        MinTurns: 2
         Lives: 2
-        Runs: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
@@ -588,41 +913,41 @@ MonoBehaviour:
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
       MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 11400000, guid: d154d62c9a3b4b32929267475c1e1e8b, type: 2}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
       Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 1
-      WalkerScale: 0
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.58
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 3
+        Width: 3
+        Height: 3
+        MinTurns: 3
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 2
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.58
+      WalkerScale: 0.42
     - Kind: 0
       VisualType: 2
       Grid:
         Side: 3
         Width: 3
         Height: 4
-        MinTurns: 2
-        Lives: 2
-        Runs: 2
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 2
-      GraphLevel: {fileID: 0}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 11400000, guid: d154d62c9a3b4b32929267475c1e1e8b, type: 2}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 1
-      WalkerScale: 0
-    - Kind: 0
-      VisualType: 2
-      Grid:
-        Side: 4
-        Width: 3
-        Height: 5
-        MinTurns: 2
+        MinTurns: 3
         Lives: 2
         Runs: 3
         Lighthouses: 0
@@ -634,77 +959,123 @@ MonoBehaviour:
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
       MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 11400000, guid: d154d62c9a3b4b32929267475c1e1e8b, type: 2}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 1
-      VisualType: 0
-      Grid:
-        Side: 0
-        Width: 0
-        Height: 0
-        MinTurns: 0
-        Lives: 0
-        Runs: 0
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 9d4d380df537a4869bcc38af92433ba8, type: 2}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
-      Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 1
-      VisualType: 0
-      Grid:
-        Side: 0
-        Width: 0
-        Height: 0
-        MinTurns: 0
-        Lives: 0
-        Runs: 0
-        Lighthouses: 0
-        Glimpse: 0
-        Beacon: 0
-        BlockedHints: 0
-        LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 4f39ef5d1a1cb499582c18f164283b6a, type: 2}
-      MosaicTexture: {fileID: 0}
-      MosaicBackgroundParticles: 0
-      MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
       Thumbnail: {fileID: 0}
       ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
-    - Kind: 1
-      VisualType: 0
+      FollowOrthographicSize: 0.72
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
       Grid:
-        Side: 0
-        Width: 0
-        Height: 0
-        MinTurns: 0
-        Lives: 0
-        Runs: 0
+        Side: 3
+        Width: 3
+        Height: 4
+        MinTurns: 4
+        Lives: 2
+        Runs: 3
         Lighthouses: 0
         Glimpse: 0
         Beacon: 0
         BlockedHints: 0
-        LengthSlack: 0
-      GraphLevel: {fileID: 11400000, guid: 4f39ef5d1a1cb499582c18f164283b6a, type: 2}
+        LengthSlack: 3
+      GraphLevel: {fileID: 0}
       MosaicTexture: {fileID: 0}
       MosaicBackgroundParticles: 0
       MosaicVfxPrefab: {fileID: 0}
-      PatchworkSet: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
       Thumbnail: {fileID: 0}
-      ThumbnailTexture: {fileID: 0}
-      FollowOrthographicSize: 0
-      WalkerScale: 0
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.72
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 4
+        Width: 4
+        Height: 4
+        MinTurns: 4
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 3
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.72
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 4
+        Width: 4
+        Height: 4
+        MinTurns: 5
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 4
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.72
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 4
+        Width: 4
+        Height: 5
+        MinTurns: 5
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 4
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.88
+      WalkerScale: 0.42
+    - Kind: 0
+      VisualType: 2
+      Grid:
+        Side: 4
+        Width: 4
+        Height: 5
+        MinTurns: 6
+        Lives: 2
+        Runs: 3
+        Lighthouses: 0
+        Glimpse: 0
+        Beacon: 0
+        BlockedHints: 0
+        LengthSlack: 5
+      GraphLevel: {fileID: 0}
+      MosaicTexture: {fileID: 0}
+      MosaicBackgroundParticles: 0
+      MosaicVfxPrefab: {fileID: 0}
+      PatchworkSet: {fileID: 11400000, guid: 40f939e168d546e5b24ed87605446ebb, type: 2}
+      Thumbnail: {fileID: 0}
+      ThumbnailTexture: {fileID: 2800000, guid: 077a1ba5fb42647c8b7628b3e1f0f593, type: 3}
+      FollowOrthographicSize: 0.88
+      WalkerScale: 0.42

@@ -82,6 +82,55 @@ namespace Game.Unity.Graph
                 _edges[i].SetVisible(visible);
         }
 
+        public void SetAllNodesVisible(bool visible)
+        {
+            foreach (var node in _nodes.Values)
+                node.SetVisible(visible);
+        }
+
+        public void SetEdgeVisual(GraphNodeId a, GraphNodeId b, GraphEdgeVisualState visual)
+        {
+            for (var i = 0; i < _edges.Count; i++)
+            {
+                if (!_edges[i].Connects(a, b))
+                    continue;
+                _edges[i].SetVisible(true);
+                _edges[i].SetVisual(visual);
+                return;
+            }
+        }
+
+        public void PaintOptionEdges(GraphNodeId current, IReadOnlyList<GraphNodeId> options)
+        {
+            for (var i = 0; i < _edges.Count; i++)
+            {
+                var edge = _edges[i];
+                var option = OptionOnEdge(edge, current, options);
+                edge.SetVisual(option ? GraphEdgeVisualState.Candidate : GraphEdgeVisualState.Idle);
+            }
+        }
+
+        static bool OptionOnEdge(GraphEdgeLine edge, GraphNodeId current, IReadOnlyList<GraphNodeId> options)
+        {
+            if (options == null)
+                return false;
+            GraphNodeId other;
+            if (edge.NodeA == current)
+                other = edge.NodeB;
+            else if (edge.NodeB == current)
+                other = edge.NodeA;
+            else
+                return false;
+
+            for (var i = 0; i < options.Count; i++)
+            {
+                if (options[i] == other)
+                    return true;
+            }
+
+            return false;
+        }
+
         public Vector3 WorldPosition(GraphNodeId nodeId) => Layout.WorldPosition(nodeId);
 
         public Vector3[] EdgeWorldPoints(GraphNodeId from, GraphNodeId to) =>

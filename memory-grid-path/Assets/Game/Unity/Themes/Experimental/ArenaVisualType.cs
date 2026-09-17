@@ -12,4 +12,10 @@ namespace Game.Unity.Themes.Experimental
         StaticTopDown = 0,
         FollowWalker = 1
     }
+
+    public enum ScoutMoveMode
+    {
+        PanMoveMode = 0,
+        RotationMoveMode = 1
+    }
 }

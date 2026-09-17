@@ -8,7 +8,7 @@ namespace Game.Unity.Editor
     {
         const string ClipsFolder = "Assets/Game/Unity/Audio/Clips/";
 
-        [MenuItem("Nixin Studio/Memory Grid Path/Create Audio Catalog")]
+        [MenuItem("Nixin Studio/Memory Grid Path/Bake/Audio Catalog", false, 41)]
         public static MemoryPathAudioCatalog CreateOrUpdate()
         {
             System.IO.Directory.CreateDirectory("Assets/Game/Unity/Audio/Resources");

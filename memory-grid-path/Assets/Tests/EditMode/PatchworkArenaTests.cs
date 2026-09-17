@@ -11,7 +11,7 @@ namespace Game.Unity.Tests
     public sealed class PatchworkArenaTests
     {
         [Test]
-        public void ApplyEnvironmentPlacesOceanUnderAndAroundTheTiles()
+        public void ApplyEnvironmentPlacesFogAroundTheTiles()
         {
             var host = new GameObject("PatchworkHost");
             try
@@ -22,25 +22,18 @@ namespace Game.Unity.Tests
 
                 factory.ApplyEnvironment(null, layout, host.transform);
 
-                var ocean = host.transform.Find(PatchworkOceanBackdrop.OceanName);
-                Assert.That(ocean, Is.Not.Null);
-                Assert.That(ocean.position.y, Is.EqualTo(layout.Origin.y - PatchworkOceanBackdrop.OceanDepth).Within(0.001f));
-                Assert.That(ocean.position.y, Is.LessThan(0f));
+                var padding = host.transform.Find(ScoutFogOfWar.PaddingName);
+                Assert.That(padding, Is.Not.Null);
+                Assert.That(padding.position.y, Is.EqualTo(layout.Origin.y + ScoutFogOfWar.PaddingLift).Within(0.001f));
+                Assert.That(host.transform.Find(ScoutFogOfWar.OverlayName), Is.Null);
+                Assert.That(host.transform.Find(PatchworkOceanBackdrop.OceanName), Is.Null);
                 Assert.That(host.transform.Find(ArenaEnvironment.RoomFloorName), Is.Null);
 
-                var worldWidth = ocean.localScale.x * 10f;
-                var worldDepth = ocean.localScale.z * 10f;
-                Assert.That(worldWidth, Is.GreaterThan(layout.SurfaceWidth * 4f));
-                Assert.That(worldDepth, Is.GreaterThan(layout.SurfaceDepth * 4f));
-
-                var oceanRenderer = ocean.GetComponent<Renderer>();
-                Assert.That(oceanRenderer, Is.Not.Null);
-                Assert.That(oceanRenderer.sharedMaterial, Is.Not.Null);
-                var shaderName = oceanRenderer.sharedMaterial.shader.name;
-                Assert.That(
-                    shaderName.Contains("ProceduralWater") || shaderName.Contains("OceanWater"),
-                    Is.True,
-                    shaderName);
+                var paddingRenderer = padding.GetComponent<Renderer>()
+                    ?? padding.GetComponentInChildren<Renderer>();
+                Assert.That(paddingRenderer, Is.Not.Null);
+                Assert.That(paddingRenderer.bounds.size.x, Is.GreaterThan(layout.SurfaceWidth * 4f));
+                Assert.That(paddingRenderer.bounds.size.z, Is.GreaterThan(layout.SurfaceDepth * 4f));
             }
             finally
             {
@@ -49,7 +42,7 @@ namespace Game.Unity.Tests
         }
 
         [Test]
-        public void CameraBackgroundMatchesTheOcean()
+        public void CameraBackgroundMatchesTheFog()
         {
             var host = new GameObject("PatchworkHost");
             var cameraGo = new GameObject("PatchworkCam", typeof(Camera));
@@ -63,7 +56,7 @@ namespace Game.Unity.Tests
                 factory.ApplyEnvironment(camera, layout, host.transform);
 
                 Assert.That(camera.clearFlags, Is.EqualTo(CameraClearFlags.SolidColor));
-                Assert.That(camera.backgroundColor, Is.EqualTo(PatchworkOceanBackdrop.Background));
+                Assert.That(camera.backgroundColor, Is.EqualTo(ScoutFogOfWar.Background));
             }
             finally
             {
@@ -73,7 +66,7 @@ namespace Game.Unity.Tests
         }
 
         [Test]
-        public void SwitchingThemesClearsTheOcean()
+        public void SwitchingThemesClearsTheFog()
         {
             var host = new GameObject("PatchworkHost");
             try
@@ -83,10 +76,12 @@ namespace Game.Unity.Tests
                     null,
                     new BoardLayout(new GridSize(3, 3), 1f, 0f, Vector3.zero),
                     host.transform);
-                Assert.That(host.transform.Find(PatchworkOceanBackdrop.OceanName), Is.Not.Null);
+                Assert.That(host.transform.Find(ScoutFogOfWar.PaddingName), Is.Not.Null);
 
                 ArenaEnvironment.Clear(host.transform);
 
+                Assert.That(host.transform.Find(ScoutFogOfWar.PaddingName), Is.Null);
+                Assert.That(host.transform.Find(ScoutFogOfWar.OverlayName), Is.Null);
                 Assert.That(host.transform.Find(PatchworkOceanBackdrop.OceanName), Is.Null);
             }
             finally
@@ -145,6 +140,13 @@ namespace Game.Unity.Tests
                 followOrthographicSize: 1.2f);
             Assert.That(close.FollowOrthographicSize, Is.EqualTo(1.2f).Within(0.001f));
             Assert.That(close.CameraMode, Is.EqualTo(ArenaCameraMode.FollowWalker));
+
+            var tight = JourneyVisualResolver.Resolve(
+                entry,
+                ArenaCameraMode.FollowWalker,
+                null,
+                followOrthographicSize: 0.65f);
+            Assert.That(tight.FollowOrthographicSize, Is.EqualTo(0.65f).Within(0.001f));
         }
 
         [Test]

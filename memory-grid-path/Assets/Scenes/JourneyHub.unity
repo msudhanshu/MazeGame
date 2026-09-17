@@ -5495,7 +5495,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2101939593}
-  - component: {fileID: 2101939594}
   m_Layer: 0
   m_Name: Screens
   m_TagString: Untagged
@@ -5526,18 +5525,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2101939594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2101939592}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2ad06cbd56bd43aa9b9cfd5b1dc48d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Nixin.Ui::Nixin.Ui.SafeAreaFitter
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

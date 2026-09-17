@@ -19,6 +19,8 @@ namespace Game.Unity.Tests
                 hud.SetStats("T", 0, 1, 8);
                 hud.SetHealth(3, 2, 3, 5);
                 hud.SetMessage("On the path. Keep going!");
+                Assert.That(hud.transform.Find("Canvas/SafeArea/HintSub").GetComponent<TextMeshProUGUI>().text,
+                    Is.EqualTo(GridPathHud.DefaultHintSub));
                 hud.FlashHint();
                 hud.PulseHealth();
                 Assert.That(hud.IsShown, Is.True);
@@ -42,7 +44,9 @@ namespace Game.Unity.Tests
 
                 var bar = hud.transform.Find("Canvas/SafeArea/Bar") as RectTransform;
                 Assert.That(bar, Is.Not.Null);
-                Assert.That(bar.sizeDelta.x, Is.EqualTo(GridPathHud.BarWidth));
+                Assert.That(bar.anchorMin.x, Is.EqualTo(0f));
+                Assert.That(bar.anchorMax.x, Is.EqualTo(1f));
+                Assert.That(bar.sizeDelta.x, Is.EqualTo(-2f * GridPathHud.BarSidePad).Within(0.5f));
                 Assert.That(bar.sizeDelta.y, Is.EqualTo(GridPathHud.S(84)).Within(0.5f));
                 Assert.That(hud.transform.Find("Canvas/SafeArea").GetComponent<Nixin.Ui.SafeAreaFitter>(), Is.Not.Null);
 
@@ -71,22 +75,38 @@ namespace Game.Unity.Tests
         }
 
         [Test]
-        public void RemainingLifeFillsFromTheBottomOfTheColumn()
+        public void CurrentHeartFillsSpentFromTheBottom()
         {
             var hud = GridPathHud.Create(null);
             try
             {
                 hud.SetHealth(1, 1, 3, 5);
 
-                var tray = hud.transform.Find("Canvas/SafeArea/Bar/Row/Health/Bars/Bar0");
-                Assert.That(tray, Is.Not.Null);
-                var bottom = tray.Find("Seg0").GetComponent<Image>();
-                var mid = tray.Find("Seg1").GetComponent<Image>();
-                var top = tray.Find("Seg2").GetComponent<Image>();
-                Assert.That(bottom.color, Is.EqualTo(MemoryPathPalette.HealthFill));
-                Assert.That(mid.color, Is.EqualTo(MemoryPathPalette.HealthEmpty));
-                Assert.That(top.color, Is.EqualTo(MemoryPathPalette.HealthEmpty));
-                Assert.That(bottom.transform.GetSiblingIndex(), Is.GreaterThan(top.transform.GetSiblingIndex()));
+                var heart = hud.transform.Find("Canvas/SafeArea/Bar/Row/Health/Bars/Heart0");
+                Assert.That(heart, Is.Not.Null);
+                var spent = heart.Find("Spent").GetComponent<Image>();
+                var fill = heart.Find("Fill").GetComponent<Image>();
+                Assert.That(spent.fillAmount, Is.EqualTo(2f / 3f).Within(0.001f));
+                var expected = Color.Lerp(MemoryPathPalette.HeartDim, Color.white, 1f / 3f);
+                Assert.That(fill.color.r, Is.EqualTo(expected.r).Within(0.01f));
+                Assert.That(fill.color.g, Is.EqualTo(expected.g).Within(0.01f));
+                Assert.That(fill.color.b, Is.EqualTo(expected.b).Within(0.01f));
+                Assert.That(fill.color.a, Is.EqualTo(1f).Within(0.001f));
+                Assert.That(fill.sprite, Is.Not.Null);
+                Assert.That(fill.preserveAspect, Is.True);
+                var well = heart.parent.parent.GetComponent<Image>();
+                Assert.That(well, Is.Not.Null);
+                Assert.That(well.enabled, Is.True);
+                Assert.That(well.color, Is.EqualTo(MemoryPathPalette.HudHealthWellBorder));
+                var wellFill = heart.parent.parent.Find("Fill").GetComponent<Image>();
+                Assert.That(wellFill.enabled, Is.True);
+                Assert.That(wellFill.gameObject.activeSelf, Is.True);
+                Assert.That(wellFill.color, Is.EqualTo(MemoryPathPalette.HudHealthWell));
+                var tex = fill.sprite.texture;
+                Assert.That(tex, Is.Not.Null);
+                Assert.That(tex.GetPixel(0, 0).a, Is.LessThan(0.1f));
+                Assert.That(tex.GetPixel(tex.width - 1, 0).a, Is.LessThan(0.1f));
+                Assert.That(tex.GetPixel(tex.width / 2, tex.height / 2).a, Is.GreaterThan(0.9f));
             }
             finally
             {

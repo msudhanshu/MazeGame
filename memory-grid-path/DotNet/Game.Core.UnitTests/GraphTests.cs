@@ -174,9 +174,19 @@ namespace Game.Core.Tests
             var options = new[] { D };
 
             Assert.That(GraphNodeReveal.IsCircleVisible(A, B, options), Is.False);
-            Assert.That(GraphNodeReveal.IsCircleVisible(B, B, options), Is.True);
+            Assert.That(GraphNodeReveal.IsCircleVisible(B, B, options), Is.False);
             Assert.That(GraphNodeReveal.IsCircleVisible(D, B, options), Is.True);
             Assert.That(GraphNodeReveal.IsCircleVisible(C, B, options), Is.False);
+        }
+
+        [Test]
+        public void Current_node_is_not_drawn_as_a_circle()
+        {
+            var options = new[] { B, C };
+
+            Assert.That(GraphNodeReveal.IsCircleVisible(A, A, options), Is.False);
+            Assert.That(GraphNodeReveal.IsCircleVisible(B, A, options), Is.True);
+            Assert.That(GraphNodeReveal.IsCircleVisible(C, A, options), Is.True);
         }
     }
 }

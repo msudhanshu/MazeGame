@@ -11,7 +11,7 @@ namespace Game.Core.State
 
     /// <summary>
     /// How a level should read on the select grid: locked, the one in play, or already cleared.
-    /// Stars follow the Figma board — three on a clear, none until then.
+    /// Stars come from the last successful run's mistake count.
     /// </summary>
     public static class LevelAccess
     {
@@ -31,13 +31,38 @@ namespace Game.Core.State
             return LevelLane.Current;
         }
 
+        public static int StarsFromMistakes(int mistakes)
+        {
+            if (mistakes <= 0)
+                return StarsPerClear;
+            if (mistakes == 1)
+                return 2;
+            return 1;
+        }
+
         public static int StarsOn(LevelLane lane) => lane == LevelLane.Cleared ? StarsPerClear : 0;
+
+        public static int StarsOn(PlayerProgress progress, int levelNumber)
+        {
+            if (progress == null)
+                throw new ArgumentNullException(nameof(progress));
+            if (levelNumber < 1)
+                throw new ArgumentOutOfRangeException(nameof(levelNumber));
+
+            if (levelNumber > progress.HighestClearedLevel)
+                return 0;
+            return progress.LastStarsFor(levelNumber);
+        }
 
         public static int StarsEarned(PlayerProgress progress)
         {
             if (progress == null)
                 throw new ArgumentNullException(nameof(progress));
-            return Math.Max(0, progress.HighestUnlockedLevel - 1) * StarsPerClear;
+
+            var total = 0;
+            for (var i = 1; i <= progress.HighestClearedLevel; i++)
+                total += progress.LastStarsFor(i);
+            return total;
         }
 
         public static int StarsPossible(int levelCount)

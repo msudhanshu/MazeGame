@@ -13,6 +13,9 @@ namespace Game.Unity.View
         public const float WrongTurnFlashSeconds = 0.55f;
         public const float WrongTurnFollowDelaySeconds = 0.14f;
         public const float RewindCameraSeconds = 0.55f;
+        public const float ReturnPanUnitsPerSecond = 7f;
+        public const float ReturnPanMinSeconds = 0.28f;
+        public const float ReturnPanMaxSeconds = 0.95f;
 
         public static IEnumerator HoldThenTravel(WalkerView walker, Vector3 destination, float holdSeconds)
         {
@@ -101,6 +104,51 @@ namespace Game.Unity.View
             }
 
             ApplyOrtho(camera, toPosition, toSize);
+        }
+
+        public static float ReturnPanSeconds(Vector3 fromPosition, Vector3 toPosition)
+        {
+            var delta = toPosition - fromPosition;
+            delta.y = 0f;
+            return Mathf.Clamp(delta.magnitude / ReturnPanUnitsPerSecond, ReturnPanMinSeconds, ReturnPanMaxSeconds);
+        }
+
+        public static IEnumerator PanLinear(Camera camera, Vector3 toPosition, float seconds)
+        {
+            if (camera == null)
+                yield break;
+
+            var fromPosition = camera.transform.position;
+            toPosition.y = BoardCamera.Height;
+            fromPosition.y = BoardCamera.Height;
+            var size = camera.orthographicSize;
+            if (seconds <= 0.01f || (fromPosition - toPosition).sqrMagnitude < 0.0001f)
+            {
+                SetTopDown(camera, toPosition, size);
+                yield break;
+            }
+
+            var elapsed = 0f;
+            while (elapsed < seconds)
+            {
+                elapsed += Time.deltaTime;
+                var t = Mathf.Clamp01(elapsed / seconds);
+                SetTopDown(camera, Vector3.Lerp(fromPosition, toPosition, t), size);
+                yield return null;
+            }
+
+            SetTopDown(camera, toPosition, size);
+        }
+
+        static void SetTopDown(Camera camera, Vector3 position, float orthographicSize)
+        {
+            camera.orthographic = true;
+            camera.transform.SetPositionAndRotation(
+                new Vector3(position.x, BoardCamera.Height, position.z),
+                BoardCamera.TopDownRotation);
+            camera.orthographicSize = orthographicSize;
+            camera.nearClipPlane = 0.1f;
+            camera.farClipPlane = BoardCamera.FarClip;
         }
 
         static void ApplyOrtho(Camera camera, Vector3 position, float orthographicSize)

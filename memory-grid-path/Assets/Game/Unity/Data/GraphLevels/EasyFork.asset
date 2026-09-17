@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game.Unity::Game.Unity.Data.GraphLevelDefinition
   _displayName: Easy Fork
   _background: {fileID: 0}
+  _imageAspect: 0
   _worldWidth: 12
   _nodes:
   - Id: n0
@@ -33,25 +34,35 @@ MonoBehaviour:
   _edges:
   - NodeA: n0
     NodeB: n1
+    ControlPoints: []
   - NodeA: n0
     NodeB: n2
+    ControlPoints: []
   - NodeA: n1
     NodeB: n3
+    ControlPoints: []
   - NodeA: n2
     NodeB: n3
+    ControlPoints: []
   - NodeA: n3
     NodeB: n4
+    ControlPoints: []
   - NodeA: n3
     NodeB: n5
+    ControlPoints: []
   - NodeA: n4
     NodeB: n6
+    ControlPoints: []
   - NodeA: n5
     NodeB: n6
+    ControlPoints: []
   _startNodeId: n0
   _goalNodeId: n6
   _minPathLength: 3
   _maxPathLength: 6
   _minTurns: 0
-  _maxTurns: 4
+  _maxTurns: 8
   _livesPerRun: 3
   _runsPerSession: 5
+  _previewKind: 1
+  _previewSeconds: 0

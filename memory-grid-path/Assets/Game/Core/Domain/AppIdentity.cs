@@ -4,6 +4,7 @@ namespace Game.Core.Domain
     public static class AppIdentity
     {
         public const string ProductName = "memorizewayhome";
+        public const string DisplayName = "Memory Game: Remember the Path Home";
         public const string AndroidPackage = "com.nixin.memorizewayhome";
     }
 }

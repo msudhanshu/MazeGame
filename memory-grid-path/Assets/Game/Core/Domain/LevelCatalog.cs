@@ -21,7 +21,8 @@ namespace Game.Core.Domain
             int runs = 5,
             int width = 0,
             int height = 0,
-            int blockedHints = 0)
+            int blockedHints = 0,
+            int turnBand = -1)
         {
             Side = side;
             MinTurns = minTurns;
@@ -34,6 +35,7 @@ namespace Game.Core.Domain
             Width = width > 0 ? width : side;
             Height = height > 0 ? height : side;
             BlockedHints = blockedHints;
+            TurnBand = turnBand;
         }
 
         public int Side { get; }
@@ -47,76 +49,86 @@ namespace Game.Core.Domain
         public int Width { get; }
         public int Height { get; }
         public int BlockedHints { get; }
+
+        /// <summary>0 pins an exact turn count. Negative uses the catalog default band.</summary>
+        public int TurnBand { get; }
     }
 
     /// <summary>
     /// The level ladder, expressed as data. Each row widens the board or asks for more unmarked
-    /// walking; nothing here fixes an actual route.
+    /// walking; nothing here fixes an actual route. Economy rules live in README.md.
     /// </summary>
     public sealed class LevelCatalog
     {
-        // Early boards are short, so a 5×3 luck budget almost never fails. Keep the memory
-        // restart, but shrink hearts and walks until the path is long enough that luck is
-        // no longer enough on its own.
+        // Exact early turn counts so a new player sees one corner, then two, then three.
         static readonly LevelSpec[] Specs =
         {
-            new LevelSpec(3, 1, 2, lengthSlack: 2, runs: 2, width: 3, height: 3),
-            new LevelSpec(3, 2, 2, lengthSlack: 2, runs: 2, width: 3, height: 4),
-            new LevelSpec(4, 2, 2, lengthSlack: 3, runs: 3, width: 3, height: 5),
-            new LevelSpec(4, 3, 2, lengthSlack: 3, runs: 3, width: 4, height: 4),
-            new LevelSpec(4, 3, 2, lengthSlack: 3, runs: 3, width: 4, height: 5),
-            new LevelSpec(4, 4, 2, lengthSlack: 3, runs: 3, width: 4, height: 5),
-            new LevelSpec(5, 4, 3, blockedHints: 1, lengthSlack: 4, runs: 4, width: 5, height: 5),
-            new LevelSpec(5, 8, 3, lighthouses: 1, blockedHints: 1, lengthSlack: 4, runs: 4, width: 5, height: 6),
-            new LevelSpec(5, 7, 3, blockedHints: 2, lengthSlack: 4, runs: 4, width: 5, height: 6),
-            new LevelSpec(5, 8, 3, blockedHints: 2, lengthSlack: 4, runs: 4, width: 5, height: 6),
-            new LevelSpec(5, 8, 3, blockedHints: 2, lengthSlack: 4, runs: 4, width: 5, height: 6),
-            new LevelSpec(5, 9, 3, blockedHints: 3, lengthSlack: 4, runs: 4, width: 5, height: 6),
-            new LevelSpec(6, 8, 3, blockedHints: 3, lengthSlack: 5, width: 6, height: 7),
-            new LevelSpec(6, 9, 3, blockedHints: 3, lengthSlack: 5, width: 6, height: 7),
-            new LevelSpec(6, 12, 3, glimpse: 1, blockedHints: 4, lengthSlack: 5, width: 6, height: 8),
-            new LevelSpec(6, 11, 3, blockedHints: 4, lengthSlack: 5, width: 6, height: 8),
-            new LevelSpec(6, 12, 3, blockedHints: 4, lengthSlack: 5, width: 6, height: 8),
-            new LevelSpec(6, 16, 3, lighthouses: 1, blockedHints: 5, lengthSlack: 5, width: 6, height: 9),
-            new LevelSpec(6, 13, 3, blockedHints: 5, lengthSlack: 5, width: 6, height: 9),
-            new LevelSpec(6, 17, 3, lighthouses: 1, blockedHints: 5, lengthSlack: 6, width: 6, height: 10),
-            new LevelSpec(7, 13, 3, blockedHints: 5, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 18, 3, lighthouses: 1, blockedHints: 6, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 18, 3, lighthouses: 1, blockedHints: 6, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 18, 3, lighthouses: 1, blockedHints: 6, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 18, 3, lighthouses: 1, blockedHints: 6, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 19, 3, lighthouses: 1, beacon: 1, blockedHints: 5, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(7, 19, 3, lighthouses: 1, blockedHints: 7, lengthSlack: 6, width: 7, height: 9),
-            new LevelSpec(8, 17, 3, lighthouses: 1, blockedHints: 7, lengthSlack: 7, width: 8, height: 10),
-            new LevelSpec(8, 17, 3, lighthouses: 1, blockedHints: 7, lengthSlack: 7, width: 8, height: 10),
-            new LevelSpec(8, 19, 3, lighthouses: 2, blockedHints: 5, lengthSlack: 7, width: 8, height: 10),
-            new LevelSpec(8, 21, 3, lighthouses: 2, blockedHints: 8, lengthSlack: 7, width: 8, height: 11),
-            new LevelSpec(8, 21, 3, lighthouses: 2, blockedHints: 8, lengthSlack: 7, width: 8, height: 11),
-            new LevelSpec(8, 23, 3, lighthouses: 2, glimpse: 1, blockedHints: 8, lengthSlack: 8, width: 8, height: 12),
-            new LevelSpec(9, 16, 3, lighthouses: 1, blockedHints: 8, lengthSlack: 7, width: 9, height: 11),
-            new LevelSpec(9, 20, 3, lighthouses: 2, blockedHints: 9, lengthSlack: 7, width: 9, height: 12),
-            new LevelSpec(9, 20, 3, lighthouses: 2, blockedHints: 9, lengthSlack: 7, width: 9, height: 12),
-            new LevelSpec(9, 22, 3, lighthouses: 2, beacon: 1, blockedHints: 9, lengthSlack: 7, width: 9, height: 12),
-            new LevelSpec(9, 20, 3, lighthouses: 2, blockedHints: 9, lengthSlack: 7, width: 9, height: 12),
-            new LevelSpec(10, 19, 3, lighthouses: 2, blockedHints: 9, lengthSlack: 8, width: 10, height: 12),
-            new LevelSpec(10, 20, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 12),
-            new LevelSpec(10, 23, 3, lighthouses: 2, glimpse: 1, blockedHints: 10, lengthSlack: 8, width: 10, height: 12),
-            new LevelSpec(10, 21, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 13),
-            new LevelSpec(10, 23, 3, lighthouses: 2, beacon: 1, blockedHints: 10, lengthSlack: 8, width: 10, height: 13),
-            new LevelSpec(10, 22, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 13),
-            new LevelSpec(10, 25, 3, lighthouses: 2, glimpse: 1, blockedHints: 10, lengthSlack: 8, width: 10, height: 14),
-            new LevelSpec(10, 24, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 14),
-            new LevelSpec(10, 25, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 14),
-            new LevelSpec(10, 25, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 15),
-            new LevelSpec(10, 25, 3, lighthouses: 2, blockedHints: 10, lengthSlack: 8, width: 10, height: 15),
-            new LevelSpec(10, 27, 3, lighthouses: 2, beacon: 1, blockedHints: 10, lengthSlack: 8, width: 10, height: 15)
+            new LevelSpec(4, 1, 2, lengthSlack: 0, runs: 3, width: 4, height: 4, turnBand: 0),
+            new LevelSpec(4, 1, 2, lengthSlack: 0, runs: 3, width: 4, height: 5, turnBand: 0),
+            new LevelSpec(4, 2, 2, lengthSlack: 2, runs: 3, width: 4, height: 5, turnBand: 0),
+            new LevelSpec(5, 2, 2, lengthSlack: 2, runs: 3, width: 5, height: 5, turnBand: 0),
+            new LevelSpec(5, 2, 2, lengthSlack: 3, runs: 3, width: 5, height: 5, turnBand: 0),
+            new LevelSpec(5, 3, 2, lengthSlack: 3, runs: 3, width: 5, height: 6, turnBand: 0),
+            new LevelSpec(5, 3, 2, lengthSlack: 3, runs: 3, width: 5, height: 6, turnBand: 0),
+            new LevelSpec(5, 3, 2, lengthSlack: 4, runs: 3, width: 5, height: 7, turnBand: 0),
+            new LevelSpec(6, 4, 2, lengthSlack: 4, runs: 3, width: 6, height: 6, turnBand: 0),
+            new LevelSpec(6, 4, 2, lengthSlack: 4, runs: 3, width: 6, height: 6, turnBand: 0),
+            new LevelSpec(6, 4, 2, lengthSlack: 5, runs: 3, width: 6, height: 7, turnBand: 0),
+            new LevelSpec(6, 5, 2, lengthSlack: 5, runs: 3, width: 6, height: 7, turnBand: 1),
+            new LevelSpec(6, 5, 2, lengthSlack: 6, runs: 3, width: 6, height: 8, turnBand: 1),
+            new LevelSpec(6, 6, 2, lengthSlack: 6, runs: 3, width: 6, height: 8, turnBand: 1),
+            new LevelSpec(7, 7, 2, lengthSlack: 6, runs: 3, width: 7, height: 7, turnBand: 1),
+            new LevelSpec(7, 9, 2, lengthSlack: 7, runs: 3, width: 7, height: 7, turnBand: 2),
+            new LevelSpec(7, 11, 2, lengthSlack: 7, runs: 3, width: 7, height: 8, turnBand: 2),
+            new LevelSpec(7, 13, 2, lengthSlack: 8, runs: 3, width: 7, height: 8, turnBand: 2),
+            new LevelSpec(7, 14, 2, lengthSlack: 8, runs: 3, width: 7, height: 9, turnBand: 2),
+            new LevelSpec(7, 16, 2, lengthSlack: 8, runs: 3, width: 7, height: 9, turnBand: 2),
+            new LevelSpec(8, 16, 2, lengthSlack: 8, runs: 3, width: 8, height: 8, turnBand: 2),
+            new LevelSpec(8, 17, 2, lengthSlack: 8, runs: 3, width: 8, height: 8, turnBand: 2),
+            new LevelSpec(8, 18, 2, lengthSlack: 9, runs: 3, width: 8, height: 8, turnBand: 2),
+            new LevelSpec(8, 19, 2, lengthSlack: 9, runs: 3, width: 8, height: 9, turnBand: 2),
+            new LevelSpec(8, 20, 2, lengthSlack: 9, runs: 3, width: 8, height: 9, turnBand: 2)
         };
 
-        const int TurnBandWidth = 4;
+        const int TurnBandWidth = 2;
 
         public const string DefaultThemeId = "dance_floor";
 
         public static IReadOnlyList<LevelSpec> NixinDefaultSpecs => Specs;
+
+        /// <summary>
+        /// Scout Arena starts on tiny boards and grows slowly. Width x height in tiles.
+        /// Levels 1–4 stay the teaching boards; later rows keep the city pack and get tougher.
+        /// </summary>
+        static readonly LevelSpec[] ScoutLadder =
+        {
+            new LevelSpec(2, 1, 2, lengthSlack: 0, runs: 3, width: 2, height: 2),
+            new LevelSpec(2, 1, 2, lengthSlack: 1, runs: 3, width: 2, height: 2),
+            new LevelSpec(2, 1, 2, lengthSlack: 1, runs: 3, width: 2, height: 3),
+            new LevelSpec(2, 2, 2, lengthSlack: 2, runs: 3, width: 2, height: 3),
+            new LevelSpec(3, 2, 2, lengthSlack: 2, runs: 3, width: 3, height: 3, turnBand: 0),
+            new LevelSpec(3, 3, 2, lengthSlack: 2, runs: 3, width: 3, height: 3, turnBand: 0),
+            new LevelSpec(3, 3, 2, lengthSlack: 3, runs: 3, width: 3, height: 4, turnBand: 0),
+            new LevelSpec(3, 4, 2, lengthSlack: 3, runs: 3, width: 3, height: 4, turnBand: 0),
+            new LevelSpec(4, 4, 2, lengthSlack: 3, runs: 3, width: 4, height: 4, turnBand: 1),
+            new LevelSpec(4, 5, 2, lengthSlack: 4, runs: 3, width: 4, height: 4, turnBand: 1),
+            new LevelSpec(4, 5, 2, lengthSlack: 4, runs: 3, width: 4, height: 5, turnBand: 1),
+            new LevelSpec(4, 6, 2, lengthSlack: 5, runs: 3, width: 4, height: 5, turnBand: 1)
+        };
+
+        public static IReadOnlyList<LevelSpec> ScoutSpecs => ScoutLadder;
+
+        public static bool TryScoutSpec(int zeroBasedIndex, out LevelSpec spec)
+        {
+            if (zeroBasedIndex < 0 || zeroBasedIndex >= ScoutLadder.Length)
+            {
+                spec = default;
+                return false;
+            }
+
+            spec = ScoutLadder[zeroBasedIndex];
+            return true;
+        }
 
         public LevelCatalog() : this(FromSpecs(Specs))
         {
@@ -172,7 +184,8 @@ namespace Game.Core.Domain
             var maxLength = Math.Min(size.CellCount, shortestLength + spec.LengthSlack);
             var turnCeiling = Math.Max(0, maxLength - 2);
             var minTurns = Math.Min(spec.MinTurns, turnCeiling);
-            var maxTurns = Math.Min(minTurns + TurnBandWidth, turnCeiling);
+            var band = spec.TurnBand >= 0 ? spec.TurnBand : TurnBandWidth;
+            var maxTurns = Math.Min(minTurns + band, turnCeiling);
 
             return new LevelDefinition(
                 number: number,

@@ -34,8 +34,19 @@ namespace Game.Unity.Ui
             };
         }
 
-        public static MemoryPathPopupPayload Complete(int score, bool canAdvance, Action next, Action replay, Action home = null)
+        public static MemoryPathPopupPayload Complete(int score, bool canAdvance, Action next, Action replay, Action home = null) =>
+            Complete(score, canAdvance, 1, next, replay, home);
+
+        public static MemoryPathPopupPayload Complete(
+            int score,
+            bool canAdvance,
+            int levelNumber,
+            Action next,
+            Action replay,
+            Action home = null,
+            int stars = 3)
         {
+            var play = PlayLevelLabel(levelNumber);
             var buttons = canAdvance
                 ? new[]
                 {
@@ -44,13 +55,13 @@ namespace Game.Unity.Ui
                         MemoryPathPalette.Next,
                         new Color(0.063f, 0.725f, 0.506f, 0.4f),
                         next),
-                    Ghost("Replay", MemoryPathPalette.ReplayBorder, MemoryPathPalette.Body, replay),
+                    Ghost(play, MemoryPathPalette.ReplayBorder, MemoryPathPalette.Body, replay),
                     QuietMenu("Main Menu", home)
                 }
                 : new[]
                 {
                     Primary(
-                        "Replay",
+                        play,
                         MemoryPathPalette.Next,
                         new Color(0.063f, 0.725f, 0.506f, 0.4f),
                         replay),
@@ -66,16 +77,21 @@ namespace Game.Unity.Ui
                 Title = "Splendid Memory!",
                 TitleColor = MemoryPathPalette.TitleGold,
                 TitleWeight = UiWeight.Black,
-                TitleSize = 24,
-                Stars = 3,
+                TitleSize = 28,
+                Stars = Mathf.Clamp(stars, 1, 3),
                 ScoreLine = score + " pts",
                 CloseOnBackdrop = false,
                 StackButtons = true,
+                BurstSparkles = true,
+                PanelWidth = MemoryPathPopup.S(440),
                 Buttons = buttons
             };
         }
 
-        public static MemoryPathPopupPayload GameOver(Action home, Action retry)
+        public static MemoryPathPopupPayload GameOver(Action home, Action retry) =>
+            GameOver(1, home, retry);
+
+        public static MemoryPathPopupPayload GameOver(int level, Action home, Action playLevel)
         {
             return new MemoryPathPopupPayload
             {
@@ -86,20 +102,21 @@ namespace Game.Unity.Ui
                 Title = "You Failed!",
                 TitleColor = MemoryPathPalette.PopupInk,
                 TitleWeight = UiWeight.ExtraBold,
-                TitleSize = 26,
-                Message = "Try again on a\n NEW PATH.\nMemorize this time.",
+                TitleSize = 32,
+                Message = "A new path is waiting.\nRemember it this time.",
                 Glyph = MemoryPathGlyph.Heart,
                 CloseOnBackdrop = false,
                 StackButtons = true,
+                DarkWash = true,
                 MessageSize = 22,
-                PanelWidth = MemoryPathPopup.S(420),
+                PanelWidth = MemoryPathPopup.S(460),
                 Buttons = new[]
                 {
                     Primary(
-                        "Try Again",
+                        PlayLevelLabel(level),
                         MemoryPathPalette.Leave,
                         new Color(1f, 0.42f, 0.42f, 0.33f),
-                        retry),
+                        playLevel),
                     QuietMenu("Main Menu", home)
                 }
             };
@@ -118,11 +135,8 @@ namespace Game.Unity.Ui
                 Panel = MemoryPathPalette.PopupPause,
                 Kicker = "Game Paused",
                 KickerColor = MemoryPathPalette.KickerPause,
-                Title = "Take a breather!",
-                TitleColor = MemoryPathPalette.PauseTitle,
-                TitleWeight = UiWeight.SemiBold,
-                TitleSize = 15,
-                Glyph = MemoryPathGlyph.Pause,
+                Glyph = MemoryPathGlyph.None,
+                Title = "",
                 CloseOnBackdrop = true,
                 StackButtons = true,
                 Buttons = new[]
@@ -178,28 +192,6 @@ namespace Game.Unity.Ui
             };
         }
 
-        public static MemoryPathPopupPayload RetryFromMemory()
-        {
-            return new MemoryPathPopupPayload
-            {
-                Chrome = MemoryPathPopupChrome.Fail,
-                Panel = MemoryPathPalette.PopupFail,
-                Kicker = "Walk Over",
-                KickerColor = MemoryPathPalette.KickerFail,
-                Title = "Try again from memory",
-                TitleColor = MemoryPathPalette.PopupInk,
-                TitleWeight = UiWeight.ExtraBold,
-                TitleSize = 28,
-                KickerSize = 16,
-                MessageSize = 22,
-                PanelWidth = MemoryPathPopup.S(430),
-                Message = "With your memory, try to walk the SAME PATH again.",
-                CloseOnBackdrop = true,
-                ShowCloseButton = true,
-                Buttons = Array.Empty<MemoryPathButton>()
-            };
-        }
-
         public static MemoryPathPopupPayload TutorialSkipped(Action onOk)
         {
             return new MemoryPathPopupPayload
@@ -244,6 +236,9 @@ namespace Game.Unity.Ui
                 }
             };
         }
+
+        public static string PlayLevelLabel(int level) =>
+            level < 1 ? "Play Tutorial" : "Play Level " + Mathf.Max(1, level);
 
         static MemoryPathButton Stay(string label, Action onClick)
         {

@@ -39,7 +39,7 @@ namespace Game.Unity.Themes.Experimental
             go.transform.position = new Vector3(box.Center.x, box.Min.y, box.Center.z);
             go.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             go.transform.localScale = new Vector3(layout.SurfaceWidth, layout.SurfaceDepth, 1f);
-            Object.Destroy(go.GetComponent<Collider>());
+            ArenaEnvironment.DestroyNow(go.GetComponent<Collider>());
 
             var tileRenderer = go.GetComponent<Renderer>();
             tileRenderer.shadowCastingMode = ShadowCastingMode.Off;

@@ -1,30 +1,25 @@
 using System;
-using System.Collections.Generic;
 using Game.Core.Fue;
 using Game.Unity.Ui;
 using Game.Unity.View;
 using Nixin.Fue;
-using Nixin.Grid.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Unity.Fue
 {
     /// <summary>
-    /// Overlay chrome for the tutorial lesson: intro card, neighbour glow, fingers, narration.
+    /// Overlay chrome for the tutorial lesson: intro card, radar watch, then a tap-finger home.
     /// </summary>
     public sealed class MemoryPathTutorialChrome
     {
         static readonly Vector2 TileFingerOffset = new Vector2(8f, -56f);
-        static readonly Vector2 HealthFingerOffset = new Vector2(-12f, -78f);
-        static readonly Vector2 HealthCalloutOffset = new Vector2(0f, -8f);
+        static readonly Vector2 TapFingerSize = new Vector2(168f, 168f);
 
         FueFocusOverlay _overlay;
         FueNarrationBanner _banner;
         FueCenterCard _intro;
-        FuePointerHint _healthFinger;
-        FueCallout _healthCallout;
-        readonly List<FuePointerHint> _tileFingers = new List<FuePointerHint>();
+        FuePointerHint _tileFinger;
         Button _skip;
         Button _readyCatcher;
         GridPathHud _hud;
@@ -67,10 +62,12 @@ namespace Game.Unity.Fue
                 _banner = FueNarrationBanner.Create(root);
             if (_intro == null)
                 _intro = FueCenterCard.Create(root);
-            if (_healthFinger == null)
-                _healthFinger = FuePointerHint.Create(root);
-            if (_healthCallout == null)
-                _healthCallout = FueCallout.Create(root);
+            if (_tileFinger == null)
+            {
+                _tileFinger = FuePointerHint.Create(root);
+                _tileFinger.SetAction(FueGestureAction.Tap);
+                _tileFinger.SetSize(TapFingerSize);
+            }
             if (_skip == null)
                 BuildSkip(root);
             if (_readyCatcher == null)
@@ -87,8 +84,6 @@ namespace Game.Unity.Fue
             if (session.Beat == TutorialBeat.Intro)
             {
                 HideChoiceHints();
-                _healthFinger?.Hide();
-                _healthCallout?.HideImmediate();
                 _banner?.HideImmediate();
                 ApplySkipVisible(false);
                 ApplyReadyCatcher(false);
@@ -102,8 +97,6 @@ namespace Game.Unity.Fue
                 _banner.transform.SetAsLastSibling();
             var waitingForReadyTap = session.Beat == TutorialBeat.Completed;
             ApplySkipVisible(_onSkip != null && !waitingForReadyTap);
-            ShowHealthFinger(session);
-            ShowHealthCallout(session);
             ShowChoiceHints(session, board, camera);
             ApplyReadyCatcher(waitingForReadyTap);
             if (_skip != null)
@@ -121,12 +114,9 @@ namespace Game.Unity.Fue
             _overlay?.HideImmediate();
             _banner?.HideImmediate();
             _intro?.HideImmediate();
-            _healthFinger?.HideImmediate();
-            _healthCallout?.HideImmediate();
             ApplyReadyCatcher(false);
             ApplySkipVisible(false);
-            for (var i = 0; i < _tileFingers.Count; i++)
-                _tileFingers[i].HideImmediate();
+            _tileFinger?.HideImmediate();
         }
 
         void ShowIntro()
@@ -185,46 +175,11 @@ namespace Game.Unity.Fue
             if (board == null || !board.IsBuilt)
                 return;
 
-            if (session.MemoryRun != null)
-            {
-                GridBoardPresenter.Refresh(
-                    board,
-                    session.MemoryRun,
-                    visibleOptions: session.VisibleOptions(),
-                    showChoicePaths: session.IsPlaying);
-                return;
-            }
-
-            board.SetAll(TileVisualState.Idle);
-            if (session.CurrentCell != session.Goal)
-                board.SetState(session.Goal, TileVisualState.Goal);
-            foreach (var walked in session.WalkedCells)
-                board.SetState(walked, TileVisualState.Walked);
-            if (session.LastRevealed.HasValue)
-                board.SetState(session.LastRevealed.Value, TileVisualState.Walked);
-            if (session.Step == 0)
-                board.SetState(session.Start, TileVisualState.Start);
-
-            var options = session.IsPlaying ? session.VisibleOptions() : System.Array.Empty<GridCoord>();
-            for (var i = 0; i < options.Count; i++)
-                board.SetState(options[i], TileVisualState.Candidate);
-
-            if (session.IsPlaying && options.Count > 0)
-            {
-                var points = new Vector3[options.Count];
-                for (var i = 0; i < options.Count; i++)
-                    points[i] = board.WorldPosition(options[i]) + Vector3.up * GridPathOverlay.Lift;
-                board.Overlay?.ShowChoices(
-                    board.WorldPosition(session.CurrentCell) + Vector3.up * GridPathOverlay.Lift,
-                    points,
-                    board.Layout.TileSize * 0.09f);
-            }
-            else
-            {
-                board.Overlay?.ClearChoices();
-            }
-
-            board.Overlay?.ShowHomeAt(board.WorldPosition(session.Goal), board.Layout.TileSize);
+            GridBoardPresenter.Refresh(
+                board,
+                session.Run,
+                visibleOptions: session.VisibleOptions(),
+                showChoicePaths: session.IsPlaying);
         }
 
         void ShowNarration(TutorialBeat beat)
@@ -239,30 +194,6 @@ namespace Game.Unity.Fue
             _banner.Show(copy, NixinFue.Narrator, Color.white);
         }
 
-        void ShowHealthFinger(TutorialSession session)
-        {
-            var well = _hud != null ? _hud.HealthWell : null;
-            if (well == null || _healthFinger == null)
-                return;
-
-            if (session.Beat == TutorialBeat.UnluckyPartial || session.Beat == TutorialBeat.UnluckyRunOver)
-                _healthFinger.ShowAt(well, HealthFingerOffset);
-            else
-                _healthFinger.Hide();
-        }
-
-        void ShowHealthCallout(TutorialSession session)
-        {
-            var well = _hud != null ? _hud.HealthWell : null;
-            if (well == null || _healthCallout == null)
-                return;
-
-            if (session.Beat == TutorialBeat.UnluckyPartial)
-                _healthCallout.ShowNear(well, HealthCalloutOffset, TutorialCopy.HealthLostCallout);
-            else
-                _healthCallout.Hide();
-        }
-
         void ShowChoiceHints(TutorialSession session, GridBoardView board, Camera camera)
         {
             if (!session.IsPlaying || board == null || !board.IsBuilt)
@@ -272,49 +203,25 @@ namespace Game.Unity.Fue
             }
 
             var options = session.VisibleOptions();
-            var renderers = new List<Renderer>(options.Count);
-            EnsureTileFingers(options.Count);
-            for (var i = 0; i < _tileFingers.Count; i++)
+            if (options.Count == 0)
             {
-                if (i >= options.Count)
-                {
-                    _tileFingers[i].Hide();
-                    continue;
-                }
-
-                var tile = board.TileAt(options[i]);
-                var renderer = RendererOf(tile);
-                if (renderer != null)
-                    renderers.Add(renderer);
-                _tileFingers[i].ShowAtWorld(
-                    camera,
-                    board.WorldPosition(options[i]),
-                    TileFingerOffset);
+                HideChoiceHints();
+                return;
             }
 
-            if (renderers.Count > 0)
-                _overlay.ShowWorld(
-                    renderers,
-                    compulsory: session.Beat != TutorialBeat.UnluckyPartial
-                        && session.Beat != TutorialBeat.UnluckyRunOver);
+            var cell = options[0];
+            var renderer = RendererOf(board.TileAt(cell));
+            _tileFinger?.ShowAtWorld(camera, board.WorldPosition(cell), TileFingerOffset);
+            if (renderer != null)
+                _overlay.ShowWorld(new[] { renderer }, compulsory: true);
             else
-                _overlay.Hide();
+                _overlay?.Hide();
         }
 
         void HideChoiceHints()
         {
             _overlay?.Hide();
-            for (var i = 0; i < _tileFingers.Count; i++)
-                _tileFingers[i].Hide();
-        }
-
-        void EnsureTileFingers(int count)
-        {
-            var root = _hud != null ? _hud.OverlayRoot : null;
-            if (root == null)
-                return;
-            while (_tileFingers.Count < count)
-                _tileFingers.Add(FuePointerHint.Create(root));
+            _tileFinger?.Hide();
         }
 
         void BuildSkip(Transform parent)
@@ -374,20 +281,12 @@ namespace Game.Unity.Fue
         {
             switch (beat)
             {
+                case TutorialBeat.Watching:
+                    return TutorialCopy.Watch;
                 case TutorialBeat.PromptChoice:
                     return TutorialCopy.Prompt;
-                case TutorialBeat.Lucky:
-                    return TutorialCopy.Lucky;
-                case TutorialBeat.UnluckyPartial:
-                    return TutorialCopy.UnluckyPartial;
-                case TutorialBeat.UnluckyRunOver:
-                    return TutorialCopy.UnluckyRunOver;
-                case TutorialBeat.Remembered:
-                    return TutorialCopy.Remembered;
-                case TutorialBeat.RepeatedMistake:
-                    return TutorialCopy.RepeatedMistake;
                 case TutorialBeat.SessionFailed:
-                    return TutorialCopy.NewPath;
+                    return TutorialCopy.Watch;
                 case TutorialBeat.Completed:
                     return TutorialCopy.Ready;
                 case TutorialBeat.Advanced:
